@@ -8,7 +8,7 @@ public class ClassifiedUpdate {
 
     private final Update update;
 
-    private final MessageType messageType;
+    private final TelegramType handlerType;
 
     private final long userId;
 
@@ -24,7 +24,7 @@ public class ClassifiedUpdate {
 
     public ClassifiedUpdate(Update update) {
         this.update = update;
-        this.messageType = handleMessageType();
+        this.handlerType = handleTelegramType();
         this.userId = handleUserId();
         this.chatId = handleChatId();
         this.userName = handleUserName();
@@ -35,7 +35,11 @@ public class ClassifiedUpdate {
 
     public String handleCommand() {
         if (update.hasMessage() && update.getMessage().hasText()) {
-            return update.getMessage().getText();
+            if (update.getMessage().getText().startsWith("/")) {
+                return update.getMessage().getText().split(" ")[0];
+            } else {
+                return update.getMessage().getText();
+            }
         }
 
         if (update.hasCallbackQuery()) {
@@ -45,20 +49,24 @@ public class ClassifiedUpdate {
         return "";
     }
 
-    private MessageType handleMessageType() {
+    private TelegramType handleTelegramType() {
         if (update.hasMessage() && update.getMessage().hasText()) {
-            return MessageType.TEXT;
+            if (update.getMessage().getText().startsWith("/")) {
+                return TelegramType.COMMAND;
+            } else {
+                return TelegramType.TEXT;
+            }
         }
 
         if (update.hasCallbackQuery()) {
-            return MessageType.CALLBACK;
+            return TelegramType.CALLBACK;
         }
 
-        return MessageType.UNKNOWN;
+        return TelegramType.UNKNOWN;
     }
 
     private long handleUserId() {
-        if (messageType == MessageType.CALLBACK) {
+        if (handlerType == TelegramType.CALLBACK) {
             return update.getCallbackQuery().getFrom().getId();
         } else {
             return update.getMessage().getFrom().getId();
@@ -66,7 +74,7 @@ public class ClassifiedUpdate {
     }
 
     private long handleChatId() {
-        if (messageType == MessageType.CALLBACK) {
+        if (handlerType == TelegramType.CALLBACK) {
             return update.getCallbackQuery().getMessage().getChatId();
         } else {
             return update.getMessage().getChatId();
@@ -74,7 +82,7 @@ public class ClassifiedUpdate {
     }
 
     private String handleUserName() {
-        if (messageType == MessageType.CALLBACK) {
+        if (handlerType == TelegramType.CALLBACK) {
             return update.getCallbackQuery().getFrom().getUserName();
         } else {
             return update.getMessage().getFrom().getUserName();
@@ -82,7 +90,7 @@ public class ClassifiedUpdate {
     }
 
     private String handleFirstName() {
-        if (messageType == MessageType.CALLBACK) {
+        if (handlerType == TelegramType.CALLBACK) {
             return update.getCallbackQuery().getFrom().getFirstName();
         } else {
             return update.getMessage().getFrom().getFirstName();
@@ -90,12 +98,10 @@ public class ClassifiedUpdate {
     }
 
     private String handleLastName() {
-        if (messageType == MessageType.CALLBACK) {
+        if (handlerType == TelegramType.CALLBACK) {
             return update.getCallbackQuery().getFrom().getLastName();
         } else {
             return update.getMessage().getFrom().getLastName();
         }
     }
-
-
 }

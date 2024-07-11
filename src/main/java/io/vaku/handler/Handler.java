@@ -1,15 +1,15 @@
 package io.vaku.handler;
 
-import io.vaku.model.Answer;
+import io.vaku.model.Response;
 import io.vaku.model.ClassifiedUpdate;
-import io.vaku.model.MessageType;
+import io.vaku.model.TelegramType;
 import io.vaku.model.User;
 
 public interface Handler {
 
-    MessageType getMessageType();
+    TelegramType getHandlerType();
 
     boolean isApplicable(User user, ClassifiedUpdate update);
 
-    Answer getAnswer(User user, ClassifiedUpdate update);
+    Response getAnswer(User user, ClassifiedUpdate update);
 }

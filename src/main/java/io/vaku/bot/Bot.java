@@ -1,16 +1,13 @@
 package io.vaku.bot;
 
-import io.vaku.model.Lang;
-import io.vaku.model.Room;
-import io.vaku.model.User;
-import io.vaku.service.UserService;
+import io.vaku.model.ClassifiedUpdate;
+import io.vaku.model.Response;
+import io.vaku.service.UpdateHandlerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
@@ -22,16 +19,13 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
 import javax.annotation.PostConstruct;
-import java.time.Instant;
-import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 @Component
 public class Bot extends TelegramLongPollingBot {
 
     @Autowired
-    private UserService userService;
+    private UpdateHandlerService updateHandlerService;
 
     @Value("${bot.name}")
     private String botName;
@@ -65,58 +59,65 @@ public class Bot extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
-        Message incMsg = update.getMessage();
-        long chatId = incMsg.getChatId();
+        Response resp = updateHandlerService.execute(new ClassifiedUpdate(update));
 
         try {
-            if (incMsg.getText().equalsIgnoreCase("/start")) {
-                if (userService.findByChatId(chatId).isPresent()) {
-                    SendMessage outMsg = SendMessage
-                            .builder()
-                            .chatId(chatId)
-                            .text("Привет, " + incMsg.getFrom().getUserName() + "!")
-                            .replyMarkup(getGeneralMenu())
-                            .build();
-
-                    execute(outMsg);
-                } else {
-                    SendMessage outMsg = SendMessage
-                            .builder()
-                            .chatId(chatId)
-                            .text("TBD: about bot")
-                            .replyMarkup(getRegisterButton())
-                            .build();
-
-                    execute(outMsg);
-
-                    User user = new User(
-                            incMsg.getFrom().getId(),
-                            chatId,
-                            incMsg.getFrom().getUserName(),
-                            incMsg.getFrom().getFirstName(),
-                            incMsg.getFrom().getLastName(),
-                            "Alex",
-                            Date.from(Instant.now()),
-                            new Room(UUID.fromString("8b16e531-2675-4a74-9f60-240521fbb25b"), List.of(), 100, true),
-                            "somi bio",
-                            Lang.EN,
-                            Date.from(Instant.now())
-                    );
-
-                    userService.createOrUpdate(user);
-
-                    SendMessage outMsg2 = SendMessage
-                            .builder()
-                            .chatId(chatId)
-                            .text("You're registered")
-                            .build();
-
-                    execute(outMsg2);
-                }
-            }
+            execute(resp.getBotApiMethod());
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }
+
+//        Message incMsg = update.getMessage();
+//        long chatId = incMsg.getChatId();
+//        try {
+//            if (incMsg.getText().equalsIgnoreCase("/start")) {
+//                if (userService.findByChatId(chatId).isPresent()) {
+//                    SendMessage outMsg = SendMessage
+//                            .builder()
+//                            .chatId(chatId)
+//                            .text("Привет, " + incMsg.getFrom().getUserName() + "!")
+//                            .replyMarkup(getGeneralMenu())
+//                            .build();
+//
+//                    execute(outMsg);
+//                } else {
+//                    SendMessage outMsg = SendMessage
+//                            .builder()
+//                            .chatId(chatId)
+//                            .text("TBD: about bot")
+//                            .replyMarkup(getRegisterButton())
+//                            .build();
+//
+//                    execute(outMsg);
+//
+//                    User user = new User(
+//                            incMsg.getFrom().getId(),
+//                            chatId,
+//                            incMsg.getFrom().getUserName(),
+//                            incMsg.getFrom().getFirstName(),
+//                            incMsg.getFrom().getLastName(),
+//                            "Alex",
+//                            Date.from(Instant.now()),
+//                            new Room(UUID.fromString("8b16e531-2675-4a74-9f60-240521fbb25b"), List.of(), 100, true),
+//                            "somi bio",
+//                            Lang.EN,
+//                            Date.from(Instant.now())
+//                    );
+//
+//                    userService.createOrUpdate(user);
+//
+//                    SendMessage outMsg2 = SendMessage
+//                            .builder()
+//                            .chatId(chatId)
+//                            .text("You're registered")
+//                            .build();
+//
+//                    execute(outMsg2);
+//                }
+//            }
+//        } catch (TelegramApiException e) {
+//            e.printStackTrace();
+//        }
     }
 
     @Override

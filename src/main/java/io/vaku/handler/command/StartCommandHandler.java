@@ -2,16 +2,16 @@ package io.vaku.handler.command;
 
 import io.vaku.command.Command;
 import io.vaku.handler.AbstractHandler;
-import io.vaku.model.Answer;
+import io.vaku.model.Response;
 import io.vaku.model.ClassifiedUpdate;
-import io.vaku.model.MessageType;
+import io.vaku.model.TelegramType;
 import io.vaku.model.User;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 
 @Component
-public class RegisterHandler extends AbstractHandler {
+public class StartCommandHandler extends AbstractHandler {
 
     private final HashMap<Object, Command> hashMap = new HashMap<>();
 
@@ -21,8 +21,8 @@ public class RegisterHandler extends AbstractHandler {
     }
 
     @Override
-    public MessageType getMessageType() {
-        return MessageType.TEXT;
+    public TelegramType getHandlerType() {
+        return TelegramType.COMMAND;
     }
 
     @Override
@@ -31,7 +31,7 @@ public class RegisterHandler extends AbstractHandler {
     }
 
     @Override
-    public Answer getAnswer(User user, ClassifiedUpdate update) {
-        return hashMap.get(update.getCommandName()).getAnswer(update, user);
+    public Response getAnswer(User user, ClassifiedUpdate update) {
+        return hashMap.get(update.getCommandName()).getAnswer(user, update);
     }
 }

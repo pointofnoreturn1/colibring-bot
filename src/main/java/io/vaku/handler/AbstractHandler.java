@@ -25,6 +25,7 @@ public abstract class AbstractHandler implements Handler {
             if (Objects.equals(cmd.getHandler().getName(), this.getClass().getName())) {
                 createMap().put(cmd.getCommandName(), cmd);
 
+                // TODO: add proper logging
                 System.out.println(cmd.getClass().getSimpleName() + " was added for " + this.getClass().getSimpleName());
             }
         });

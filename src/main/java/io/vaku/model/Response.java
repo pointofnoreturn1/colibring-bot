@@ -10,7 +10,7 @@ import org.telegram.telegrambots.meta.api.methods.stickers.UploadStickerFile;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageMedia;
 
 @Data
-public class Answer {
+public class Response {
     private SendDocument sendDocument;
     private SendPhoto sendPhoto;
     private SendVideo sendVideo;

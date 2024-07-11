@@ -1,6 +1,6 @@
 package io.vaku.command;
 
-import io.vaku.model.Answer;
+import io.vaku.model.Response;
 import io.vaku.model.ClassifiedUpdate;
 import io.vaku.model.User;
 
@@ -10,5 +10,5 @@ public interface Command {
 
     Object getCommandName();
 
-    Answer getAnswer(ClassifiedUpdate update, User user);
+    Response getAnswer(User user, ClassifiedUpdate update);
 }
