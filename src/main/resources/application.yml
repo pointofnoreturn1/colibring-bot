@@ -11,3 +11,5 @@ app:
   feature:
     register:
       password: ${BOT_REGISTER_PASSWORD}
+  connection:
+    timeout: ${BOT_CONNECTION_TIMEOUT}
