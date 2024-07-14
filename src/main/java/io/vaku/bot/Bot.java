@@ -40,7 +40,7 @@ public class Bot extends TelegramLongPollingBot {
             telegramBotsApi.registerBot(this);
             System.out.println("TelegramAPI started. Look for messages");
         } catch (TelegramApiRequestException e) {
-            System.out.println(("Cant Connect. Pause " + timeout / 1000 + " seconds and try again. Error: " + e.getMessage()));
+            System.out.println(("Unable to connect. Pause " + timeout / 1000 + " seconds and try again. Error: " + e.getMessage()));
             try {
                 Thread.sleep(timeout);
             } catch (InterruptedException e1) {
@@ -59,12 +59,16 @@ public class Bot extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
-        Response resp = updateHandlerService.execute(new ClassifiedUpdate(update));
-
-        try {
-            execute(resp.getBotApiMethod());
-        } catch (TelegramApiException e) {
-            e.printStackTrace();
+        if (update.hasMessage()) {
+            Response resp = updateHandlerService.handleUpdate(new ClassifiedUpdate(update));
+            // TODO: check why botApiMethod can be null when receive random text
+            if (resp != null && resp.getBotApiMethod() != null) {
+                try {
+                    execute(resp.getBotApiMethod());
+                } catch (TelegramApiException e) {
+                    e.printStackTrace();
+                }
+            }
         }
 
 //        Message incMsg = update.getMessage();
@@ -123,28 +127,6 @@ public class Bot extends TelegramLongPollingBot {
     @Override
     public String getBotUsername() {
         return botName;
-    }
-
-    private ReplyKeyboardMarkup getGeneralMenu() {
-        List<KeyboardRow> keyboard = List.of(
-                new KeyboardRow(List.of(new KeyboardButton("menu button1"))),
-                new KeyboardRow(List.of(new KeyboardButton("menu button2"))),
-                new KeyboardRow(List.of(new KeyboardButton("menu button3"))),
-                new KeyboardRow(List.of(new KeyboardButton("menu button4"))),
-                new KeyboardRow(List.of(new KeyboardButton("menu button5"))),
-                new KeyboardRow(List.of(new KeyboardButton("menu button6"))),
-                new KeyboardRow(List.of(new KeyboardButton("menu button7"))),
-                new KeyboardRow(List.of(new KeyboardButton("menu button8"))),
-                new KeyboardRow(List.of(new KeyboardButton("menu button9"))),
-                new KeyboardRow(List.of(new KeyboardButton("menu button10"))),
-                new KeyboardRow(List.of(new KeyboardButton("menu button11"))),
-                new KeyboardRow(List.of(new KeyboardButton("menu button12"))),
-                new KeyboardRow(List.of(new KeyboardButton("menu button13"))),
-                new KeyboardRow(List.of(new KeyboardButton("menu button14"))),
-                new KeyboardRow(List.of(new KeyboardButton("menu button15")))
-        );
-
-        return new ReplyKeyboardMarkup(keyboard);
     }
 
     private InlineKeyboardMarkup getRegisterButton() {

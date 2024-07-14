@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
 @Transactional(readOnly = true)
 public class UserService {
@@ -14,9 +16,10 @@ public class UserService {
     @Autowired
     private UserRepository repository;
 
-    // TODO
     public User findByUpdate(ClassifiedUpdate update) {
-        return null;
+        Optional<User> user = repository.findByChatId(update.getChatId());
+
+        return user.orElse(null);
     }
 
     @Transactional

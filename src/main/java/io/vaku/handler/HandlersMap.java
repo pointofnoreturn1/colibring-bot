@@ -31,7 +31,7 @@ public class HandlersMap {
         }
     }
 
-    public Response execute(ClassifiedUpdate update, User user) {
+    public Response execute(User user, ClassifiedUpdate update) {
         if (!hashMap.containsKey(update.getHandlerType())) {
             return new Response();
         }
