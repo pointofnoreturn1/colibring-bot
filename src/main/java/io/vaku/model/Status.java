@@ -1,7 +1,7 @@
 package io.vaku.model;
 
 public enum Status {
-    LANG_CHOSEN,
+    REQUIRE_REGISTRATION,
     REQUIRE_PASSWORD,
     REQUIRE_NAME,
     REQUIRE_BIRTHDATE,

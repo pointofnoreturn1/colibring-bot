@@ -58,7 +58,16 @@ public class User {
     @Column(name = "lang", nullable = false)
     private Lang lang;
 
+    @Transient
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_at")
     private Date createdAt;
+
+    public User(long id, long chatId, String tgUserName, String tgFirstName, String tgLastName) {
+        this.id = id;
+        this.chatId = chatId;
+        this.tgUserName = tgUserName;
+        this.tgFirstName = tgFirstName;
+        this.tgLastName = tgLastName;
+    }
 }
