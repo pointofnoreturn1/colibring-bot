@@ -7,6 +7,8 @@ import io.vaku.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class UpdateHandlerService {
 
@@ -19,9 +21,11 @@ public class UpdateHandlerService {
     @Autowired
     private RegistrationComponent registrationComponent;
 
-    public Response handleUpdate(ClassifiedUpdate update) {
+    public List<Response> handleUpdate(ClassifiedUpdate update) {
         User user = userService.findByUpdate(update);
 
-        return (user == null) ? commandMap.execute(null, update) : registrationComponent.execute(user, update);
+        return (user == null)
+                ? commandMap.execute(null, update)
+                : registrationComponent.execute(user, update);
     }
 }

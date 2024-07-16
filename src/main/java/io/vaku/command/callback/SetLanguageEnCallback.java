@@ -18,6 +18,9 @@ import static io.vaku.model.enumerated.UserStatus.REQUIRE_REGISTRATION;
 @Component
 public class SetLanguageEnCallback implements Command {
 
+    private static final String TEXT_REGISTER_REQUEST = "Done ✅\nRegister to continue";
+    private static final String TEXT_REGISTER = "Register";
+
     @Autowired
     private UserService userService;
 
@@ -32,17 +35,17 @@ public class SetLanguageEnCallback implements Command {
     }
 
     @Override
-    public Response getAnswer(User user, ClassifiedUpdate update) {
+    public List<Response> getAnswer(User user, ClassifiedUpdate update) {
         userService.createOrUpdate(constructUser(update));
 
         SendMessage msg = SendMessage
                 .builder()
                 .chatId(update.getChatId())
-                .text("Done ✅\nRegister to continue")
+                .text(TEXT_REGISTER_REQUEST)
                 .replyMarkup(getInlineRegisterRequest())
                 .build();
 
-        return new Response(msg);
+        return List.of(new Response(msg));
     }
 
     private User constructUser(ClassifiedUpdate update) {
@@ -61,7 +64,7 @@ public class SetLanguageEnCallback implements Command {
 
     private InlineKeyboardMarkup getInlineRegisterRequest() {
         List<InlineKeyboardButton> buttons = List.of(
-                InlineKeyboardButton.builder().text("Register").callbackData("callbackRegisterRequest").build()
+                InlineKeyboardButton.builder().text(TEXT_REGISTER).callbackData("callbackRegisterRequest").build()
         );
 
         return new InlineKeyboardMarkup(List.of(buttons));

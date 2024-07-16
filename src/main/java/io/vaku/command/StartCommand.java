@@ -4,6 +4,7 @@ import io.vaku.handler.command.StartCommandHandler;
 import io.vaku.model.Response;
 import io.vaku.model.ClassifiedUpdate;
 import io.vaku.model.User;
+import io.vaku.model.enumerated.Lang;
 import io.vaku.service.MenuComponent;
 import io.vaku.service.UserService;
 import lombok.SneakyThrows;
@@ -19,6 +20,10 @@ import static io.vaku.model.enumerated.UserStatus.REGISTERED;
 
 @Component
 public class StartCommand implements Command {
+
+    private static final String TEXT_GREETING_RU = "Рады снова тебя видеть, ";
+    private static final String TEXT_GREETING_EN = "Nice to see you again ";
+    private static final String TEXT_LANG_CHOICE_REQUEST = "Выбери язык (Choose language)";
 
     @Autowired
     private MenuComponent menuComponent;
@@ -38,21 +43,25 @@ public class StartCommand implements Command {
 
     @SneakyThrows
     @Override
-    public Response getAnswer(User user, ClassifiedUpdate update) {
+    public List<Response> getAnswer(User user, ClassifiedUpdate update) {
         if (user != null && user.getStatus().equals(REGISTERED)) {
-            return getRegisteredUserResponse(user, update);
+            return List.of(getRegisteredUserResponse(user, update));
         } else if (user == null) {
-            return getNewUserResponse(update);
+            return List.of(getNewUserResponse(update));
         }
 
-        return new Response();
+        return List.of(new Response());
     }
 
     private Response getRegisteredUserResponse(User user, ClassifiedUpdate update) {
         SendMessage msg = SendMessage
                 .builder()
                 .chatId(update.getChatId())
-                .text("Рады снова тебя видеть, " + user.getSpecifiedName() + "!") // TODO: make EN version
+                .text(
+                        user.getLang().equals(Lang.RU)
+                        ? TEXT_GREETING_RU + user.getSpecifiedName() + "!"
+                        : TEXT_GREETING_EN + user.getSpecifiedName() + "!"
+                )
                 .replyMarkup(menuComponent.getUserMenu())
                 .build();
 
@@ -63,7 +72,7 @@ public class StartCommand implements Command {
         SendMessage msg = SendMessage
                 .builder()
                 .chatId(update.getChatId())
-                .text("Выбери язык (Choose language)")
+                .text(TEXT_LANG_CHOICE_REQUEST)
                 .replyMarkup(getInlineLanguageChoice())
                 .build();
 

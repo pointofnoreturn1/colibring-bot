@@ -9,6 +9,7 @@ import io.vaku.model.User;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
+import java.util.List;
 
 @Component
 public class RegisterCallbackHandler extends AbstractHandler {
@@ -31,7 +32,7 @@ public class RegisterCallbackHandler extends AbstractHandler {
     }
 
     @Override
-    public Response getAnswer(User user, ClassifiedUpdate update) {
+    public List<Response> getAnswer(User user, ClassifiedUpdate update) {
         return hashMap.get(update.getCommandName()).getAnswer(user, update);
     }
 }

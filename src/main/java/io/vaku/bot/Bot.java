@@ -14,6 +14,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
 import javax.annotation.PostConstruct;
+import java.util.List;
 
 @Component
 public class Bot extends TelegramLongPollingBot {
@@ -54,12 +55,14 @@ public class Bot extends TelegramLongPollingBot {
     @Override
     public void onUpdateReceived(Update update) {
         if (update.hasMessage() || update.hasCallbackQuery()) {
-            Response resp = updateHandlerService.handleUpdate(new ClassifiedUpdate(update));
-            if (resp != null && resp.getBotApiMethod() != null) {
-                try {
-                    execute(resp.getBotApiMethod());
-                } catch (TelegramApiException e) {
-                    e.printStackTrace();
+            List<Response> responses = updateHandlerService.handleUpdate(new ClassifiedUpdate(update));
+            for (Response resp : responses) {
+                if (resp != null && resp.getBotApiMethod() != null) {
+                    try {
+                        execute(resp.getBotApiMethod());
+                    } catch (TelegramApiException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }

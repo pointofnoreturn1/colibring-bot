@@ -31,9 +31,9 @@ public class HandlersMap {
         }
     }
 
-    public Response execute(User user, ClassifiedUpdate update) {
+    public List<Response> execute(User user, ClassifiedUpdate update) {
         if (!hashMap.containsKey(update.getHandlerType())) {
-            return new Response();
+            return List.of(new Response());
         }
 
         for (Handler handler : hashMap.get(update.getHandlerType())) {
