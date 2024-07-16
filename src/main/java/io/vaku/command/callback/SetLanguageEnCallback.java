@@ -3,6 +3,7 @@ package io.vaku.command.callback;
 import io.vaku.command.Command;
 import io.vaku.handler.callback.SetLanguageRuCallbackHandler;
 import io.vaku.model.*;
+import io.vaku.model.enumerated.Lang;
 import io.vaku.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -12,7 +13,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 
 import java.util.List;
 
-import static io.vaku.model.UserStatus.REQUIRE_REGISTRATION;
+import static io.vaku.model.enumerated.UserStatus.REQUIRE_REGISTRATION;
 
 @Component
 public class SetLanguageEnCallback implements Command {

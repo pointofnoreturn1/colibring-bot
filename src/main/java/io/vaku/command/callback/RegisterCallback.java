@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 
-import static io.vaku.model.UserStatus.REQUIRE_PASSWORD;
+import static io.vaku.model.enumerated.UserStatus.REQUIRE_PASSWORD;
 
 @Component
 public class RegisterCallback implements Command {

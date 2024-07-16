@@ -1,5 +1,7 @@
 package io.vaku.model;
 
+import io.vaku.model.enumerated.Lang;
+import io.vaku.model.enumerated.UserStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;

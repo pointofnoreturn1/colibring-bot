@@ -15,7 +15,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 
 import java.util.List;
 
-import static io.vaku.model.UserStatus.REGISTERED;
+import static io.vaku.model.enumerated.UserStatus.REGISTERED;
 
 @Component
 public class StartCommand implements Command {
