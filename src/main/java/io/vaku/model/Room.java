@@ -23,7 +23,7 @@ public class Room {
     private List<User> users;
 
     @Column(name = "number")
-    private int number;
+    private String number;
 
     @Column(name = "is_hostel")
     private boolean isHostel;

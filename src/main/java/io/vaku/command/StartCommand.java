@@ -3,9 +3,8 @@ package io.vaku.command;
 import io.vaku.handler.command.StartCommandHandler;
 import io.vaku.model.Response;
 import io.vaku.model.ClassifiedUpdate;
-import io.vaku.model.Status;
 import io.vaku.model.User;
-import io.vaku.service.UserMenuComponent;
+import io.vaku.service.MenuComponent;
 import io.vaku.service.UserService;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,11 +15,13 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 
 import java.util.List;
 
+import static io.vaku.model.UserStatus.REGISTERED;
+
 @Component
 public class StartCommand implements Command {
 
     @Autowired
-    private UserMenuComponent userMenuComponent;
+    private MenuComponent menuComponent;
 
     @Autowired
     private UserService userService;
@@ -38,7 +39,7 @@ public class StartCommand implements Command {
     @SneakyThrows
     @Override
     public Response getAnswer(User user, ClassifiedUpdate update) {
-        if (user != null && user.getStatus().equals(Status.REGISTERED)) {
+        if (user != null && user.getStatus().equals(REGISTERED)) {
             return getRegisteredUserResponse(user, update);
         } else if (user == null) {
             return getNewUserResponse(update);
@@ -52,7 +53,7 @@ public class StartCommand implements Command {
                 .builder()
                 .chatId(update.getChatId())
                 .text("Рады снова тебя видеть, " + user.getSpecifiedName() + "!") // TODO: make EN version
-                .replyMarkup(userMenuComponent.getUserMenu())
+                .replyMarkup(menuComponent.getUserMenu())
                 .build();
 
         return new Response(msg);
@@ -62,7 +63,7 @@ public class StartCommand implements Command {
         SendMessage msg = SendMessage
                 .builder()
                 .chatId(update.getChatId())
-                .text("Выберите язык (Choose language)")
+                .text("Выбери язык (Choose language)")
                 .replyMarkup(getInlineLanguageChoice())
                 .build();
 

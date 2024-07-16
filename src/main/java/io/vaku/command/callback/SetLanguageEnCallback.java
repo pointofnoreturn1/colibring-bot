@@ -12,6 +12,8 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 
 import java.util.List;
 
+import static io.vaku.model.UserStatus.REQUIRE_REGISTRATION;
+
 @Component
 public class SetLanguageEnCallback implements Command {
 
@@ -35,7 +37,7 @@ public class SetLanguageEnCallback implements Command {
         SendMessage msg = SendMessage
                 .builder()
                 .chatId(update.getChatId())
-                .text("Done ✅\nTo continue you must register")
+                .text("Done ✅\nRegister to continue")
                 .replyMarkup(getInlineRegisterRequest())
                 .build();
 
@@ -51,7 +53,7 @@ public class SetLanguageEnCallback implements Command {
                 update.getLastName()
         );
         user.setLang(Lang.EN);
-        user.setStatus(Status.REQUIRE_REGISTRATION);
+        user.setStatus(REQUIRE_REGISTRATION);
 
         return user;
     }

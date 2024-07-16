@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 
+import static io.vaku.model.UserStatus.REQUIRE_PASSWORD;
+
 @Component
 public class RegisterCallback implements Command {
 
@@ -26,13 +28,13 @@ public class RegisterCallback implements Command {
 
     @Override
     public Response getAnswer(User user, ClassifiedUpdate update) {
-        user.setStatus(Status.REQUIRE_PASSWORD);
+        user.setStatus(REQUIRE_PASSWORD);
         userService.createOrUpdate(user);
 
         SendMessage msg = SendMessage
                 .builder()
                 .chatId(update.getChatId())
-                .text("Введите пароль")
+                .text("Введи пароль")
                 .build();
 
         return new Response(msg);

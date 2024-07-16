@@ -1,5 +1,7 @@
 package io.vaku.service;
 
+import io.vaku.model.Room;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
@@ -8,7 +10,10 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.Keyboard
 import java.util.List;
 
 @Component
-public class UserMenuComponent {
+public class MenuComponent {
+
+    @Autowired
+    private RoomService roomService;
 
     public ReplyKeyboardMarkup getUserMenu() {
         List<KeyboardRow> keyboard = List.of(
@@ -29,6 +34,17 @@ public class UserMenuComponent {
                 new KeyboardRow(List.of(new KeyboardButton("menu button15")))
         );
 
-        return new ReplyKeyboardMarkup(keyboard);
+        return ReplyKeyboardMarkup.builder().keyboard(keyboard).resizeKeyboard(true).build();
+    }
+
+    public ReplyKeyboardMarkup getRoomChoiceMenu() {
+        List<KeyboardRow> keyboard = ((List<Room>) roomService.getAll())
+                .stream()
+                .map(Room::getNumber)
+                .sorted()
+                .map(it -> new KeyboardRow(List.of(new KeyboardButton(it))))
+                .toList();
+
+        return ReplyKeyboardMarkup.builder().keyboard(keyboard).oneTimeKeyboard(true).resizeKeyboard(true).build();
     }
 }

@@ -1,6 +1,6 @@
 package io.vaku.model;
 
-public enum Status {
+public enum UserStatus {
     REQUIRE_REGISTRATION,
     REQUIRE_PASSWORD,
     REQUIRE_NAME,
