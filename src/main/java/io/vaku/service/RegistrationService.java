@@ -7,10 +7,11 @@ import io.vaku.model.Room;
 import io.vaku.model.User;
 import io.vaku.model.enumerated.Lang;
 import io.vaku.util.DateUtils;
+import io.vaku.util.MessageFactory;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 
 import java.text.DateFormat;
@@ -19,23 +20,23 @@ import java.util.List;
 
 import static io.vaku.model.enumerated.UserStatus.*;
 
-@Component
-public class RegistrationComponent {
+@Service
+public class RegistrationService {
 
-    private static final String TEXT_NAME_REQUEST_RU = "Готово ✅\nВведи своё имя";
-    private static final String TEXT_NAME_REQUEST_EN = "Done ✅\nEnter your name";
+    private static final String TEXT_NAME_REQUEST_RU = "Введи своё имя";
+    private static final String TEXT_NAME_REQUEST_EN = "Enter your name";
     private static final String TEXT_INCORRECT_PASSWORD_RU = "Неверный пароль \uD83D\uDE1E";
     private static final String TEXT_INCORRECT_PASSWORD_EN = "Incorrect password \uD83D\uDE1E";
-    private static final String TEXT_BIRTHDATE_REQUEST_RU = "Готово ✅\nВведи дату своего рождения в формате дд.мм.гггг";
-    private static final String TEXT_BIRTHDATE_REQUEST_EN = "Done ✅\nEnter your date of birth in the format dd.mm.yyyy";
-    private static final String TEXT_ROOM_REQUEST_RU = "Готово ✅\nУкажи свою комнату";
-    private static final String TEXT_ROOM_REQUEST_EN = "Done ✅\nSpecify your room";
+    private static final String TEXT_BIRTHDATE_REQUEST_RU = "Введи дату своего рождения в формате дд.мм.гггг";
+    private static final String TEXT_BIRTHDATE_REQUEST_EN = "Enter your date of birth in the format dd.mm.yyyy";
+    private static final String TEXT_ROOM_REQUEST_RU = "Укажи свою комнату";
+    private static final String TEXT_ROOM_REQUEST_EN = "Specify your room";
     private static final String TEXT_INCORRECT_DATE_RU = "Неверный формат даты \uD83D\uDE1E";
     private static final String TEXT_INCORRECT_DATE_EN = "Invalid date format \uD83D\uDE1E";
-    private static final String TEXT_BIO_REQUEST_RU = "Готово ✅\nРасскажи нам о себе";
-    private static final String TEXT_BIO_REQUEST_EN = "Done ✅\nTell us about yourself";
-    private static final String TEXT_SUCCESSFUL_REGISTRATION_RU = "Готово ✅\nПоздравляем! Регистрация успешно завершена";
-    private static final String TEXT_SUCCESSFUL_REGISTRATION_EN = "Done ✅\nCongratulations! Registration successfully completed";
+    private static final String TEXT_BIO_REQUEST_RU = "Расскажи нам о себе";
+    private static final String TEXT_BIO_REQUEST_EN = "Tell us about yourself";
+    private static final String TEXT_SUCCESSFUL_REGISTRATION_RU = "\uD83C\uDF89 Поздравляем! \uD83C\uDF89\nРегистрация успешно завершена";
+    private static final String TEXT_SUCCESSFUL_REGISTRATION_EN = "\uD83C\uDF89Congratulations! \uD83C\uDF89\nRegistration successfully completed";
 
     @Value("${app.feature.register.password}")
     private String password;
@@ -47,13 +48,10 @@ public class RegistrationComponent {
     private RoomService roomService;
 
     @Autowired
-    private MenuComponent menuComponent;
+    private MenuService menuService;
 
     @Autowired
     private HandlersMap commandMap;
-
-    @Autowired
-    private DateUtils dateUtils;
 
     public List<Response> execute(User user, ClassifiedUpdate update) {
         return switch (user.getStatus()) {
@@ -72,25 +70,25 @@ public class RegistrationComponent {
     }
 
     private List<Response> proceedPassword(User user, ClassifiedUpdate update) {
-        SendMessage msg;
-
         if (checkPassword(update.getCommandName())) {
             user.setStatus(REQUIRE_NAME);
             userService.createOrUpdate(user);
-            msg = SendMessage
+            SendMessage msg = SendMessage
                     .builder()
                     .chatId(update.getChatId())
                     .text(user.getLang().equals(Lang.RU) ? TEXT_NAME_REQUEST_RU : TEXT_NAME_REQUEST_EN)
                     .build();
+
+            return List.of(MessageFactory.getDoneMsg(user, update), new Response(msg));
         } else {
-            msg = SendMessage
+            SendMessage msg = SendMessage
                     .builder()
                     .chatId(update.getChatId())
                     .text(user.getLang().equals(Lang.RU) ? TEXT_INCORRECT_PASSWORD_RU : TEXT_INCORRECT_PASSWORD_EN)
                     .build();
-        }
 
-        return List.of(new Response(msg));
+            return List.of(new Response(msg));
+        }
     }
 
     private List<Response> proceedName(User user, ClassifiedUpdate update) {
@@ -103,34 +101,35 @@ public class RegistrationComponent {
                 .text(user.getLang().equals(Lang.RU) ? TEXT_BIRTHDATE_REQUEST_RU : TEXT_BIRTHDATE_REQUEST_EN)
                 .build();
 
-        return List.of(new Response(msg));
+        return List.of(MessageFactory.getDoneMsg(user, update), new Response(msg));
     }
 
     @SneakyThrows
     private List<Response> proceedBirthdate(User user, ClassifiedUpdate update) {
-        SendMessage msg;
         String input = update.getCommandName();
 
-        if (dateUtils.isValid(input)) {
+        if (DateUtils.isValid(input)) {
             DateFormat formatter = new SimpleDateFormat("dd.MM.yyyy");
             user.setBirthDate(formatter.parse(input));
             user.setStatus(REQUIRE_ROOM);
             userService.createOrUpdate(user);
-            msg = SendMessage.
+            SendMessage msg = SendMessage.
                     builder()
                     .chatId(update.getChatId())
                     .text(user.getLang().equals(Lang.RU) ? TEXT_ROOM_REQUEST_RU : TEXT_ROOM_REQUEST_EN)
-                    .replyMarkup(menuComponent.getRoomChoiceMenu())
+                    .replyMarkup(menuService.getRoomChoiceMenu())
                     .build();
+
+            return List.of(MessageFactory.getDoneMsg(user, update), new Response(msg));
         } else {
-            msg = SendMessage
+            SendMessage msg = SendMessage
                     .builder()
                     .chatId(update.getChatId())
                     .text(user.getLang().equals(Lang.RU) ? TEXT_INCORRECT_DATE_RU : TEXT_INCORRECT_DATE_EN)
                     .build();
-        }
 
-        return List.of(new Response(msg));
+            return List.of(new Response(msg));
+        }
     }
 
     private List<Response> proceedRoom(User user, ClassifiedUpdate update) {
@@ -146,7 +145,7 @@ public class RegistrationComponent {
                     .text(user.getLang().equals(Lang.RU) ? TEXT_BIO_REQUEST_RU : TEXT_BIO_REQUEST_EN)
                     .build();
 
-            return List.of(new Response(msg));
+            return List.of(MessageFactory.getDoneMsg(user, update), new Response(msg));
         }
 
         return List.of(new Response());
@@ -160,7 +159,7 @@ public class RegistrationComponent {
                 builder()
                 .chatId(update.getChatId())
                 .text(user.getLang().equals(Lang.RU) ? TEXT_SUCCESSFUL_REGISTRATION_RU : TEXT_SUCCESSFUL_REGISTRATION_EN)
-                .replyMarkup(menuComponent.getUserMenu())
+                .replyMarkup(menuService.getUserMenu())
                 .build();
 
         return List.of(new Response(msg));

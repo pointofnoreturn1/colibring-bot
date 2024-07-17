@@ -5,7 +5,7 @@ import io.vaku.model.Response;
 import io.vaku.model.ClassifiedUpdate;
 import io.vaku.model.User;
 import io.vaku.model.enumerated.Lang;
-import io.vaku.service.MenuComponent;
+import io.vaku.service.MenuService;
 import io.vaku.service.UserService;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +26,7 @@ public class StartCommand implements Command {
     private static final String TEXT_LANG_CHOICE_REQUEST = "Выбери язык (Choose language)";
 
     @Autowired
-    private MenuComponent menuComponent;
+    private MenuService menuService;
 
     @Autowired
     private UserService userService;
@@ -62,7 +62,7 @@ public class StartCommand implements Command {
                         ? TEXT_GREETING_RU + user.getSpecifiedName() + "!"
                         : TEXT_GREETING_EN + user.getSpecifiedName() + "!"
                 )
-                .replyMarkup(menuComponent.getUserMenu())
+                .replyMarkup(menuService.getUserMenu())
                 .build();
 
         return new Response(msg);

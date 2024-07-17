@@ -4,16 +4,14 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
-public class DateUtils {
+public final class DateUtils {
 
-    private final String dateFormat;
+    private static final String dateFormat = "dd.MM.yyyy";
 
-    public DateUtils(String dateFormat) {
-        this.dateFormat = dateFormat;
-    }
+    private DateUtils() {}
 
-    public boolean isValid(String date) {
-        DateFormat sdf = new SimpleDateFormat(this.dateFormat);
+    public static boolean isValid(String date) {
+        DateFormat sdf = new SimpleDateFormat(dateFormat);
         sdf.setLenient(false);
         try {
             sdf.parse(date);

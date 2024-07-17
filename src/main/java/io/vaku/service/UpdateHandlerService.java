@@ -19,13 +19,13 @@ public class UpdateHandlerService {
     private HandlersMap commandMap;
 
     @Autowired
-    private RegistrationComponent registrationComponent;
+    private RegistrationService registrationService;
 
     public List<Response> handleUpdate(ClassifiedUpdate update) {
         User user = userService.findByUpdate(update);
 
         return (user == null)
                 ? commandMap.execute(null, update)
-                : registrationComponent.execute(user, update);
+                : registrationService.execute(user, update);
     }
 }

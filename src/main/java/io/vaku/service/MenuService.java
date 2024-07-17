@@ -2,15 +2,15 @@ package io.vaku.service;
 
 import io.vaku.model.Room;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 
 import java.util.List;
 
-@Component
-public class MenuComponent {
+@Service
+public class MenuService {
 
     @Autowired
     private RoomService roomService;

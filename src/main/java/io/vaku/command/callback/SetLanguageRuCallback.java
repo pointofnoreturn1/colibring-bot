@@ -14,11 +14,12 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 import java.util.List;
 
 import static io.vaku.model.enumerated.UserStatus.REQUIRE_REGISTRATION;
+import static io.vaku.util.StringConstants.TEXT_DONE_RU;
 
 @Component
 public class SetLanguageRuCallback implements Command {
 
-    private static final String TEXT_REGISTER_REQUEST = "Готово ✅\nДля продолжения зарегистрируйся";
+    private static final String TEXT_REGISTER_REQUEST = "Для продолжения зарегистрируйся";
     private static final String TEXT_REGISTER = "Зарегистрироваться";
 
     @Autowired
@@ -38,6 +39,7 @@ public class SetLanguageRuCallback implements Command {
     public List<Response> getAnswer(User user, ClassifiedUpdate update) {
         userService.createOrUpdate(constructUser(update));
 
+        SendMessage doneMsg = SendMessage.builder().chatId(update.getChatId()).text(TEXT_DONE_RU).build();
         SendMessage msg = SendMessage
                 .builder()
                 .chatId(update.getChatId())
@@ -45,7 +47,7 @@ public class SetLanguageRuCallback implements Command {
                 .replyMarkup(getInlineRegisterRequest())
                 .build();
 
-        return List.of(new Response(msg));
+        return List.of(new Response(doneMsg), new Response(msg));
     }
 
     private User constructUser(ClassifiedUpdate update) {

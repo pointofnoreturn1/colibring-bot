@@ -14,11 +14,12 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 import java.util.List;
 
 import static io.vaku.model.enumerated.UserStatus.REQUIRE_REGISTRATION;
+import static io.vaku.util.StringConstants.TEXT_DONE_EN;
 
 @Component
 public class SetLanguageEnCallback implements Command {
 
-    private static final String TEXT_REGISTER_REQUEST = "Done ✅\nRegister to continue";
+    private static final String TEXT_REGISTER_REQUEST = "Register to continue";
     private static final String TEXT_REGISTER = "Register";
 
     @Autowired
@@ -38,6 +39,7 @@ public class SetLanguageEnCallback implements Command {
     public List<Response> getAnswer(User user, ClassifiedUpdate update) {
         userService.createOrUpdate(constructUser(update));
 
+        SendMessage doneMsg = SendMessage.builder().chatId(update.getChatId()).text(TEXT_DONE_EN).build();
         SendMessage msg = SendMessage
                 .builder()
                 .chatId(update.getChatId())
@@ -45,7 +47,7 @@ public class SetLanguageEnCallback implements Command {
                 .replyMarkup(getInlineRegisterRequest())
                 .build();
 
-        return List.of(new Response(msg));
+        return List.of(new Response(doneMsg), new Response(msg));
     }
 
     private User constructUser(ClassifiedUpdate update) {
