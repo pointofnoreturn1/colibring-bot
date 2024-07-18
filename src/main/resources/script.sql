@@ -27,6 +27,10 @@ CREATE TABLE "user"(
 	room_id UUID,
 	bio TEXT,
 	status STATUS NOT NULL,
+	meeting_room_booking_expected BOOL NOT NULL DEFAULT FALSE,
+	tv_booking_expected BOOL NOT NULL DEFAULT FALSE,
+	washing_booking_expected BOOL NOT NULL DEFAULT FALSE,
+	food_restrictions_expected BOOL NOT NULL DEFAULT FALSE,
 	lang LANG NOT NULL DEFAULT 'RU',
 	created_at TIMESTAMP NOT NULL DEFAULT now()
 );

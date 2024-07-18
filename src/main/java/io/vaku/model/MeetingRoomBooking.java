@@ -38,4 +38,10 @@ public class MeetingRoomBooking {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_at")
     private Date createdAt;
+
+    public MeetingRoomBooking(Date startTime, Date endTime, User user) {
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.user = user;
+    }
 }

@@ -6,7 +6,6 @@ import io.vaku.model.ClassifiedUpdate;
 import io.vaku.model.User;
 import io.vaku.model.enm.Lang;
 import io.vaku.service.MenuService;
-import io.vaku.service.UserService;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -25,9 +24,6 @@ public class StartCommand implements Command {
 
     @Autowired
     private MenuService menuService;
-
-    @Autowired
-    private UserService userService;
 
     @Override
     public Class<?> getHandler() {

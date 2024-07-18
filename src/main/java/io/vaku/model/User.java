@@ -56,6 +56,18 @@ public class User {
     @Column(name = "status", nullable = false)
     private UserStatus status;
 
+    @Column(name = "meeting_room_booking_expected", nullable = false)
+    private boolean meetingRoomBookingExpected = false;
+
+    @Column(name = "tv_booking_expected", nullable = false)
+    private boolean tvBookingExpected = false;
+
+    @Column(name = "washing_booking_expected", nullable = false)
+    private boolean washingBookingExpected = false;
+
+    @Column(name = "food_restrictions_expected", nullable = false)
+    private boolean foodRestrictionsExpected = false;
+
     @Enumerated(EnumType.STRING)
     @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     @Column(name = "lang", nullable = false)

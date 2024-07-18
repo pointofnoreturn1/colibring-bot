@@ -1,12 +1,11 @@
 package io.vaku.service;
 
-import io.vaku.handler.HandlersMap;
 import io.vaku.model.ClassifiedUpdate;
 import io.vaku.model.Response;
 import io.vaku.model.Room;
 import io.vaku.model.User;
 import io.vaku.model.enm.Lang;
-import io.vaku.util.DateUtils;
+import io.vaku.util.DateTimeUtils;
 import io.vaku.util.MessageFactory;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,7 +50,7 @@ public class RegistrationService {
     private MenuService menuService;
 
     @Autowired
-    private HandlersMap commandMap;
+    private HandleInputsService handleInputsService;
 
     public List<Response> execute(User user, ClassifiedUpdate update) {
         return switch (user.getStatus()) {
@@ -61,7 +60,7 @@ public class RegistrationService {
             case REQUIRE_ROOM -> proceedRoom(user, update);
             case REQUIRE_BIO -> proceedBio(user, update);
             case BLOCKED -> List.of(new Response()); // empty response is intentionally here
-            default -> commandMap.execute(user, update);
+            default -> handleInputsService.execute(user, update);
         };
     }
 
@@ -108,7 +107,7 @@ public class RegistrationService {
     private List<Response> proceedBirthdate(User user, ClassifiedUpdate update) {
         String input = update.getCommandName();
 
-        if (DateUtils.isValid(input)) {
+        if (DateTimeUtils.isDateValid(input)) {
             DateFormat formatter = new SimpleDateFormat("dd.MM.yyyy");
             user.setBirthDate(formatter.parse(input));
             user.setStatus(REQUIRE_ROOM);
