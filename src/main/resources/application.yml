@@ -1,0 +1,15 @@
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: ${BOT_DATASOURCE_URL}
+    username: ${BOT_DATASOURCE_USERNAME}
+    password: ${BOT_DATASOURCE_PASSWORD}
+bot:
+  name: ${BOT_NAME}
+  token: ${BOT_TOKEN}
+app:
+  feature:
+    register:
+      password: ${BOT_REGISTER_PASSWORD}
+  connection:
+    timeout: ${BOT_CONNECTION_TIMEOUT}
