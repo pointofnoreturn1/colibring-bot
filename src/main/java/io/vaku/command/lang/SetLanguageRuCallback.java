@@ -1,9 +1,9 @@
-package io.vaku.command.callback;
+package io.vaku.command.lang;
 
 import io.vaku.command.Command;
-import io.vaku.handler.callback.SetLanguageRuCallbackHandler;
+import io.vaku.handler.lang.SetLanguageRuCallbackHandler;
 import io.vaku.model.*;
-import io.vaku.model.enumerated.Lang;
+import io.vaku.model.enm.Lang;
 import io.vaku.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -13,14 +13,14 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 
 import java.util.List;
 
-import static io.vaku.model.enumerated.UserStatus.REQUIRE_REGISTRATION;
-import static io.vaku.util.StringConstants.TEXT_DONE_EN;
+import static io.vaku.model.enm.UserStatus.REQUIRE_REGISTRATION;
+import static io.vaku.util.StringConstants.TEXT_DONE_RU;
 
 @Component
-public class SetLanguageEnCallback implements Command {
+public class SetLanguageRuCallback implements Command {
 
-    private static final String TEXT_REGISTER_REQUEST = "Register to continue";
-    private static final String TEXT_REGISTER = "Register";
+    private static final String TEXT_REGISTER_REQUEST = "Для продолжения зарегистрируйся";
+    private static final String TEXT_REGISTER = "Зарегистрироваться";
 
     @Autowired
     private UserService userService;
@@ -32,14 +32,14 @@ public class SetLanguageEnCallback implements Command {
 
     @Override
     public Object getCommandName() {
-        return "callbackSetLanguage_EN";
+        return "callbackSetLanguage_RU";
     }
 
     @Override
     public List<Response> getAnswer(User user, ClassifiedUpdate update) {
         userService.createOrUpdate(constructUser(update));
 
-        SendMessage doneMsg = SendMessage.builder().chatId(update.getChatId()).text(TEXT_DONE_EN).build();
+        SendMessage doneMsg = SendMessage.builder().chatId(update.getChatId()).text(TEXT_DONE_RU).build();
         SendMessage msg = SendMessage
                 .builder()
                 .chatId(update.getChatId())
@@ -58,7 +58,7 @@ public class SetLanguageEnCallback implements Command {
                 update.getFirstName(),
                 update.getLastName()
         );
-        user.setLang(Lang.EN);
+        user.setLang(Lang.RU);
         user.setStatus(REQUIRE_REGISTRATION);
 
         return user;

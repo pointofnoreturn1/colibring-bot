@@ -1,7 +1,7 @@
 package io.vaku.model;
 
-import io.vaku.model.enumerated.Lang;
-import io.vaku.model.enumerated.UserStatus;
+import io.vaku.model.enm.Lang;
+import io.vaku.model.enm.UserStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,6 +11,7 @@ import org.hibernate.type.SqlTypes;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -64,6 +65,9 @@ public class User {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_at")
     private Date createdAt;
+
+    @OneToMany(mappedBy = "user")
+    private List<MeetingRoomBooking> meetingRoomBookings;
 
     public User(long id, long chatId, String tgUserName, String tgFirstName, String tgLastName) {
         this.id = id;

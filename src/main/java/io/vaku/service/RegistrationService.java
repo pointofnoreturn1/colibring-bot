@@ -5,7 +5,7 @@ import io.vaku.model.ClassifiedUpdate;
 import io.vaku.model.Response;
 import io.vaku.model.Room;
 import io.vaku.model.User;
-import io.vaku.model.enumerated.Lang;
+import io.vaku.model.enm.Lang;
 import io.vaku.util.DateUtils;
 import io.vaku.util.MessageFactory;
 import lombok.SneakyThrows;
@@ -18,7 +18,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
-import static io.vaku.model.enumerated.UserStatus.*;
+import static io.vaku.model.enm.UserStatus.*;
 
 @Service
 public class RegistrationService {

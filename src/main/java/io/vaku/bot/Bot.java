@@ -56,15 +56,17 @@ public class Bot extends TelegramLongPollingBot {
     public void onUpdateReceived(Update update) {
         if (update.hasMessage() || update.hasCallbackQuery()) {
             List<Response> responses = updateHandlerService.handleUpdate(new ClassifiedUpdate(update));
-            for (Response resp : responses) {
-                if (resp != null && resp.getBotApiMethod() != null) {
-                    try {
-                        execute(resp.getBotApiMethod());
-                        Thread.sleep(1500);
-                    } catch (TelegramApiException e) {
-                        e.printStackTrace();
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
+            if (responses != null) {
+                for (Response resp : responses) {
+                    if (resp != null && resp.getBotApiMethod() != null) {
+                        try {
+                            execute(resp.getBotApiMethod());
+                            Thread.sleep(1500);
+                        } catch (TelegramApiException e) {
+                            e.printStackTrace();
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
                     }
                 }
             }

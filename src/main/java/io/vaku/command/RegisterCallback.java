@@ -1,9 +1,8 @@
-package io.vaku.command.callback;
+package io.vaku.command;
 
-import io.vaku.command.Command;
-import io.vaku.handler.callback.RegisterCallbackHandler;
+import io.vaku.handler.RegisterCallbackHandler;
 import io.vaku.model.*;
-import io.vaku.model.enumerated.Lang;
+import io.vaku.model.enm.Lang;
 import io.vaku.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -11,7 +10,7 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 
 import java.util.List;
 
-import static io.vaku.model.enumerated.UserStatus.REQUIRE_PASSWORD;
+import static io.vaku.model.enm.UserStatus.REQUIRE_PASSWORD;
 
 @Component
 public class RegisterCallback implements Command {
