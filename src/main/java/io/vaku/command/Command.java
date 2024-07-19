@@ -2,7 +2,7 @@ package io.vaku.command;
 
 import io.vaku.model.Response;
 import io.vaku.model.ClassifiedUpdate;
-import io.vaku.model.User;
+import io.vaku.model.domain.User;
 
 import java.util.List;
 

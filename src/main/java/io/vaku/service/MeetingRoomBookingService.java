@@ -1,6 +1,6 @@
 package io.vaku.service;
 
-import io.vaku.model.MeetingRoomBooking;
+import io.vaku.model.domain.MeetingRoomBooking;
 import io.vaku.repository.MeetingRoomBookingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

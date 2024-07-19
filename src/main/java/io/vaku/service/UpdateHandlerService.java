@@ -3,7 +3,7 @@ package io.vaku.service;
 import io.vaku.handler.HandlersMap;
 import io.vaku.model.Response;
 import io.vaku.model.ClassifiedUpdate;
-import io.vaku.model.User;
+import io.vaku.model.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

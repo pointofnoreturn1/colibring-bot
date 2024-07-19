@@ -2,9 +2,9 @@ package io.vaku.service;
 
 import io.vaku.handler.HandlersMap;
 import io.vaku.model.ClassifiedUpdate;
-import io.vaku.model.MeetingRoomBooking;
+import io.vaku.model.domain.MeetingRoomBooking;
 import io.vaku.model.Response;
-import io.vaku.model.User;
+import io.vaku.model.domain.User;
 import io.vaku.util.DateTimeUtils;
 import io.vaku.util.MessageFactory;
 import lombok.SneakyThrows;

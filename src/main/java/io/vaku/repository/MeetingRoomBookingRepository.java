@@ -1,6 +1,6 @@
 package io.vaku.repository;
 
-import io.vaku.model.MeetingRoomBooking;
+import io.vaku.model.domain.MeetingRoomBooking;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

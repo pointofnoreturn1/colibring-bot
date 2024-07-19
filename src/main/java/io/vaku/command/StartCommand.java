@@ -3,7 +3,7 @@ package io.vaku.command;
 import io.vaku.handler.StartCommandHandler;
 import io.vaku.model.Response;
 import io.vaku.model.ClassifiedUpdate;
-import io.vaku.model.User;
+import io.vaku.model.domain.User;
 import io.vaku.model.enm.Lang;
 import io.vaku.service.MenuService;
 import lombok.SneakyThrows;

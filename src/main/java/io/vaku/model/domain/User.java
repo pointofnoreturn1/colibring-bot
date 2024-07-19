@@ -1,4 +1,4 @@
-package io.vaku.model;
+package io.vaku.model.domain;
 
 import io.vaku.model.enm.Lang;
 import io.vaku.model.enm.UserStatus;

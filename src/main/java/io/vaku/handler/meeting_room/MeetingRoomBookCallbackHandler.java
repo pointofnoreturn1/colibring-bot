@@ -4,7 +4,7 @@ import io.vaku.command.Command;
 import io.vaku.handler.AbstractHandler;
 import io.vaku.model.ClassifiedUpdate;
 import io.vaku.model.Response;
-import io.vaku.model.User;
+import io.vaku.model.domain.User;
 import io.vaku.model.enm.TelegramType;
 import org.springframework.stereotype.Component;
 

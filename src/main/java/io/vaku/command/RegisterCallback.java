@@ -2,6 +2,7 @@ package io.vaku.command;
 
 import io.vaku.handler.RegisterCallbackHandler;
 import io.vaku.model.*;
+import io.vaku.model.domain.User;
 import io.vaku.model.enm.Lang;
 import io.vaku.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;

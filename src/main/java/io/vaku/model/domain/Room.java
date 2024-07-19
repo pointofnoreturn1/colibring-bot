@@ -1,4 +1,4 @@
-package io.vaku.model;
+package io.vaku.model.domain;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

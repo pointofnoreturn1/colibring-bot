@@ -1,7 +1,7 @@
 package io.vaku.service;
 
 import io.vaku.model.ClassifiedUpdate;
-import io.vaku.model.User;
+import io.vaku.model.domain.User;
 import io.vaku.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

@@ -1,6 +1,6 @@
 package io.vaku.service;
 
-import io.vaku.model.Room;
+import io.vaku.model.domain.Room;
 import io.vaku.repository.RoomRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

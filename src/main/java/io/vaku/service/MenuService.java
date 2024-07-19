@@ -1,6 +1,6 @@
 package io.vaku.service;
 
-import io.vaku.model.Room;
+import io.vaku.model.domain.Room;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;

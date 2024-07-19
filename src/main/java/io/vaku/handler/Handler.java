@@ -3,7 +3,7 @@ package io.vaku.handler;
 import io.vaku.model.Response;
 import io.vaku.model.ClassifiedUpdate;
 import io.vaku.model.enm.TelegramType;
-import io.vaku.model.User;
+import io.vaku.model.domain.User;
 
 import java.util.List;
 

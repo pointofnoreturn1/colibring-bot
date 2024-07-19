@@ -3,6 +3,7 @@ package io.vaku.command.lang;
 import io.vaku.command.Command;
 import io.vaku.handler.lang.SetLanguageRuCallbackHandler;
 import io.vaku.model.*;
+import io.vaku.model.domain.User;
 import io.vaku.model.enm.Lang;
 import io.vaku.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;

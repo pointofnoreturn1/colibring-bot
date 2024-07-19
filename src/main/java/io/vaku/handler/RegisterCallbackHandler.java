@@ -4,7 +4,7 @@ import io.vaku.command.Command;
 import io.vaku.model.ClassifiedUpdate;
 import io.vaku.model.Response;
 import io.vaku.model.enm.TelegramType;
-import io.vaku.model.User;
+import io.vaku.model.domain.User;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;

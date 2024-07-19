@@ -2,8 +2,8 @@ package io.vaku.service;
 
 import io.vaku.model.ClassifiedUpdate;
 import io.vaku.model.Response;
-import io.vaku.model.Room;
-import io.vaku.model.User;
+import io.vaku.model.domain.Room;
+import io.vaku.model.domain.User;
 import io.vaku.model.enm.Lang;
 import io.vaku.util.DateTimeUtils;
 import io.vaku.util.MessageFactory;

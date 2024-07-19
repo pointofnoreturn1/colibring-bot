@@ -4,7 +4,7 @@ import io.vaku.command.Command;
 import io.vaku.handler.meeting_room.MeetingRoomBookCallbackHandler;
 import io.vaku.model.ClassifiedUpdate;
 import io.vaku.model.Response;
-import io.vaku.model.User;
+import io.vaku.model.domain.User;
 import io.vaku.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

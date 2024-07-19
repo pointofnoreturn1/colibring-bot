@@ -1,6 +1,6 @@
 package io.vaku.repository;
 
-import io.vaku.model.Room;
+import io.vaku.model.domain.Room;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
