@@ -1,6 +1,6 @@
+DROP TABLE IF EXISTS meeting_room_booking;
 DROP TABLE IF EXISTS "user";
 DROP TABLE IF EXISTS room;
-DROP TABLE IF EXISTS meeting_room_booking;
 DROP TYPE IF EXISTS lang;
 DROP TYPE IF EXISTS status;
 

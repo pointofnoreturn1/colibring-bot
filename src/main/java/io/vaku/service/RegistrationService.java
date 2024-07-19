@@ -46,7 +46,7 @@ public class RegistrationService {
     private RoomService roomService;
 
     @Autowired
-    private MenuComponent menuComponent;
+    private MenuService menuService;
 
     @Autowired
     private HandleInputsService handleInputsService;
@@ -115,7 +115,7 @@ public class RegistrationService {
                     builder()
                     .chatId(update.getChatId())
                     .text(user.getLang().equals(Lang.RU) ? TEXT_ROOM_REQUEST_RU : TEXT_ROOM_REQUEST_EN)
-                    .replyMarkup(menuComponent.getRoomChoiceMenu())
+                    .replyMarkup(menuService.getRoomChoiceMenu())
                     .build();
 
             return List.of(MessageFactory.getDoneMsg(user, update), new Response(msg));
@@ -151,7 +151,7 @@ public class RegistrationService {
                 builder()
                 .chatId(update.getChatId())
                 .text(user.getLang().equals(Lang.RU) ? TEXT_SUCCESSFUL_REGISTRATION_RU : TEXT_SUCCESSFUL_REGISTRATION_EN)
-                .replyMarkup(menuComponent.getUserMenu())
+                .replyMarkup(menuService.getUserMenu())
                 .build();
 
         return List.of(new Response(msg));

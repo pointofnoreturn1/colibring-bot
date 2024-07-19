@@ -65,6 +65,7 @@ public class SetLanguageEnCallback implements Command {
         return user;
     }
 
+    // TODO: move to MenuService
     private InlineKeyboardMarkup getInlineRegisterRequest() {
         List<InlineKeyboardButton> buttons = List.of(
                 InlineKeyboardButton.builder().text(TEXT_REGISTER).callbackData("callbackRegisterRequest").build()
