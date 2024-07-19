@@ -5,7 +5,7 @@ import io.vaku.handler.meeting_room.MeetingRoomBookingCommandHandler;
 import io.vaku.model.ClassifiedUpdate;
 import io.vaku.model.Response;
 import io.vaku.model.domain.User;
-import io.vaku.service.MenuService;
+import io.vaku.service.MenuComponent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -16,7 +16,7 @@ import java.util.List;
 public class MeetingRoomBookingCommand implements Command {
     
     @Autowired
-    private MenuService menuService;
+    private MenuComponent menuComponent;
 
     @Override
     public Class<?> getHandler() {
@@ -38,7 +38,7 @@ public class MeetingRoomBookingCommand implements Command {
                 .builder()
                 .chatId(update.getChatId())
                 .text("Выберите действие")
-                .replyMarkup(menuService.getInlineMenuMeetingRoom())
+                .replyMarkup(menuComponent.getInlineMenuMeetingRoom())
                 .build();
 
         return new Response(msg);

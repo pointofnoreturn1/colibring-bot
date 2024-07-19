@@ -28,6 +28,9 @@ public class MeetingRoomBooking {
     @Column(name = "is_active")
     private boolean isActive = true;
 
+    @Column(name = "description")
+    private String description;
+
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
