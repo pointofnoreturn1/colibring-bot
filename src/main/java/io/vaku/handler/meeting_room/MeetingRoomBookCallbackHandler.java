@@ -13,23 +13,26 @@ import java.util.List;
 
 @Component
 public class MeetingRoomBookCallbackHandler extends AbstractHandler {
+
+    private final HashMap<Object, Command> hashMap = new HashMap<>();
+
     @Override
     protected HashMap<Object, Command> createMap() {
-        return null;
+        return hashMap;
     }
 
     @Override
     public TelegramType getHandlerType() {
-        return null;
+        return TelegramType.CALLBACK;
     }
 
     @Override
     public boolean isApplicable(User user, ClassifiedUpdate update) {
-        return false;
+        return hashMap.containsKey(update.getCommandName());
     }
 
     @Override
     public List<Response> getAnswer(User user, ClassifiedUpdate update) {
-        return List.of();
+        return hashMap.get(update.getCommandName()).getAnswer(user, update);
     }
 }

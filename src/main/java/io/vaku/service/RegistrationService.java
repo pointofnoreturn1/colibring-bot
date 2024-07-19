@@ -18,6 +18,7 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 
 import static io.vaku.model.enm.UserStatus.*;
+import static io.vaku.util.StringConstants.*;
 
 @Service
 public class RegistrationService {
@@ -30,8 +31,6 @@ public class RegistrationService {
     private static final String TEXT_BIRTHDATE_REQUEST_EN = "Enter your date of birth in the format dd.mm.yyyy";
     private static final String TEXT_ROOM_REQUEST_RU = "Укажи свою комнату";
     private static final String TEXT_ROOM_REQUEST_EN = "Specify your room";
-    private static final String TEXT_INCORRECT_DATE_RU = "Неверный формат даты \uD83D\uDE1E";
-    private static final String TEXT_INCORRECT_DATE_EN = "Invalid date format \uD83D\uDE1E";
     private static final String TEXT_BIO_REQUEST_RU = "Расскажи нам о себе";
     private static final String TEXT_BIO_REQUEST_EN = "Tell us about yourself";
     private static final String TEXT_SUCCESSFUL_REGISTRATION_RU = "\uD83C\uDF89 Поздравляем! \uD83C\uDF89\nРегистрация успешно завершена";
@@ -108,7 +107,7 @@ public class RegistrationService {
         String input = update.getCommandName();
 
         if (DateTimeUtils.isDateValid(input)) {
-            DateFormat formatter = new SimpleDateFormat("dd.MM.yyyy");
+            DateFormat formatter = new SimpleDateFormat(DATE_FORMAT);
             user.setBirthDate(formatter.parse(input));
             user.setStatus(REQUIRE_ROOM);
             userService.createOrUpdate(user);
@@ -121,13 +120,7 @@ public class RegistrationService {
 
             return List.of(MessageFactory.getDoneMsg(user, update), new Response(msg));
         } else {
-            SendMessage msg = SendMessage
-                    .builder()
-                    .chatId(update.getChatId())
-                    .text(user.getLang().equals(Lang.RU) ? TEXT_INCORRECT_DATE_RU : TEXT_INCORRECT_DATE_EN)
-                    .build();
-
-            return List.of(new Response(msg));
+            return List.of(MessageFactory.getInvalidFormatMsg(user, update));
         }
     }
 

@@ -37,7 +37,7 @@ public class MeetingRoomBookingCommand implements Command {
         SendMessage msg = SendMessage
                 .builder()
                 .chatId(update.getChatId())
-                .text("Что хотите сделать?")
+                .text("Выберите действие")
                 .replyMarkup(menuService.getInlineMenuMeetingRoom())
                 .build();
 

@@ -1,6 +1,7 @@
 package io.vaku.command.meeting_room;
 
 import io.vaku.command.Command;
+import io.vaku.handler.meeting_room.MeetingRoomBookCallbackHandler;
 import io.vaku.model.ClassifiedUpdate;
 import io.vaku.model.Response;
 import io.vaku.model.User;
@@ -19,7 +20,7 @@ public class MeetingRoomBookCallback implements Command {
 
     @Override
     public Class<?> getHandler() {
-        return MeetingRoomBookCallback.class;
+        return MeetingRoomBookCallbackHandler.class;
     }
 
     @Override
@@ -35,7 +36,7 @@ public class MeetingRoomBookCallback implements Command {
         SendMessage msg = SendMessage
                 .builder()
                 .chatId(update.getChatId())
-                .text("Введи дату и время в формате 20.06.24 10:00-15:00")
+                .text("Введи дату и время в формате\nдд.мм.гг 10:00-15:00")
                 .build();
 
         return List.of(new Response(msg));

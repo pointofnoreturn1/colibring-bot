@@ -4,15 +4,15 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
-public final class DateTimeUtils {
+import static io.vaku.util.StringConstants.DATE_FORMAT;
+import static io.vaku.util.StringConstants.DATE_TIME_FORMAT;
 
-    private static final String dateFormat = "dd.MM.yyyy";
-    private static final String dateTimeFormat = "dd.MM.yy HH:mm";
+public final class DateTimeUtils {
 
     private DateTimeUtils() {}
 
     public static boolean isDateValid(String date) {
-        DateFormat sdf = new SimpleDateFormat(dateFormat);
+        DateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
         sdf.setLenient(false);
 
         try {
@@ -25,7 +25,7 @@ public final class DateTimeUtils {
     }
 
     public static boolean isDateTimeValid(String dateTime) {
-        DateFormat sdf = new SimpleDateFormat(dateTimeFormat);
+        DateFormat sdf = new SimpleDateFormat(DATE_TIME_FORMAT);
         sdf.setLenient(false);
 
         try {

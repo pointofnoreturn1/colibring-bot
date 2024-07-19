@@ -6,8 +6,7 @@ import io.vaku.model.User;
 import io.vaku.model.enm.Lang;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 
-import static io.vaku.util.StringConstants.TEXT_DONE_EN;
-import static io.vaku.util.StringConstants.TEXT_DONE_RU;
+import static io.vaku.util.StringConstants.*;
 
 public final class MessageFactory {
 
@@ -16,6 +15,16 @@ public final class MessageFactory {
                 .builder()
                 .chatId(update.getChatId())
                 .text(user.getLang().equals(Lang.RU) ? TEXT_DONE_RU : TEXT_DONE_EN)
+                .build();
+
+        return new Response(msg);
+    }
+
+    public static Response getInvalidFormatMsg(User user, ClassifiedUpdate update) {
+        SendMessage msg = SendMessage
+                .builder()
+                .chatId(update.getChatId())
+                .text(user.getLang().equals(Lang.RU) ? TEXT_INCORRECT_DATE_RU : TEXT_INCORRECT_DATE_EN)
                 .build();
 
         return new Response(msg);

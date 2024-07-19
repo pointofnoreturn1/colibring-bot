@@ -1,7 +1,6 @@
 package io.vaku.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -9,7 +8,6 @@ import java.util.Date;
 import java.util.UUID;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "meeting_room_booking")
@@ -28,7 +26,7 @@ public class MeetingRoomBooking {
     private Date endTime;
 
     @Column(name = "is_active")
-    private boolean isActive;
+    private boolean isActive = true;
 
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
@@ -39,7 +37,8 @@ public class MeetingRoomBooking {
     @Column(name = "created_at")
     private Date createdAt;
 
-    public MeetingRoomBooking(Date startTime, Date endTime, User user) {
+    public MeetingRoomBooking(UUID id, Date startTime, Date endTime, User user) {
+        this.id = id;
         this.startTime = startTime;
         this.endTime = endTime;
         this.user = user;
