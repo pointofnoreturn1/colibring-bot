@@ -4,6 +4,7 @@ import io.vaku.handler.HandlersMap;
 import io.vaku.model.ClassifiedUpdate;
 import io.vaku.model.domain.MeetingRoomBooking;
 import io.vaku.model.Response;
+import io.vaku.model.domain.Schedule;
 import io.vaku.model.domain.User;
 import io.vaku.util.DateTimeUtils;
 import io.vaku.util.MessageFactory;
@@ -11,13 +12,10 @@ import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-import static io.vaku.util.StringConstants.DATE_TIME_FORMAT;
+import static io.vaku.util.DateTimeUtils.parseSchedule;
 
 @Service
 public class HandleInputsService {
@@ -48,22 +46,40 @@ public class HandleInputsService {
 
     @SneakyThrows
     private List<Response> proceedMeetingRoomBooking(User user, ClassifiedUpdate update) {
-        List<String> dates = parseDateTime(update.getCommandName());
+        Schedule schedule = parseSchedule(update.getCommandName());
 
-        if (dates.size() == 2 && isValidDateTime(dates)) {
-            DateFormat formatter = new SimpleDateFormat(DATE_TIME_FORMAT);
-            Date startDate = formatter.parse(dates.getFirst());
-            Date endDate = formatter.parse(dates.getLast());
+        if (schedule != null) {
+            MeetingRoomBooking booking = new MeetingRoomBooking(
+                    UUID.randomUUID(),
+                    schedule.getStartDate(),
+                    schedule.getEndDate(),
+                    schedule.getDescription(),
+                    user
+            );
+            meetingRoomBookingService.createOrUpdate(booking);
+            user.setMeetingRoomBookingExpected(false);
+            userService.createOrUpdate(user);
 
-            if (startDate.toInstant().isBefore(endDate.toInstant())) {
-                MeetingRoomBooking booking = new MeetingRoomBooking(UUID.randomUUID(), startDate, endDate, user);
-                meetingRoomBookingService.createOrUpdate(booking);
-                user.setMeetingRoomBookingExpected(false);
-                userService.createOrUpdate(user);
-
-                return List.of(MessageFactory.getDoneMsg(user, update));
-            }
+            return List.of(MessageFactory.getDoneMsg(user, update));
         }
+
+        // old code
+//        List<String> dates = parseDateTime(update.getCommandName());
+//
+//        if (dates.size() == 2 && isValidDateTime(dates)) {
+//            DateFormat formatter = new SimpleDateFormat(DATE_TIME_FORMAT);
+//            Date startDate = formatter.parse(dates.getFirst());
+//            Date endDate = formatter.parse(dates.getLast());
+//
+//            if (startDate.toInstant().isBefore(endDate.toInstant())) {
+//                MeetingRoomBooking booking = new MeetingRoomBooking(UUID.randomUUID(), startDate, endDate, user);
+//                meetingRoomBookingService.createOrUpdate(booking);
+//                user.setMeetingRoomBookingExpected(false);
+//                userService.createOrUpdate(user);
+//
+//                return List.of(MessageFactory.getDoneMsg(user, update));
+//            }
+//        }
 
         return List.of(MessageFactory.getInvalidFormatMsg(user, update)); // error message
     }

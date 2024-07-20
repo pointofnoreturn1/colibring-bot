@@ -40,10 +40,11 @@ public class MeetingRoomBooking {
     @Column(name = "created_at")
     private Date createdAt;
 
-    public MeetingRoomBooking(UUID id, Date startTime, Date endTime, User user) {
+    public MeetingRoomBooking(UUID id, Date startTime, Date endTime, String description, User user) {
         this.id = id;
         this.startTime = startTime;
         this.endTime = endTime;
+        this.description = description;
         this.user = user;
     }
 }
