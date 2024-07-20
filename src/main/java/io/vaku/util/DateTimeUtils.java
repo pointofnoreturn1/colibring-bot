@@ -17,7 +17,7 @@ public final class DateTimeUtils {
     }
 
     public static boolean isDateValid(String date) {
-        if (date.matches("^\\d{1,2}\\.\\d{1,2}\\.\\d{4}")) {
+        if (date.matches("^\\d{1,2}\\.\\d{1,2}\\.\\d{4}")) { // 30.01.2024
             DateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
             sdf.setLenient(false);
 
@@ -37,13 +37,13 @@ public final class DateTimeUtils {
         String trimmed = input.trim().replaceAll("\\s+", " ");
         String[] dateTimeAndDescription = trimmed.split("(?<=\\d{2}:\\d{2}-\\d{2}:\\d{2})\\s");
 
-        if (trimmed.matches("^\\d{1,2}\\.\\d{1,2}\\.\\d{2} \\d{2}:\\d{2}-\\d{2}:\\d{2}.*")) { // 01.01.24 10:00-11:00 [description]
+        if (trimmed.matches("^\\d{1,2}\\.\\d{1,2}\\.\\d{2} \\d{2}:\\d{2}-\\d{2}:\\d{2}.*")) { // 30.01.24 10:00-11:00 [description]
             String date = dateTimeAndDescription[0].split(" ")[0];
             String startTime = dateTimeAndDescription[0].split(" ")[1].split("-")[0];
             String endTime = dateTimeAndDescription[0].split(" ")[1].split("-")[1];
 
             return createSchedule(date, startTime, endTime, dateTimeAndDescription.length == 2 ? dateTimeAndDescription[1] : null);
-        } else if (trimmed.matches("^\\d{1,2}\\.\\d{1,2} \\d{2}:\\d{2}-\\d{2}:\\d{2}.*")) { // 01.01 10:00-11:00 [description]
+        } else if (trimmed.matches("^\\d{1,2}\\.\\d{1,2} \\d{2}:\\d{2}-\\d{2}:\\d{2}.*")) { // 30.01 10:00-11:00 [description]
             String date = dateTimeAndDescription[0].split(" ")[0] + "." + String.valueOf(LocalDate.now().getYear()).substring(2, 4);
             String startTime = dateTimeAndDescription[0].split(" ")[1].split("-")[0];
             String endTime = dateTimeAndDescription[0].split(" ")[1].split("-")[1];
