@@ -61,7 +61,7 @@ public class Bot extends TelegramLongPollingBot {
                     if (resp != null && resp.getBotApiMethod() != null) {
                         try {
                             execute(resp.getBotApiMethod());
-                            Thread.sleep(1500);
+                            Thread.sleep(1000);
                         } catch (TelegramApiException e) {
                             e.printStackTrace();
                         } catch (InterruptedException e) {
