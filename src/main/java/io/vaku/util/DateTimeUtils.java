@@ -50,11 +50,11 @@ public final class DateTimeUtils {
 
             return createSchedule(date, startTime, endTime, dateTimeAndDescription.length == 2 ? dateTimeAndDescription[1] : null);
         } else if (trimmed.matches("^\\d{2}:\\d{2}-\\d{2}:\\d{2}.*")) { // 10:00-11:00 [description]
+            DateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
+            sdf.setLenient(false);
+            String date = sdf.format(new Date());
             String startTime = dateTimeAndDescription[0].split("-")[0];
             String endTime = dateTimeAndDescription[0].split("-")[1];
-            DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
-            dateFormat.setLenient(false);
-            String date = dateFormat.format(new Date());
 
             return createSchedule(date, startTime, endTime, dateTimeAndDescription.length == 2 ? dateTimeAndDescription[1] : null);
         }
