@@ -49,7 +49,7 @@ public class RegistrationService {
     private MenuService menuService;
 
     @Autowired
-    private HandleInputsService handleInputsService;
+    private HandleInputService handleInputService;
 
     public List<Response> execute(User user, ClassifiedUpdate update) {
         return switch (user.getStatus()) {
@@ -59,12 +59,8 @@ public class RegistrationService {
             case REQUIRE_ROOM -> proceedRoom(user, update);
             case REQUIRE_BIO -> proceedBio(user, update);
             case BLOCKED -> List.of(new Response()); // empty response is intentionally here
-            default -> handleInputsService.execute(user, update);
+            default -> handleInputService.execute(user, update);
         };
-    }
-
-    private boolean checkPassword(String input) {
-        return input.equals(password);
     }
 
     private List<Response> proceedPassword(User user, ClassifiedUpdate update) {
@@ -155,5 +151,9 @@ public class RegistrationService {
                 .build();
 
         return List.of(new Response(msg));
+    }
+
+    private boolean checkPassword(String input) {
+        return input.equals(password);
     }
 }

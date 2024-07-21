@@ -17,7 +17,7 @@ import java.util.UUID;
 import static io.vaku.util.DateTimeUtils.getSchedule;
 
 @Service
-public class HandleInputsService {
+public class HandleInputService {
 
     @Autowired
     private HandlersMap commandMap;
