@@ -3,6 +3,7 @@ DROP TABLE IF EXISTS "user";
 DROP TABLE IF EXISTS room;
 DROP TYPE IF EXISTS lang;
 DROP TYPE IF EXISTS status;
+DROP TYPE IF EXISTS mt_room_booking_status;
 
 CREATE TYPE lang AS ENUM('EN', 'RU');
 CREATE TYPE status AS ENUM(
@@ -15,10 +16,17 @@ CREATE TYPE status AS ENUM(
     'REGISTERED',
     'BLOCKED'
 );
+CREATE TYPE mt_room_booking_status AS ENUM(
+    'NO_STATUS',
+    'REQUIRE_INPUT',
+    'REQUIRE_ITEM_CHOICE',
+    'REQUIRE_ITEM_ACTION'
+);
 
 CREATE TABLE "user"(
 	id BIGINT PRIMARY KEY,
 	chat_id BIGINT UNIQUE NOT NULL,
+	last_msg_id INTEGER,
 	tg_user_name VARCHAR(255),
 	tg_first_name VARCHAR(255),
 	tg_last_name VARCHAR(255),
@@ -27,10 +35,7 @@ CREATE TABLE "user"(
 	room_id UUID,
 	bio TEXT,
 	status STATUS NOT NULL,
-	meeting_room_booking_expected BOOL NOT NULL DEFAULT FALSE,
-	tv_booking_expected BOOL NOT NULL DEFAULT FALSE,
-	washing_booking_expected BOOL NOT NULL DEFAULT FALSE,
-	food_restrictions_expected BOOL NOT NULL DEFAULT FALSE,
+	mt_room_booking_status MT_ROOM_BOOKING_STATUS NOT NULL DEFAULT 'NO_STATUS',
 	lang LANG NOT NULL DEFAULT 'RU',
 	created_at TIMESTAMP NOT NULL DEFAULT now()
 );

@@ -1,11 +1,10 @@
 package io.vaku.model.domain;
 
 import io.vaku.model.enm.Lang;
+import io.vaku.model.enm.MtRoomBookingStatus;
 import io.vaku.model.enm.UserStatus;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -13,7 +12,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 import java.util.Date;
 import java.util.List;
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -26,6 +26,9 @@ public class User {
 
     @Column(name = "chat_id", unique = true, nullable = false)
     private long chatId;
+
+    @Column(name = "last_msg_id")
+    private int lastMsgId;
 
     @Column(name = "tg_user_name")
     private String tgUserName;
@@ -56,17 +59,10 @@ public class User {
     @Column(name = "status", nullable = false)
     private UserStatus status;
 
-    @Column(name = "meeting_room_booking_expected", nullable = false)
-    private boolean meetingRoomBookingExpected = false;
-
-    @Column(name = "tv_booking_expected", nullable = false)
-    private boolean tvBookingExpected = false;
-
-    @Column(name = "washing_booking_expected", nullable = false)
-    private boolean washingBookingExpected = false;
-
-    @Column(name = "food_restrictions_expected", nullable = false)
-    private boolean foodRestrictionsExpected = false;
+    @Enumerated(EnumType.STRING)
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
+    @Column(name = "mt_room_booking_status", nullable = false)
+    private MtRoomBookingStatus mtRoomBookingStatus = MtRoomBookingStatus.NO_STATUS;
 
     @Enumerated(EnumType.STRING)
     @JdbcTypeCode(SqlTypes.NAMED_ENUM)

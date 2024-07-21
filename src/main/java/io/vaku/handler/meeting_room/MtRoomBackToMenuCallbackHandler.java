@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 
 @Component
-public class MeetingRoomBookCallbackHandler extends AbstractHandler {
+public class MtRoomBackToMenuCallbackHandler extends AbstractHandler {
 
     private final HashMap<Object, Command> hashMap = new HashMap<>();
 

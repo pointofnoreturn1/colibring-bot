@@ -5,8 +5,9 @@ import io.vaku.model.Response;
 import io.vaku.model.domain.Room;
 import io.vaku.model.domain.User;
 import io.vaku.model.enm.Lang;
+import io.vaku.service.domain.RoomService;
+import io.vaku.service.domain.UserService;
 import io.vaku.util.DateTimeUtils;
-import io.vaku.util.MessageFactory;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -49,7 +50,7 @@ public class RegistrationService {
     private MenuService menuService;
 
     @Autowired
-    private HandleInputService handleInputService;
+    private MessageService messageService;
 
     public List<Response> execute(User user, ClassifiedUpdate update) {
         return switch (user.getStatus()) {
@@ -59,7 +60,7 @@ public class RegistrationService {
             case REQUIRE_ROOM -> proceedRoom(user, update);
             case REQUIRE_BIO -> proceedBio(user, update);
             case BLOCKED -> List.of(new Response()); // empty response is intentionally here
-            default -> handleInputService.execute(user, update);
+            default -> List.of(new Response());
         };
     }
 
@@ -73,7 +74,7 @@ public class RegistrationService {
                     .text(user.getLang().equals(Lang.RU) ? TEXT_NAME_REQUEST_RU : TEXT_NAME_REQUEST_EN)
                     .build();
 
-            return List.of(MessageFactory.getDoneMsg(user, update), new Response(msg));
+            return List.of(messageService.getDoneMsg(user, update), new Response(msg));
         } else {
             SendMessage msg = SendMessage
                     .builder()
@@ -95,7 +96,7 @@ public class RegistrationService {
                 .text(user.getLang().equals(Lang.RU) ? TEXT_BIRTHDATE_REQUEST_RU : TEXT_BIRTHDATE_REQUEST_EN)
                 .build();
 
-        return List.of(MessageFactory.getDoneMsg(user, update), new Response(msg));
+        return List.of(messageService.getDoneMsg(user, update), new Response(msg));
     }
 
     @SneakyThrows
@@ -114,9 +115,9 @@ public class RegistrationService {
                     .replyMarkup(menuService.getRoomChoiceMenu())
                     .build();
 
-            return List.of(MessageFactory.getDoneMsg(user, update), new Response(msg));
+            return List.of(messageService.getDoneMsg(user, update), new Response(msg));
         } else {
-            return List.of(MessageFactory.getInvalidFormatMsg(user, update));
+            return List.of(messageService.getInvalidFormatMsg(user, update));
         }
     }
 
@@ -133,7 +134,7 @@ public class RegistrationService {
                     .text(user.getLang().equals(Lang.RU) ? TEXT_BIO_REQUEST_RU : TEXT_BIO_REQUEST_EN)
                     .build();
 
-            return List.of(MessageFactory.getDoneMsg(user, update), new Response(msg));
+            return List.of(messageService.getDoneMsg(user, update), new Response(msg));
         }
 
         return List.of(new Response());

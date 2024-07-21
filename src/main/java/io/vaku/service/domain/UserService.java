@@ -1,7 +1,8 @@
-package io.vaku.service;
+package io.vaku.service.domain;
 
 import io.vaku.model.ClassifiedUpdate;
 import io.vaku.model.domain.User;
+import io.vaku.model.enm.MtRoomBookingStatus;
 import io.vaku.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,5 +22,12 @@ public class UserService {
     @Transactional
     public void createOrUpdate(User user) {
         repository.save(user);
+    }
+
+    @Transactional
+    public void resetUserState(User user) {
+        user.setMtRoomBookingStatus(MtRoomBookingStatus.NO_STATUS);
+
+        createOrUpdate(user);
     }
 }

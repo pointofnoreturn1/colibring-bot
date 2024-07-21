@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 
 @Component
-public class MeetingRoomBookingCommandHandler extends AbstractHandler {
+public class MtRoomBookCallbackHandler extends AbstractHandler {
 
     private final HashMap<Object, Command> hashMap = new HashMap<>();
 
@@ -23,7 +23,7 @@ public class MeetingRoomBookingCommandHandler extends AbstractHandler {
 
     @Override
     public TelegramType getHandlerType() {
-        return TelegramType.TEXT;
+        return TelegramType.CALLBACK;
     }
 
     @Override

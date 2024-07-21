@@ -2,12 +2,15 @@ package io.vaku.bot;
 
 import io.vaku.model.ClassifiedUpdate;
 import io.vaku.model.Response;
+import io.vaku.model.domain.User;
 import io.vaku.service.UpdateHandlerService;
+import io.vaku.service.domain.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
+import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
@@ -21,6 +24,9 @@ public class Bot extends TelegramLongPollingBot {
 
     @Autowired
     private UpdateHandlerService updateHandlerService;
+
+    @Autowired
+    private UserService userService;
 
     @Value("${bot.name}")
     private String botName;
@@ -52,15 +58,23 @@ public class Bot extends TelegramLongPollingBot {
         super(botToken);
     }
 
+    // TODO: make this method with multithreading?
     @Override
     public void onUpdateReceived(Update update) {
         if (update.hasMessage() || update.hasCallbackQuery()) {
-            List<Response> responses = updateHandlerService.handleUpdate(new ClassifiedUpdate(update));
+            ClassifiedUpdate classifiedUpdate = new ClassifiedUpdate(update);
+            User user = userService.findByUpdate(classifiedUpdate);
+            List<Response> responses = updateHandlerService.handleUpdate(classifiedUpdate, user);
+
             if (responses != null) {
                 for (Response resp : responses) {
                     if (resp != null && resp.getBotApiMethod() != null) {
                         try {
-                            execute(resp.getBotApiMethod());
+                            Message msg = (Message) execute(resp.getBotApiMethod());
+                            if (user != null) {
+                                user.setLastMsgId(msg.getMessageId());
+                                userService.createOrUpdate(user);
+                            }
                             Thread.sleep(1000);
                         } catch (TelegramApiException e) {
                             e.printStackTrace();

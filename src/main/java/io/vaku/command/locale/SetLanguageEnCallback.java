@@ -5,7 +5,7 @@ import io.vaku.handler.lang.SetLanguageRuCallbackHandler;
 import io.vaku.model.*;
 import io.vaku.model.domain.User;
 import io.vaku.model.enm.Lang;
-import io.vaku.service.UserService;
+import io.vaku.service.domain.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;

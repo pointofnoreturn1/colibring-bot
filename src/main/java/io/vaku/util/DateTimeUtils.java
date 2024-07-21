@@ -6,6 +6,8 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 
 import static io.vaku.util.StringConstants.DATE_FORMAT;
@@ -60,6 +62,27 @@ public final class DateTimeUtils {
         }
 
         return null;
+    }
+
+    // TODO: refactor
+    public static String getHumanSchedule(Date startTime, Date endTime, String description) {
+        LocalDateTime startDateTime = LocalDateTime.ofInstant(startTime.toInstant(), ZoneId.systemDefault());
+        LocalDateTime endDateTime = LocalDateTime.ofInstant(endTime.toInstant(), ZoneId.systemDefault());
+
+        int day = startDateTime.getDayOfMonth();
+        int month = startDateTime.getMonthValue();
+        int year = startDateTime.getYear();
+
+        int startTimeHours = startDateTime.getHour();
+        int startTimeMinutes = startDateTime.getMinute();
+
+        int endTimeHours = endDateTime.getHour();
+        int endTimeMinutes = endDateTime.getMinute();
+
+
+        return day + "." + month + "." + year + " " +
+                startTimeHours + ":" + startTimeMinutes + "-" + endTimeHours +
+                endTimeMinutes + (description == null ? "" : " " + description);
     }
 
     private static Schedule createSchedule(String date, String startTime, String endTime, String description) {

@@ -1,6 +1,7 @@
 package io.vaku.service;
 
 import io.vaku.model.domain.Room;
+import io.vaku.service.domain.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
@@ -9,7 +10,10 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 @Service
 public class MenuService {
@@ -45,7 +49,7 @@ public class MenuService {
         return new InlineKeyboardMarkup(List.of(buttons));
     }
 
-    public InlineKeyboardMarkup getInlineMenuMeetingRoom() {
+    public InlineKeyboardMarkup getInlineMeetingRoomMenu() {
         return InlineKeyboardMarkup
                 .builder()
                 .keyboardRow(
@@ -74,5 +78,32 @@ public class MenuService {
                                         .build())
                 )
                 .build();
+    }
+
+    public InlineKeyboardMarkup getInlineBackToBookingMenu() {
+        return new InlineKeyboardMarkup(List.of(List.of(getBackButton())));
+    }
+
+    public InlineKeyboardMarkup getInlineMyMeetingRoomBookingsMenu(Map<UUID, String> map) {
+        InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
+        List<List<InlineKeyboardButton>> keyboard = new ArrayList<>();
+
+        map.entrySet().forEach((it -> keyboard.add(
+                List.of(
+                        InlineKeyboardButton
+                                .builder()
+                                .text(it.getValue())
+                                .callbackData("callBackShowBookingMenu_" + it.getKey())
+                                .build()
+                )
+        )));
+        keyboard.add(List.of(getBackButton()));
+        markup.setKeyboard(keyboard);
+
+        return markup;
+    }
+
+    private InlineKeyboardButton getBackButton() {
+        return InlineKeyboardButton.builder().text("⏪ Назад").callbackData("callbackBackToBookingMenu").build();
     }
 }

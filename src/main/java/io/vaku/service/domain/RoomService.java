@@ -1,4 +1,4 @@
-package io.vaku.service;
+package io.vaku.service.domain;
 
 import io.vaku.model.domain.Room;
 import io.vaku.repository.RoomRepository;
