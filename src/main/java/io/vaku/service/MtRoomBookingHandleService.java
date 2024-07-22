@@ -1,6 +1,7 @@
 package io.vaku.service;
 
 import io.vaku.command.meeting_room.MtRoomBackToMenuCallback;
+import io.vaku.command.meeting_room.MtRoomShowMyRecordsCallback;
 import io.vaku.handler.HandlersMap;
 import io.vaku.model.ClassifiedUpdate;
 import io.vaku.model.Response;
@@ -38,31 +39,36 @@ public class MtRoomBookingHandleService {
     @Autowired
     private MtRoomBackToMenuCallback mtRoomBackToMenuCallback;
 
+    @Autowired
+    private MtRoomShowMyRecordsCallback mtRoomShowMyRecordsCallback;
+
     public List<Response> execute(User user, ClassifiedUpdate update) {
 
         if (user.getMtRoomBookingStatus().equals(MtRoomBookingStatus.REQUIRE_INPUT) &&
                 !update.getCommandName().equals(mtRoomBackToMenuCallback.getCommandName())) {
             return proceedMeetingRoomBooking(user, update);
-        } else {
-            return commandMap.execute(user, update);
+        } else if (update.getCommandName().startsWith("callBackShowBookingMenu_")) {
+            String bookingId = update.getCommandName().split("_")[1];
+            MeetingRoomBooking booking = mtRoomBookingService.findById(UUID.fromString(bookingId));
+
+            if (booking != null) {
+                user.setMtRoomBookingStatus(MtRoomBookingStatus.REQUIRE_ITEM_ACTION);
+                userService.createOrUpdate(user);
+
+                return List.of(messageService.getBookingDetailsEditedMsg(user, update, booking));
+            }
+            // TODO: при удалении последней записи некорректное поведение, исправить
+        } else if (update.getCommandName().startsWith("callbackRemoveBooking_")) {
+            String bookingId = update.getCommandName().split("_")[1];
+            mtRoomBookingService.removeById(UUID.fromString(bookingId));
+
+            return mtRoomShowMyRecordsCallback.getAnswer(user, update);
         }
 
-//        if (update.getCommandName().startsWith("callBackShowBookingMenu_")) {
-        // show menu for particular booking
-        // date: ...
-        // time: ...
-        // description: ...
-        // [DELETE]
-        // [<< BACK] [<< BACK TO MAIN MENU]
-//        } else if (user.getMRoomBookingStatus().equals(MRoomBookingStatus.REQUIRE_INPUT)) {
-//            return proceedMeetingRoomBooking(user, update);
-//        }
-
-//        return commandMap.execute(user, update);
+        return commandMap.execute(user, update);
     }
 
     // TODO: сделать проверку на пересечение с другими бронированиями
-    // TODO: добавить в вывод брони описание
     @SneakyThrows
     private List<Response> proceedMeetingRoomBooking(User user, ClassifiedUpdate update) {
         String[] inputArr = update.getCommandName().split("\n");

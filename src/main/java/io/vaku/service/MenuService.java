@@ -1,5 +1,6 @@
 package io.vaku.service;
 
+import io.vaku.model.domain.MeetingRoomBooking;
 import io.vaku.model.domain.Room;
 import io.vaku.service.domain.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,7 +82,7 @@ public class MenuService {
     }
 
     public InlineKeyboardMarkup getInlineBackToBookingMenu() {
-        return new InlineKeyboardMarkup(List.of(List.of(getBackButton())));
+        return new InlineKeyboardMarkup(List.of(List.of(getBackToMainBookingMenuButton())));
     }
 
     public InlineKeyboardMarkup getInlineMyMeetingRoomBookingsMenu(Map<UUID, String> map) {
@@ -97,13 +98,33 @@ public class MenuService {
                                 .build()
                 )
         )));
-        keyboard.add(List.of(getBackButton()));
+        keyboard.add(List.of(getBackToMainBookingMenuButton()));
         markup.setKeyboard(keyboard);
 
         return markup;
     }
 
-    private InlineKeyboardButton getBackButton() {
+    public InlineKeyboardMarkup getInlineBookingDetailsMenu(MeetingRoomBooking booking) {
+        return InlineKeyboardMarkup
+                .builder()
+                .keyboardRow(
+                        List.of(
+                                InlineKeyboardButton
+                                        .builder()
+                                        .text("Удалить")
+                                        .callbackData("callbackRemoveBooking_" + booking.getId())
+                                        .build()
+                        )
+                )
+                .keyboardRow(List.of(getBackToBookingListButton()))
+                .build();
+    }
+
+    private InlineKeyboardButton getBackToMainBookingMenuButton() {
         return InlineKeyboardButton.builder().text("⏪ Назад").callbackData("callbackBackToBookingMenu").build();
+    }
+
+    private InlineKeyboardButton getBackToBookingListButton() {
+        return InlineKeyboardButton.builder().text("⏪ Назад").callbackData("callbackBackToBookingList").build();
     }
 }

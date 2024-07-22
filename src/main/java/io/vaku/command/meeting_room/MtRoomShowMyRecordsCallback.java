@@ -40,7 +40,6 @@ public class MtRoomShowMyRecordsCallback implements Command {
 
     @Override
     public List<Response> getAnswer(User user, ClassifiedUpdate update) {
-        // TODO: сделать правильный вывод даты в кнопках
         List<MeetingRoomBooking> myBookings = mtRoomBookingService.findByUserId(user.getId());
 
         if (!myBookings.isEmpty()) {

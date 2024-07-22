@@ -64,25 +64,34 @@ public final class DateTimeUtils {
         return null;
     }
 
-    // TODO: refactor
     public static String getHumanSchedule(Date startTime, Date endTime, String description) {
         LocalDateTime startDateTime = LocalDateTime.ofInstant(startTime.toInstant(), ZoneId.systemDefault());
         LocalDateTime endDateTime = LocalDateTime.ofInstant(endTime.toInstant(), ZoneId.systemDefault());
 
-        int day = startDateTime.getDayOfMonth();
-        int month = startDateTime.getMonthValue();
-        int year = startDateTime.getYear();
+        String day = String.valueOf(startDateTime.getDayOfMonth());
+        String month = String.valueOf(startDateTime.getMonthValue());
+        String year = String.valueOf(startDateTime.getYear());
+        String startTimeHours = String.valueOf(startDateTime.getHour());
+        String startTimeMinutes = String.valueOf(startDateTime.getMinute());
+        String endTimeHours = String.valueOf(endDateTime.getHour());
+        String endTimeMinutes = String.valueOf(endDateTime.getMinute());
 
-        int startTimeHours = startDateTime.getHour();
-        int startTimeMinutes = startDateTime.getMinute();
-
-        int endTimeHours = endDateTime.getHour();
-        int endTimeMinutes = endDateTime.getMinute();
-
-
-        return day + "." + month + "." + year + " " +
-                startTimeHours + ":" + startTimeMinutes + "-" + endTimeHours +
-                endTimeMinutes + (description == null ? "" : " " + description);
+        return new StringBuilder()
+                .append(day.length() == 1 ? "0" + day : day)
+                .append(".")
+                .append(month.length() == 1 ? "0" + month : month)
+                .append(".")
+                .append(year.length() == 1 ? "0" + year : year)
+                .append(" ")
+                .append(startTimeHours.length() == 1 ? "0" + startTimeHours : startTimeHours)
+                .append(":")
+                .append(startTimeMinutes.length() == 1 ? "0" + startTimeMinutes : startTimeMinutes)
+                .append("-")
+                .append(endTimeHours.length() == 1 ? "0" + endTimeHours : endTimeHours)
+                .append(":")
+                .append(endTimeMinutes.length() == 1 ? "0" + endTimeMinutes : endTimeMinutes)
+                .append(description == null ? "" : " " + description)
+                .toString();
     }
 
     private static Schedule createSchedule(String date, String startTime, String endTime, String description) {
