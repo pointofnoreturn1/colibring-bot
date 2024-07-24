@@ -85,7 +85,7 @@ public class MessageService {
                 .builder()
                 .chatId(update.getChatId())
                 .messageId(user.getLastMsgId())
-                .text("Мои бронирования")
+                .text(bookingsMap.isEmpty() ? TEXT_NO_BOOKINGS : "Мои бронирования эрекционной:")
                 .replyMarkup(menuService.getInlineMyMeetingRoomBookingsMenu(bookingsMap))
                 .build();
 
@@ -97,18 +97,19 @@ public class MessageService {
                 .builder()
                 .chatId(update.getChatId())
                 .messageId(user.getLastMsgId())
-                .text(getBookingsFormattedMessage(bookings))
+                .text(bookings.isEmpty() ? TEXT_NO_BOOKINGS : "Бронирования эрекционной:\n\n" + getBookingsFormattedMessage(bookings))
                 .replyMarkup(menuService.getInlineBackToBookingMenu())
                 .build();
 
         return new Response(msg);
     }
 
-    public Response getNoBookingsMsg(User user, ClassifiedUpdate update) {
+    public Response getIntersectedBookingsEditedMsg(User user, ClassifiedUpdate update, List<MeetingRoomBooking> bookings) {
         SendMessage msg = SendMessage
                 .builder()
                 .chatId(update.getChatId())
-                .text("Нет ни одной брони \uD83D\uDE1E")
+                .text(TEXT_INTERSECTION + getBookingsFormattedMessage(bookings))
+                .replyMarkup(menuService.getInlineBackToBookingMenu())
                 .build();
 
         return new Response(msg);

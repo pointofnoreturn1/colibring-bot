@@ -9,18 +9,18 @@ import java.util.Date;
 @NoArgsConstructor
 public class Schedule {
 
-    private Date startDate;
-    private Date endDate;
+    private Date startTime;
+    private Date endTime;
     private String description;
 
-    public Schedule(Date startDate, Date endDate, String description) {
-        this.startDate = startDate;
-        this.endDate = endDate;
+    public Schedule(Date startTime, Date endTime, String description) {
+        this.startTime = startTime;
+        this.endTime = endTime;
         this.description = description;
     }
 
-    public Schedule(Date startDate, Date endDate) {
-        this.startDate = startDate;
-        this.endDate = endDate;
+    public Schedule(Date startTime, Date endTime) {
+        this.startTime = startTime;
+        this.endTime = endTime;
     }
 }

@@ -16,11 +16,26 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import static io.vaku.util.StringConstants.TEXT_REGISTER_EN;
+import static io.vaku.util.StringConstants.TEXT_REGISTER_RU;
+
 @Service
 public class MenuService {
 
     @Autowired
     private RoomService roomService;
+
+    public InlineKeyboardMarkup getInlineRegisterRequest(boolean ru) {
+        List<InlineKeyboardButton> buttons = List.of(
+                InlineKeyboardButton
+                        .builder()
+                        .text(ru ? TEXT_REGISTER_RU : TEXT_REGISTER_EN)
+                        .callbackData("callbackRegisterRequest")
+                        .build()
+        );
+
+        return new InlineKeyboardMarkup(List.of(buttons));
+    }
 
     public ReplyKeyboardMarkup getUserMenu() {
         List<KeyboardRow> keyboard = List.of(

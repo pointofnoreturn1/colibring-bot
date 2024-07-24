@@ -11,14 +11,18 @@ import io.vaku.model.domain.User;
 import io.vaku.model.enm.MtRoomBookingStatus;
 import io.vaku.service.domain.MtRoomBookingService;
 import io.vaku.service.domain.UserService;
+import io.vaku.util.DateTimeUtils;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static io.vaku.util.DateTimeUtils.checkTimeIntersections;
 import static io.vaku.util.DateTimeUtils.getSchedule;
 
 @Service
@@ -57,7 +61,6 @@ public class MtRoomBookingHandleService {
 
                 return List.of(messageService.getBookingDetailsEditedMsg(user, update, booking));
             }
-            // TODO: при удалении последней записи некорректное поведение, исправить
         } else if (update.getCommandName().startsWith("callbackRemoveBooking_")) {
             String bookingId = update.getCommandName().split("_")[1];
             mtRoomBookingService.removeById(UUID.fromString(bookingId));
@@ -68,7 +71,6 @@ public class MtRoomBookingHandleService {
         return commandMap.execute(user, update);
     }
 
-    // TODO: сделать проверку на пересечение с другими бронированиями
     @SneakyThrows
     private List<Response> proceedMeetingRoomBooking(User user, ClassifiedUpdate update) {
         String[] inputArr = update.getCommandName().split("\n");
@@ -82,11 +84,16 @@ public class MtRoomBookingHandleService {
             schedules.add(schedule);
         }
 
+        List<MeetingRoomBooking> intersections = checkTimeIntersections(mtRoomBookingService.findAllActive(), schedules);
+        if (!intersections.isEmpty()) {
+            return List.of(messageService.getIntersectedBookingsEditedMsg(user, update, intersections));
+        }
+
         for (Schedule schedule : schedules) {
             MeetingRoomBooking booking = new MeetingRoomBooking(
                     UUID.randomUUID(),
-                    schedule.getStartDate(),
-                    schedule.getEndDate(),
+                    schedule.getStartTime(),
+                    schedule.getEndTime(),
                     schedule.getDescription(),
                     user
             );

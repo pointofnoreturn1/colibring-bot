@@ -1,14 +1,18 @@
 package io.vaku.util;
 
+import io.vaku.model.domain.MeetingRoomBooking;
 import io.vaku.model.domain.Schedule;
 
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import static io.vaku.util.StringConstants.DATE_FORMAT;
 import static io.vaku.util.StringConstants.DATE_TIME_FORMAT;
@@ -92,6 +96,36 @@ public final class DateTimeUtils {
                 .append(endTimeMinutes.length() == 1 ? "0" + endTimeMinutes : endTimeMinutes)
                 .append(description == null ? "" : " " + description)
                 .toString();
+    }
+
+    public static List<MeetingRoomBooking> checkTimeIntersections(List<MeetingRoomBooking> allBookings, List<Schedule> schedules) {
+        List<MeetingRoomBooking> intersections = new ArrayList<>();
+
+        for (MeetingRoomBooking booking : allBookings) {
+            for (Schedule schedule : schedules) {
+                if (DateTimeUtils.isIntersected(schedule, booking)) {
+                    intersections.add(booking);
+                }
+            }
+        }
+
+        return intersections;
+    }
+
+    private static boolean isIntersected(Schedule schedule, MeetingRoomBooking booking) {
+        Instant schStartTime = schedule.getStartTime().toInstant();
+        Instant schEndTime = schedule.getEndTime().toInstant();
+        Instant bStartTime = booking.getStartTime().toInstant();
+        Instant bEndTime = booking.getEndTime().toInstant();
+
+        boolean exp1 = schStartTime.isBefore(bStartTime) && schEndTime.isAfter(bStartTime);
+        boolean exp2 = schStartTime.equals(bStartTime) && schEndTime.equals(bEndTime);
+        boolean exp3 = schStartTime.equals(bStartTime) && schEndTime.isBefore(bEndTime);
+        boolean exp4 = schStartTime.isBefore(schEndTime) && schEndTime.equals(bEndTime);
+        boolean exp5 = schStartTime.isAfter(bStartTime) && schStartTime.isBefore(bEndTime);
+        boolean exp6 = schStartTime.isBefore(bEndTime) && schEndTime.isAfter(bEndTime);
+
+        return exp1 || exp2 || exp3 || exp4 || exp5 || exp6;
     }
 
     private static Schedule createSchedule(String date, String startTime, String endTime, String description) {

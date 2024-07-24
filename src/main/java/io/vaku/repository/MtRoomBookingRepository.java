@@ -16,7 +16,7 @@ public interface MtRoomBookingRepository extends JpaRepository<MeetingRoomBookin
     @Query(
             value = "SELECT * " +
                     "FROM meeting_room_booking " +
-                    "WHERE user_id = ?1 AND is_active = TRUE " +
+                    "WHERE user_id = ?1 AND is_active = TRUE AND start_time >= CURRENT_DATE " +
                     "ORDER BY start_time",
             nativeQuery = true
     )

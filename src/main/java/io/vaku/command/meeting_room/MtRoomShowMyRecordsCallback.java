@@ -42,7 +42,9 @@ public class MtRoomShowMyRecordsCallback implements Command {
     public List<Response> getAnswer(User user, ClassifiedUpdate update) {
         List<MeetingRoomBooking> myBookings = mtRoomBookingService.findByUserId(user.getId());
 
-        if (!myBookings.isEmpty()) {
+        if (update.getCommandName().startsWith("callbackRemoveBooking_")) { // when invoked after removing the last booking
+                return List.of(messageService.getMeetingRoomMenuEditedMsg(user, update));
+        } else {
             user.setMtRoomBookingStatus(MtRoomBookingStatus.REQUIRE_ITEM_CHOICE);
             userService.createOrUpdate(user);
 
@@ -55,8 +57,6 @@ public class MtRoomShowMyRecordsCallback implements Command {
             );
 
             return List.of(messageService.getMyBookingsEditedMsg(user, update, bookingsMap));
-        } else {
-            return List.of(messageService.getNoBookingsMsg(user, update));
         }
     }
 }

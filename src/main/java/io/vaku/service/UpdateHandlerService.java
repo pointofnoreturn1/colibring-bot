@@ -24,15 +24,13 @@ public class UpdateHandlerService {
     private MtRoomBookingHandleService mtRoomBookingHandleService;
 
     public List<Response> handleUpdate(ClassifiedUpdate update, User user) {
-
-        // TODO: make empty response for any input except /start if user doesn't exist in DB
         if (user == null) {
-            if (update.getCommandName().equals("/start")) {
+            if (update.getCommandName().equals("/start") || update.getCommandName().startsWith("callbackSetLanguage")) {
                 return commandMap.execute(null, update);
+            } else {
+                return List.of(new Response());
             }
-        } else if (user.getStatus().equals(UserStatus.REQUIRE_REGISTRATION)) {
-            return commandMap.execute(user, update);
-        } else if (!user.getStatus().equals(UserStatus.REGISTERED)) {
+        } else if (!user.getStatus().equals(UserStatus.REQUIRE_REGISTRATION) && !user.getStatus().equals(UserStatus.REGISTERED)) {
             return registrationService.execute(user, update);
         } else if (!user.getMtRoomBookingStatus().equals(MtRoomBookingStatus.NO_STATUS)) {
             return mtRoomBookingHandleService.execute(user, update);

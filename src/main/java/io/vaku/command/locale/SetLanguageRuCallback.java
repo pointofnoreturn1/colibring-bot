@@ -5,26 +5,26 @@ import io.vaku.handler.lang.SetLanguageRuCallbackHandler;
 import io.vaku.model.*;
 import io.vaku.model.domain.User;
 import io.vaku.model.enm.Lang;
+import io.vaku.service.MenuService;
 import io.vaku.service.domain.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
 import java.util.List;
 
 import static io.vaku.model.enm.UserStatus.REQUIRE_REGISTRATION;
 import static io.vaku.util.StringConstants.TEXT_DONE_RU;
+import static io.vaku.util.StringConstants.TEXT_REGISTER_REQUEST_RU;
 
 @Component
 public class SetLanguageRuCallback implements Command {
 
-    private static final String TEXT_REGISTER_REQUEST = "Для продолжения зарегистрируйся";
-    private static final String TEXT_REGISTER = "Зарегистрироваться";
-
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private MenuService menuService;
 
     @Override
     public Class<?> getHandler() {
@@ -44,8 +44,8 @@ public class SetLanguageRuCallback implements Command {
         SendMessage msg = SendMessage
                 .builder()
                 .chatId(update.getChatId())
-                .text(TEXT_REGISTER_REQUEST)
-                .replyMarkup(getInlineRegisterRequest())
+                .text(TEXT_REGISTER_REQUEST_RU)
+                .replyMarkup(menuService.getInlineRegisterRequest(true))
                 .build();
 
         return List.of(new Response(doneMsg), new Response(msg));
@@ -63,14 +63,5 @@ public class SetLanguageRuCallback implements Command {
         user.setStatus(REQUIRE_REGISTRATION);
 
         return user;
-    }
-
-    // TODO: move to MenuService
-    private InlineKeyboardMarkup getInlineRegisterRequest() {
-        List<InlineKeyboardButton> buttons = List.of(
-                InlineKeyboardButton.builder().text(TEXT_REGISTER).callbackData("callbackRegisterRequest").build()
-        );
-
-        return new InlineKeyboardMarkup(List.of(buttons));
     }
 }
