@@ -1,7 +1,7 @@
-package io.vaku.command.meeting_room;
+package io.vaku.command.mt_room;
 
 import io.vaku.command.Command;
-import io.vaku.handler.meeting_room.MtRoomShowMyRecordsCallbackHandler;
+import io.vaku.handler.mt_room.MtRoomShowMyRecordsCallbackHandler;
 import io.vaku.model.ClassifiedUpdate;
 import io.vaku.model.Response;
 import io.vaku.model.domain.MeetingRoomBooking;
@@ -60,4 +60,3 @@ public class MtRoomShowMyRecordsCallback implements Command {
         }
     }
 }
-

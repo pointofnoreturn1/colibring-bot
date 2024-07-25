@@ -16,8 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import static io.vaku.util.StringConstants.TEXT_REGISTER_EN;
-import static io.vaku.util.StringConstants.TEXT_REGISTER_RU;
+import static io.vaku.util.StringConstants.*;
 
 @Service
 public class MenuService {
@@ -136,10 +135,10 @@ public class MenuService {
     }
 
     private InlineKeyboardButton getBackToMainBookingMenuButton() {
-        return InlineKeyboardButton.builder().text("⏪ Назад").callbackData("callbackBackToBookingMenu").build();
+        return InlineKeyboardButton.builder().text(TEXT_GO_BACK).callbackData("callbackBackToBookingMenu").build();
     }
 
     private InlineKeyboardButton getBackToBookingListButton() {
-        return InlineKeyboardButton.builder().text("⏪ Назад").callbackData("callbackBackToBookingList").build();
+        return InlineKeyboardButton.builder().text(TEXT_GO_BACK).callbackData("callbackBackToBookingList").build();
     }
 }

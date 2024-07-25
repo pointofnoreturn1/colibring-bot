@@ -1,7 +1,7 @@
-package io.vaku.command.meeting_room;
+package io.vaku.command.mt_room;
 
 import io.vaku.command.Command;
-import io.vaku.handler.meeting_room.MtRoomBackToMenuCallbackHandler;
+import io.vaku.handler.mt_room.MtRoomBookCallbackHandler;
 import io.vaku.model.ClassifiedUpdate;
 import io.vaku.model.Response;
 import io.vaku.model.domain.User;
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-public class MtRoomBackToMenuCallback implements Command {
+public class MtRoomBookCallback implements Command {
 
     @Autowired
     private UserService userService;
@@ -24,19 +24,19 @@ public class MtRoomBackToMenuCallback implements Command {
 
     @Override
     public Class<?> getHandler() {
-        return MtRoomBackToMenuCallbackHandler.class;
+        return MtRoomBookCallbackHandler.class;
     }
 
     @Override
     public Object getCommandName() {
-        return "callbackBackToBookingMenu";
+        return "callbackMeetingRoomBook";
     }
 
     @Override
     public List<Response> getAnswer(User user, ClassifiedUpdate update) {
-        user.setMtRoomBookingStatus(MtRoomBookingStatus.NO_STATUS);
+        user.setMtRoomBookingStatus(MtRoomBookingStatus.REQUIRE_INPUT);
         userService.createOrUpdate(user);
 
-        return List.of(messageService.getMeetingRoomMenuEditedMsg(user, update));
+        return List.of(messageService.getBookingPromptEditedMsg(user, update));
     }
 }

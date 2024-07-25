@@ -1,4 +1,4 @@
-package io.vaku.handler.meeting_room;
+package io.vaku.handler.mt_room;
 
 import io.vaku.command.Command;
 import io.vaku.handler.AbstractHandler;

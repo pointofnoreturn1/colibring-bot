@@ -14,8 +14,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import static io.vaku.util.StringConstants.DATE_FORMAT;
-import static io.vaku.util.StringConstants.DATE_TIME_FORMAT;
+import static io.vaku.util.StringConstants.*;
 
 public final class DateTimeUtils {
 
@@ -23,7 +22,7 @@ public final class DateTimeUtils {
     }
 
     public static boolean isDateValid(String date) {
-        if (date.matches("^\\d{1,2}\\.\\d{1,2}\\.\\d{4}")) { // 30.01.2024
+        if (date.matches("^\\d{1,2}\\.\\d{1,2}\\.\\d{4}")) { // dd.dd.dddd format format
             DateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
             sdf.setLenient(false);
 
@@ -63,6 +62,18 @@ public final class DateTimeUtils {
             String endTime = dateTimeAndDescription[0].split(" ")[1].split("-")[1];
 
             return createSchedule(date, startTime, endTime, dateTimeAndDescription.length == 2 ? dateTimeAndDescription[1] : null);
+        } else if (trimmed.matches("^\\d{2}:\\d{2}.*")) { // 10:00 [description] (from now till 10:00)
+            String[] dateTimeDesc = trimmed.split(" ");
+            DateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
+            sdf.setLenient(false);
+            DateFormat sdfTime = new SimpleDateFormat(TIME_FORMAT);
+            sdfTime.setLenient(false);
+            Date now = new Date();
+            String date = sdf.format(now);
+            String startTime = sdfTime.format(now);
+            String endTime = dateTimeDesc[0];
+
+            return createSchedule(date, startTime, endTime, dateTimeDesc.length == 2 ? dateTimeDesc[1] : null);
         }
 
         return null;
@@ -80,12 +91,13 @@ public final class DateTimeUtils {
         String endTimeHours = String.valueOf(endDateTime.getHour());
         String endTimeMinutes = String.valueOf(endDateTime.getMinute());
 
-        return new StringBuilder()
+        StringBuilder sb = new StringBuilder();
+        sb
                 .append(day.length() == 1 ? "0" + day : day)
                 .append(".")
                 .append(month.length() == 1 ? "0" + month : month)
                 .append(".")
-                .append(year.length() == 1 ? "0" + year : year)
+                .append(year.substring(2))
                 .append(" ")
                 .append(startTimeHours.length() == 1 ? "0" + startTimeHours : startTimeHours)
                 .append(":")
@@ -93,9 +105,13 @@ public final class DateTimeUtils {
                 .append("-")
                 .append(endTimeHours.length() == 1 ? "0" + endTimeHours : endTimeHours)
                 .append(":")
-                .append(endTimeMinutes.length() == 1 ? "0" + endTimeMinutes : endTimeMinutes)
-                .append(description == null ? "" : " " + description)
-                .toString();
+                .append(endTimeMinutes.length() == 1 ? "0" + endTimeMinutes : endTimeMinutes);
+
+                if (startDateTime.getDayOfMonth() < endDateTime.getDayOfMonth()) {
+                    sb.append(" (след. день)");
+                }
+
+                return sb.append(description == null ? "" : " " + description).toString();
     }
 
     public static List<MeetingRoomBooking> checkTimeIntersections(List<MeetingRoomBooking> allBookings, List<Schedule> schedules) {
@@ -138,6 +154,10 @@ public final class DateTimeUtils {
 
             if (startDate.toInstant().isBefore(endDate.toInstant())) {
                 return new Schedule(startDate, endDate, description);
+            }
+
+            if (startDate.toInstant().isAfter(endDate.toInstant())) {
+                return new Schedule(startDate, new Date(endDate.getTime() + (24 * 60 * 60 * 1000)), description);
             }
         } catch (ParseException e) {
             return null;

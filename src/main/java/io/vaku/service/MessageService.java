@@ -47,12 +47,11 @@ public class MessageService {
         SendMessage msg = SendMessage
                 .builder()
                 .chatId(update.getChatId())
-                .text("Выберите действие")
+                .text(TEXT_CHOOSE_ACTION)
                 .replyMarkup(menuService.getInlineMeetingRoomMenu())
                 .build();
 
         return new Response(msg);
-
     }
 
     public Response getMeetingRoomMenuEditedMsg(User user, ClassifiedUpdate update) {
@@ -60,12 +59,11 @@ public class MessageService {
                 .builder()
                 .chatId(update.getChatId())
                 .messageId(user.getLastMsgId())
-                .text("Выберите действие")
+                .text(TEXT_CHOOSE_ACTION)
                 .replyMarkup(menuService.getInlineMeetingRoomMenu())
                 .build();
 
         return new Response(msg);
-
     }
 
     public Response getBookingPromptEditedMsg(User user, ClassifiedUpdate update) {

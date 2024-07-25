@@ -1,7 +1,7 @@
 package io.vaku.service;
 
-import io.vaku.command.meeting_room.MtRoomBackToMenuCallback;
-import io.vaku.command.meeting_room.MtRoomShowMyRecordsCallback;
+import io.vaku.command.mt_room.MtRoomBackToMenuCallback;
+import io.vaku.command.mt_room.MtRoomShowMyRecordsCallback;
 import io.vaku.handler.HandlersMap;
 import io.vaku.model.ClassifiedUpdate;
 import io.vaku.model.Response;
@@ -11,13 +11,10 @@ import io.vaku.model.domain.User;
 import io.vaku.model.enm.MtRoomBookingStatus;
 import io.vaku.service.domain.MtRoomBookingService;
 import io.vaku.service.domain.UserService;
-import io.vaku.util.DateTimeUtils;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;

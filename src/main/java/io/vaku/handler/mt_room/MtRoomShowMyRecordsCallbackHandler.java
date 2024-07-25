@@ -1,4 +1,4 @@
-package io.vaku.handler.meeting_room;
+package io.vaku.handler.mt_room;
 
 import io.vaku.command.Command;
 import io.vaku.handler.AbstractHandler;
@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 
 @Component
-public class MtRoomShowScheduleCallbackHandler extends AbstractHandler {
+public class MtRoomShowMyRecordsCallbackHandler extends AbstractHandler {
 
     private final HashMap<Object, Command> hashMap = new HashMap<>();
 
