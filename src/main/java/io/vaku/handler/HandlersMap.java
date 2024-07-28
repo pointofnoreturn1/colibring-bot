@@ -2,8 +2,8 @@ package io.vaku.handler;
 
 import io.vaku.model.Response;
 import io.vaku.model.ClassifiedUpdate;
-import io.vaku.model.enumerated.TelegramType;
-import io.vaku.model.User;
+import io.vaku.model.enm.TelegramType;
+import io.vaku.model.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

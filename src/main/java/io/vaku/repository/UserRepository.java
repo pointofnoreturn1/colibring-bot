@@ -1,6 +1,6 @@
 package io.vaku.repository;
 
-import io.vaku.model.User;
+import io.vaku.model.domain.User;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

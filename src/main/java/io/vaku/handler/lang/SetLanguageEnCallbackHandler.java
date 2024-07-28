@@ -1,18 +1,18 @@
-package io.vaku.handler.callback;
+package io.vaku.handler.lang;
 
 import io.vaku.command.Command;
 import io.vaku.handler.AbstractHandler;
 import io.vaku.model.ClassifiedUpdate;
 import io.vaku.model.Response;
-import io.vaku.model.enumerated.TelegramType;
-import io.vaku.model.User;
+import io.vaku.model.enm.TelegramType;
+import io.vaku.model.domain.User;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.List;
 
 @Component
-public class SetLanguageRuCallbackHandler extends AbstractHandler {
+public class SetLanguageEnCallbackHandler extends AbstractHandler {
 
     private final HashMap<Object, Command> hashMap = new HashMap<>();
 

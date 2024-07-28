@@ -1,4 +1,4 @@
-package io.vaku.model.enumerated;
+package io.vaku.model.enm;
 
 public enum TelegramType {
     TEXT, CALLBACK, COMMAND, UNKNOWN

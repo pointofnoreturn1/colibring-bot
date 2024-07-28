@@ -1,13 +1,13 @@
 package io.vaku.service;
 
-import io.vaku.handler.HandlersMap;
 import io.vaku.model.ClassifiedUpdate;
 import io.vaku.model.Response;
-import io.vaku.model.Room;
-import io.vaku.model.User;
-import io.vaku.model.enumerated.Lang;
-import io.vaku.util.DateUtils;
-import io.vaku.util.MessageFactory;
+import io.vaku.model.domain.Room;
+import io.vaku.model.domain.User;
+import io.vaku.model.enm.Lang;
+import io.vaku.service.domain.RoomService;
+import io.vaku.service.domain.UserService;
+import io.vaku.util.DateTimeUtils;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,7 +18,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
-import static io.vaku.model.enumerated.UserStatus.*;
+import static io.vaku.model.enm.UserStatus.*;
+import static io.vaku.util.StringConstants.*;
 
 @Service
 public class RegistrationService {
@@ -31,8 +32,6 @@ public class RegistrationService {
     private static final String TEXT_BIRTHDATE_REQUEST_EN = "Enter your date of birth in the format dd.mm.yyyy";
     private static final String TEXT_ROOM_REQUEST_RU = "Укажи свою комнату";
     private static final String TEXT_ROOM_REQUEST_EN = "Specify your room";
-    private static final String TEXT_INCORRECT_DATE_RU = "Неверный формат даты \uD83D\uDE1E";
-    private static final String TEXT_INCORRECT_DATE_EN = "Invalid date format \uD83D\uDE1E";
     private static final String TEXT_BIO_REQUEST_RU = "Расскажи нам о себе";
     private static final String TEXT_BIO_REQUEST_EN = "Tell us about yourself";
     private static final String TEXT_SUCCESSFUL_REGISTRATION_RU = "\uD83C\uDF89 Поздравляем! \uD83C\uDF89\nРегистрация успешно завершена";
@@ -51,7 +50,7 @@ public class RegistrationService {
     private MenuService menuService;
 
     @Autowired
-    private HandlersMap commandMap;
+    private MessageService messageService;
 
     public List<Response> execute(User user, ClassifiedUpdate update) {
         return switch (user.getStatus()) {
@@ -61,12 +60,8 @@ public class RegistrationService {
             case REQUIRE_ROOM -> proceedRoom(user, update);
             case REQUIRE_BIO -> proceedBio(user, update);
             case BLOCKED -> List.of(new Response()); // empty response is intentionally here
-            default -> commandMap.execute(user, update);
+            default -> List.of(new Response());
         };
-    }
-
-    private boolean checkPassword(String input) {
-        return input.equals(password);
     }
 
     private List<Response> proceedPassword(User user, ClassifiedUpdate update) {
@@ -79,7 +74,7 @@ public class RegistrationService {
                     .text(user.getLang().equals(Lang.RU) ? TEXT_NAME_REQUEST_RU : TEXT_NAME_REQUEST_EN)
                     .build();
 
-            return List.of(MessageFactory.getDoneMsg(user, update), new Response(msg));
+            return List.of(messageService.getDoneMsg(user, update), new Response(msg));
         } else {
             SendMessage msg = SendMessage
                     .builder()
@@ -101,15 +96,15 @@ public class RegistrationService {
                 .text(user.getLang().equals(Lang.RU) ? TEXT_BIRTHDATE_REQUEST_RU : TEXT_BIRTHDATE_REQUEST_EN)
                 .build();
 
-        return List.of(MessageFactory.getDoneMsg(user, update), new Response(msg));
+        return List.of(messageService.getDoneMsg(user, update), new Response(msg));
     }
 
     @SneakyThrows
     private List<Response> proceedBirthdate(User user, ClassifiedUpdate update) {
         String input = update.getCommandName();
 
-        if (DateUtils.isValid(input)) {
-            DateFormat formatter = new SimpleDateFormat("dd.MM.yyyy");
+        if (DateTimeUtils.isDateValid(input)) {
+            DateFormat formatter = new SimpleDateFormat(DATE_FORMAT);
             user.setBirthDate(formatter.parse(input));
             user.setStatus(REQUIRE_ROOM);
             userService.createOrUpdate(user);
@@ -120,15 +115,9 @@ public class RegistrationService {
                     .replyMarkup(menuService.getRoomChoiceMenu())
                     .build();
 
-            return List.of(MessageFactory.getDoneMsg(user, update), new Response(msg));
+            return List.of(messageService.getDoneMsg(user, update), new Response(msg));
         } else {
-            SendMessage msg = SendMessage
-                    .builder()
-                    .chatId(update.getChatId())
-                    .text(user.getLang().equals(Lang.RU) ? TEXT_INCORRECT_DATE_RU : TEXT_INCORRECT_DATE_EN)
-                    .build();
-
-            return List.of(new Response(msg));
+            return List.of(messageService.getInvalidFormatMsg(user, update));
         }
     }
 
@@ -145,7 +134,7 @@ public class RegistrationService {
                     .text(user.getLang().equals(Lang.RU) ? TEXT_BIO_REQUEST_RU : TEXT_BIO_REQUEST_EN)
                     .build();
 
-            return List.of(MessageFactory.getDoneMsg(user, update), new Response(msg));
+            return List.of(messageService.getDoneMsg(user, update), new Response(msg));
         }
 
         return List.of(new Response());
@@ -163,5 +152,9 @@ public class RegistrationService {
                 .build();
 
         return List.of(new Response(msg));
+    }
+
+    private boolean checkPassword(String input) {
+        return input.equals(password);
     }
 }

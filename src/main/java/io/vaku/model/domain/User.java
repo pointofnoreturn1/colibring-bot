@@ -1,18 +1,19 @@
-package io.vaku.model;
+package io.vaku.model.domain;
 
-import io.vaku.model.enumerated.Lang;
-import io.vaku.model.enumerated.UserStatus;
+import io.vaku.model.enm.Lang;
+import io.vaku.model.enm.MtRoomBookingStatus;
+import io.vaku.model.enm.UserStatus;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
+import java.util.List;
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -25,6 +26,9 @@ public class User {
 
     @Column(name = "chat_id", unique = true, nullable = false)
     private long chatId;
+
+    @Column(name = "last_msg_id")
+    private int lastMsgId;
 
     @Column(name = "tg_user_name")
     private String tgUserName;
@@ -57,6 +61,11 @@ public class User {
 
     @Enumerated(EnumType.STRING)
     @JdbcTypeCode(SqlTypes.NAMED_ENUM)
+    @Column(name = "mt_room_booking_status", nullable = false)
+    private MtRoomBookingStatus mtRoomBookingStatus = MtRoomBookingStatus.NO_STATUS;
+
+    @Enumerated(EnumType.STRING)
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     @Column(name = "lang", nullable = false)
     private Lang lang;
 
@@ -64,6 +73,9 @@ public class User {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_at")
     private Date createdAt;
+
+    @OneToMany(mappedBy = "user")
+    private List<MeetingRoomBooking> meetingRoomBookings;
 
     public User(long id, long chatId, String tgUserName, String tgFirstName, String tgLastName) {
         this.id = id;

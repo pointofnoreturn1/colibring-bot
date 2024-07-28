@@ -1,6 +1,6 @@
 package io.vaku.model;
 
-import io.vaku.model.enumerated.TelegramType;
+import io.vaku.model.enm.TelegramType;
 import lombok.Getter;
 import org.telegram.telegrambots.meta.api.objects.Update;
 

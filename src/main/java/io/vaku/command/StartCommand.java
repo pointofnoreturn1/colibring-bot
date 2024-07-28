@@ -1,22 +1,19 @@
 package io.vaku.command;
 
-import io.vaku.handler.command.StartCommandHandler;
+import io.vaku.handler.StartCommandHandler;
 import io.vaku.model.Response;
 import io.vaku.model.ClassifiedUpdate;
-import io.vaku.model.User;
-import io.vaku.model.enumerated.Lang;
+import io.vaku.model.domain.User;
+import io.vaku.model.enm.Lang;
 import io.vaku.service.MenuService;
-import io.vaku.service.UserService;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
 import java.util.List;
 
-import static io.vaku.model.enumerated.UserStatus.REGISTERED;
+import static io.vaku.model.enm.UserStatus.REGISTERED;
 
 @Component
 public class StartCommand implements Command {
@@ -27,9 +24,6 @@ public class StartCommand implements Command {
 
     @Autowired
     private MenuService menuService;
-
-    @Autowired
-    private UserService userService;
 
     @Override
     public Class<?> getHandler() {
@@ -73,18 +67,9 @@ public class StartCommand implements Command {
                 .builder()
                 .chatId(update.getChatId())
                 .text(TEXT_LANG_CHOICE_REQUEST)
-                .replyMarkup(getInlineLanguageChoice())
+                .replyMarkup(menuService.getInlineLanguageChoice())
                 .build();
 
         return new Response(msg);
-    }
-
-    private InlineKeyboardMarkup getInlineLanguageChoice() {
-        List<InlineKeyboardButton> buttons = List.of(
-                InlineKeyboardButton.builder().text("\uD83C\uDDF7\uD83C\uDDFA").callbackData("callbackSetLanguage_RU").build(),
-                InlineKeyboardButton.builder().text("\uD83C\uDDFA\uD83C\uDDF2").callbackData("callbackSetLanguage_EN").build()
-        );
-
-        return new InlineKeyboardMarkup(List.of(buttons));
     }
 }
