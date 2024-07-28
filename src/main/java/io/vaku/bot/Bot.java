@@ -57,8 +57,7 @@ public class Bot extends TelegramLongPollingBot {
     public Bot(@Value("${bot.token}") String botToken) {
         super(botToken);
     }
-
-    // TODO: make this method with multithreading?
+    
     @Override
     public void onUpdateReceived(Update update) {
         if (update.hasMessage() || update.hasCallbackQuery()) {
