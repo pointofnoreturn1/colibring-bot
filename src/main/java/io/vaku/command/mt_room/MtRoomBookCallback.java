@@ -37,6 +37,6 @@ public class MtRoomBookCallback implements Command {
         user.setMtRoomBookingStatus(BookingStatus.REQUIRE_INPUT);
         userService.createOrUpdate(user);
 
-        return List.of(mtRoomMessageService.getBookingPromptEditedMsg(user, update));
+        return List.of(mtRoomMessageService.getMtRoomBookingPromptEditedMsg(user, update));
     }
 }

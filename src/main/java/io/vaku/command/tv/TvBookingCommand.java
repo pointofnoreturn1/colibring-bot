@@ -37,6 +37,6 @@ public class TvBookingCommand implements Command {
     public List<Response> getAnswer(User user, ClassifiedUpdate update) {
         userService.resetUserState(user);
 
-        return List.of(tvMessageService.getMeetingRoomMenuMsg(user, update)); // TODO: поменять вызов
+        return List.of(tvMessageService.getTvMenuMsg(user, update)); // TODO: поменять вызов
     }
 }

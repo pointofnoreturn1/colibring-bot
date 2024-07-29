@@ -37,6 +37,6 @@ public class TvBookCallback implements Command {
         user.setTvBookingStatus(BookingStatus.REQUIRE_INPUT);
         userService.createOrUpdate(user);
 
-        return List.of(tvMessageService.getBookingPromptEditedMsg(user, update)); // TODO: поменять вызов
+        return List.of(tvMessageService.getTvBookingPromptEditedMsg(user, update)); // TODO: поменять вызов
     }
 }

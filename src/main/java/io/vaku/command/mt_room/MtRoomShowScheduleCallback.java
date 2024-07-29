@@ -33,6 +33,6 @@ public class MtRoomShowScheduleCallback implements Command {
 
     @Override
     public List<Response> getAnswer(User user, ClassifiedUpdate update) {
-        return List.of(mtRoomMessageService.getAllBookingsEditedMsg(user, update, mtRoomBookingService.findAllActive()));
+        return List.of(mtRoomMessageService.getAllMtRoomBookingsEditedMsg(user, update, mtRoomBookingService.findAllActive()));
     }
 }

@@ -1,6 +1,5 @@
 package io.vaku.service.domain.tv;
 
-import io.vaku.model.domain.MeetingRoomBooking;
 import io.vaku.model.domain.TvBooking;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
@@ -15,8 +14,6 @@ import static io.vaku.util.StringConstants.TEXT_GO_BACK;
 
 @Service
 public class TvMenuService {
-
-    // TODO: переделать под TvBooking
 
     public InlineKeyboardMarkup getInlineTvMenu() {
         return InlineKeyboardMarkup

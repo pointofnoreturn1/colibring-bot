@@ -5,7 +5,6 @@ import io.vaku.command.mt_room.MtRoomShowMyRecordsCallback;
 import io.vaku.handler.HandlersMap;
 import io.vaku.model.ClassifiedUpdate;
 import io.vaku.model.Response;
-import io.vaku.model.domain.Booking;
 import io.vaku.model.domain.MeetingRoomBooking;
 import io.vaku.model.domain.Schedule;
 import io.vaku.model.domain.User;
@@ -60,7 +59,7 @@ public class MtRoomBookingHandleService {
                 user.setMtRoomBookingStatus(REQUIRE_ITEM_ACTION);
                 userService.createOrUpdate(user);
 
-                return List.of(mtRoomMessageService.getBookingDetailsEditedMsg(user, update, booking));
+                return List.of(mtRoomMessageService.getMtRoomBookingDetailsEditedMsg(user, update, booking));
             }
         } else if (update.getCommandName().startsWith("callbackRemoveBooking_")) {
             String bookingId = update.getCommandName().split("_")[1];
@@ -87,7 +86,7 @@ public class MtRoomBookingHandleService {
 
         List<MeetingRoomBooking> intersections = (List<MeetingRoomBooking>) checkTimeIntersections(mtRoomBookingService.findAllActive(), schedules);
         if (!intersections.isEmpty()) {
-            return List.of(mtRoomMessageService.getIntersectedBookingsEditedMsg(user, update, intersections));
+            return List.of(mtRoomMessageService.getIntersectedMtRoomBookingsEditedMsg(user, update, intersections));
         }
 
         for (Schedule schedule : schedules) {

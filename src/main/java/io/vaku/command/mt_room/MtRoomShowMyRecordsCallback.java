@@ -56,7 +56,7 @@ public class MtRoomShowMyRecordsCallback implements Command {
                     )
             );
 
-            return List.of(mtRoomMessageService.getMyBookingsEditedMsg(user, update, bookingsMap));
+            return List.of(mtRoomMessageService.getMyMtRoomBookingsEditedMsg(user, update, bookingsMap));
         }
     }
 }

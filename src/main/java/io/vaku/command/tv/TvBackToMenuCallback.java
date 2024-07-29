@@ -37,6 +37,6 @@ public class TvBackToMenuCallback implements Command {
         user.setTvBookingStatus(BookingStatus.NO_STATUS);
         userService.createOrUpdate(user);
 
-        return List.of(tvMessageService.getMeetingRoomMenuEditedMsg(user, update)); // TODO: поменять вызов
+        return List.of(tvMessageService.getTvMenuEditedMsg(user, update)); // TODO: поменять вызов
     }
 }

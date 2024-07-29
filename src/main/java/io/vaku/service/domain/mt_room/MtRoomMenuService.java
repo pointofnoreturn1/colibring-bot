@@ -15,7 +15,7 @@ import static io.vaku.util.StringConstants.TEXT_GO_BACK;
 @Service
 public class MtRoomMenuService {
 
-    public InlineKeyboardMarkup getInlineMeetingRoomMenu() {
+    public InlineKeyboardMarkup getInlineMtRoomMenu() {
         return InlineKeyboardMarkup
                 .builder()
                 .keyboardRow(
@@ -46,11 +46,11 @@ public class MtRoomMenuService {
                 .build();
     }
 
-    public InlineKeyboardMarkup getInlineBackToBookingMenu() {
-        return new InlineKeyboardMarkup(List.of(List.of(getBackToMainBookingMenuButton())));
+    public InlineKeyboardMarkup getInlineBackToMtRoomBookingMenu() {
+        return new InlineKeyboardMarkup(List.of(List.of(getBackToMainMtRoomBookingMenuButton())));
     }
 
-    public InlineKeyboardMarkup getInlineMyMeetingRoomBookingsMenu(Map<UUID, String> map) {
+    public InlineKeyboardMarkup getInlineMyMtRoomBookingsMenu(Map<UUID, String> map) {
         InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> keyboard = new ArrayList<>();
 
@@ -63,13 +63,13 @@ public class MtRoomMenuService {
                                 .build()
                 )
         )));
-        keyboard.add(List.of(getBackToMainBookingMenuButton()));
+        keyboard.add(List.of(getBackToMainMtRoomBookingMenuButton()));
         markup.setKeyboard(keyboard);
 
         return markup;
     }
 
-    public InlineKeyboardMarkup getInlineBookingDetailsMenu(MeetingRoomBooking booking) {
+    public InlineKeyboardMarkup getInlineMtRoomBookingDetailsMenu(MeetingRoomBooking booking) {
         return InlineKeyboardMarkup
                 .builder()
                 .keyboardRow(
@@ -81,15 +81,15 @@ public class MtRoomMenuService {
                                         .build()
                         )
                 )
-                .keyboardRow(List.of(getBackToBookingListButton()))
+                .keyboardRow(List.of(getBackToMtRoomBookingListButton()))
                 .build();
     }
 
-    private InlineKeyboardButton getBackToMainBookingMenuButton() {
+    private InlineKeyboardButton getBackToMainMtRoomBookingMenuButton() {
         return InlineKeyboardButton.builder().text(TEXT_GO_BACK).callbackData("callbackBackToBookingMenu").build();
     }
 
-    private InlineKeyboardButton getBackToBookingListButton() {
+    private InlineKeyboardButton getBackToMtRoomBookingListButton() {
         return InlineKeyboardButton.builder().text(TEXT_GO_BACK).callbackData("callbackBackToBookingList").build();
     }
 }

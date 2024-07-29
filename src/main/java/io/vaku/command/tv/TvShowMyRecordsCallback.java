@@ -46,7 +46,7 @@ public class TvShowMyRecordsCallback implements Command {
         List<TvBooking> myBookings = tvBookingService.findByUserId(user.getId());
 
         if (update.getCommandName().startsWith("callbackRemoveTvBooking_")) { // when invoked after removing the last booking
-                return List.of(tvMessageService.getMeetingRoomMenuEditedMsg(user, update));
+                return List.of(tvMessageService.getTvMenuEditedMsg(user, update));
         } else {
             user.setTvBookingStatus(BookingStatus.REQUIRE_ITEM_CHOICE);
             userService.createOrUpdate(user);
@@ -59,7 +59,7 @@ public class TvShowMyRecordsCallback implements Command {
                     )
             );
 
-            return List.of(tvMessageService.getMyBookingsEditedMsg(user, update, bookingsMap));
+            return List.of(tvMessageService.getMyTvBookingsEditedMsg(user, update, bookingsMap));
         }
     }
 }

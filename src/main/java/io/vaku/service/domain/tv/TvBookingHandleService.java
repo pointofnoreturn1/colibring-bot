@@ -59,7 +59,7 @@ public class TvBookingHandleService {
                 user.setTvBookingStatus(REQUIRE_ITEM_ACTION);
                 userService.createOrUpdate(user);
 
-                return List.of(tvMessageService.getBookingDetailsEditedMsg(user, update, booking));
+                return List.of(tvMessageService.getTvBookingDetailsEditedMsg(user, update, booking));
             }
         } else if (update.getCommandName().startsWith("callbackRemoveTvBooking_")) {
             String bookingId = update.getCommandName().split("_")[1];
@@ -86,7 +86,7 @@ public class TvBookingHandleService {
 
         List<TvBooking> intersections = (List<TvBooking>) checkTimeIntersections(tvBookingService.findAllActive(), schedules);
         if (!intersections.isEmpty()) {
-            return List.of(tvMessageService.getIntersectedBookingsEditedMsg(user, update, intersections));
+            return List.of(tvMessageService.getIntersectedTvBookingsEditedMsg(user, update, intersections));
         }
 
         for (Schedule schedule : schedules) {
