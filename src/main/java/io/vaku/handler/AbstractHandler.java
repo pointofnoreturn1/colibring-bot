@@ -1,6 +1,9 @@
 package io.vaku.handler;
 
 import io.vaku.command.Command;
+import io.vaku.model.ClassifiedUpdate;
+import io.vaku.model.Response;
+import io.vaku.model.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;
@@ -11,12 +14,11 @@ import java.util.Objects;
 
 public abstract class AbstractHandler implements Handler {
 
+    private final Map<Object, Command> hashMap = new HashMap<>();
     protected final Map<Object, Command> commandsByName = new HashMap<>();
 
     @Autowired
     private List<Command> commands;
-
-    protected abstract HashMap<Object, Command> createMap();
 
     @PostConstruct
     private void init() {
@@ -27,5 +29,20 @@ public abstract class AbstractHandler implements Handler {
                 System.out.println(cmd.getClass().getSimpleName() + " was added for " + this.getClass().getSimpleName());
             }
         });
+    }
+
+    @Override
+    public Map<Object, Command> createMap() {
+        return hashMap;
+    }
+
+    @Override
+    public boolean isApplicable(User user, ClassifiedUpdate update) {
+        return hashMap.containsKey(update.getCommandName());
+    }
+
+    @Override
+    public List<Response> getAnswer(User user, ClassifiedUpdate update) {
+        return hashMap.get(update.getCommandName()).getAnswer(user, update);
     }
 }
