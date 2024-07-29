@@ -5,8 +5,8 @@ import io.vaku.handler.mt_room.MtRoomShowScheduleCallbackHandler;
 import io.vaku.model.ClassifiedUpdate;
 import io.vaku.model.Response;
 import io.vaku.model.domain.User;
-import io.vaku.service.MessageService;
-import io.vaku.service.domain.MtRoomBookingService;
+import io.vaku.service.domain.mt_room.MtRoomMessageService;
+import io.vaku.service.domain.mt_room.MtRoomBookingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -19,7 +19,7 @@ public class MtRoomShowScheduleCallback implements Command {
     private MtRoomBookingService mtRoomBookingService;
 
     @Autowired
-    private MessageService messageService;
+    private MtRoomMessageService mtRoomMessageService;
 
     @Override
     public Class<?> getHandler() {
@@ -33,6 +33,6 @@ public class MtRoomShowScheduleCallback implements Command {
 
     @Override
     public List<Response> getAnswer(User user, ClassifiedUpdate update) {
-        return List.of(messageService.getAllBookingsEditedMsg(user, update, mtRoomBookingService.findAllActive()));
+        return List.of(mtRoomMessageService.getAllBookingsEditedMsg(user, update, mtRoomBookingService.findAllActive()));
     }
 }

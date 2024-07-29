@@ -1,6 +1,6 @@
 package io.vaku.util;
 
-import io.vaku.model.domain.MeetingRoomBooking;
+import io.vaku.model.domain.Booking;
 import io.vaku.model.domain.Schedule;
 
 import java.text.DateFormat;
@@ -114,10 +114,10 @@ public final class DateTimeUtils {
                 return sb.append(description == null ? "" : " " + description).toString();
     }
 
-    public static List<MeetingRoomBooking> checkTimeIntersections(List<MeetingRoomBooking> allBookings, List<Schedule> schedules) {
-        List<MeetingRoomBooking> intersections = new ArrayList<>();
+    public static List<? extends Booking> checkTimeIntersections(List<? extends Booking> allBookings, List<Schedule> schedules) {
+        List<Booking> intersections = new ArrayList<>();
 
-        for (MeetingRoomBooking booking : allBookings) {
+        for (Booking booking : allBookings) {
             for (Schedule schedule : schedules) {
                 if (DateTimeUtils.isIntersected(schedule, booking)) {
                     intersections.add(booking);
@@ -128,7 +128,7 @@ public final class DateTimeUtils {
         return intersections;
     }
 
-    private static boolean isIntersected(Schedule schedule, MeetingRoomBooking booking) {
+    private static boolean isIntersected(Schedule schedule, Booking booking) {
         Instant schStartTime = schedule.getStartTime().toInstant();
         Instant schEndTime = schedule.getEndTime().toInstant();
         Instant bStartTime = booking.getStartTime().toInstant();

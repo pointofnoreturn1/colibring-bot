@@ -16,6 +16,8 @@ public final class StringConstants {
     public static final String TEXT_NO_BOOKINGS = "Нет ни одной брони \uD83E\uDD2F";
     public static final String TEXT_CHOOSE_ACTION = "Выберите действие";
     public static final String TEXT_GO_BACK = "⏪ Назад";
+    public static final String TEXT_MT_ROOM_BOOKING = "\uD83D\uDCA6 Бронь эрекционной";
+    public static final String TEXT_TV_BOOKING = "\uD83D\uDCFA Бронь телевизора";
     public static final String DATE_TIME_SUPPORTED_FORMATS =
             """
                     Введи дату и время

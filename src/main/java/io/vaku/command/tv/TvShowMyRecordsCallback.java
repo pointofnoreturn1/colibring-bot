@@ -1,51 +1,54 @@
-package io.vaku.command.mt_room;
+package io.vaku.command.tv;
 
 import io.vaku.command.Command;
-import io.vaku.handler.mt_room.MtRoomShowMyRecordsCallbackHandler;
+import io.vaku.handler.tv.TvShowMyRecordsCallbackHandler;
 import io.vaku.model.ClassifiedUpdate;
 import io.vaku.model.Response;
-import io.vaku.model.domain.MeetingRoomBooking;
+import io.vaku.model.domain.TvBooking;
 import io.vaku.model.domain.User;
 import io.vaku.model.enm.BookingStatus;
-import io.vaku.service.domain.mt_room.MtRoomMessageService;
-import io.vaku.service.domain.mt_room.MtRoomBookingService;
+import io.vaku.service.domain.tv.TvBookingService;
 import io.vaku.service.domain.UserService;
+import io.vaku.service.domain.tv.TvMessageService;
 import io.vaku.util.DateTimeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 @Component
-public class MtRoomShowMyRecordsCallback implements Command {
+public class TvShowMyRecordsCallback implements Command {
 
     @Autowired
-    private MtRoomBookingService mtRoomBookingService;
+    private TvBookingService tvBookingService;
 
     @Autowired
-    private MtRoomMessageService mtRoomMessageService;
+    private TvMessageService tvMessageService;
 
     @Autowired
     private UserService userService;
 
     @Override
     public Class<?> getHandler() {
-        return MtRoomShowMyRecordsCallbackHandler.class;
+        return TvShowMyRecordsCallbackHandler.class;
     }
 
     @Override
     public Object getCommandName() {
-        return "callbackMeetingRoomShowMyRecords";
+        return "callbackTvShowMyRecords";
     }
 
     @Override
     public List<Response> getAnswer(User user, ClassifiedUpdate update) {
-        List<MeetingRoomBooking> myBookings = mtRoomBookingService.findByUserId(user.getId());
+        List<TvBooking> myBookings = tvBookingService.findByUserId(user.getId());
 
-        if (update.getCommandName().startsWith("callbackRemoveBooking_")) { // when invoked after removing the last booking
-                return List.of(mtRoomMessageService.getMeetingRoomMenuEditedMsg(user, update));
+        if (update.getCommandName().startsWith("callbackRemoveTvBooking_")) { // when invoked after removing the last booking
+                return List.of(tvMessageService.getMeetingRoomMenuEditedMsg(user, update));
         } else {
-            user.setMtRoomBookingStatus(BookingStatus.REQUIRE_ITEM_CHOICE);
+            user.setTvBookingStatus(BookingStatus.REQUIRE_ITEM_CHOICE);
             userService.createOrUpdate(user);
 
             Map<UUID, String> bookingsMap = new LinkedHashMap<>();
@@ -56,7 +59,7 @@ public class MtRoomShowMyRecordsCallback implements Command {
                     )
             );
 
-            return List.of(mtRoomMessageService.getMyBookingsEditedMsg(user, update, bookingsMap));
+            return List.of(tvMessageService.getMyBookingsEditedMsg(user, update, bookingsMap));
         }
     }
 }

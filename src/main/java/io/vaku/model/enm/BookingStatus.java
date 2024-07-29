@@ -1,6 +1,6 @@
 package io.vaku.model.enm;
 
-public enum MtRoomBookingStatus {
+public enum BookingStatus {
     NO_STATUS,
     REQUIRE_INPUT,
     REQUIRE_ITEM_CHOICE,

@@ -1,7 +1,9 @@
 package io.vaku.model.domain;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.Date;
 import java.util.UUID;
@@ -10,8 +12,8 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name = "meeting_room_booking")
-public class MeetingRoomBooking implements Booking {
+@Table(name = "tv_booking")
+public class TvBooking implements Booking {
 
     @Id
     @Column(name = "id")
@@ -40,7 +42,7 @@ public class MeetingRoomBooking implements Booking {
     @Column(name = "created_at")
     private Date createdAt;
 
-    public MeetingRoomBooking(UUID id, Date startTime, Date endTime, String description, User user) {
+    public TvBooking(UUID id, Date startTime, Date endTime, String description, User user) {
         this.id = id;
         this.startTime = startTime;
         this.endTime = endTime;
