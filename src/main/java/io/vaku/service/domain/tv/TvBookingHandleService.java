@@ -72,7 +72,6 @@ public class TvBookingHandleService {
     }
 
     @SneakyThrows
-    @SuppressWarnings("unchecked")
     private List<Response> proceedTvBooking(User user, ClassifiedUpdate update) {
         String[] inputArr = update.getCommandName().split("\n");
         List<Schedule> schedules = new ArrayList<>();
@@ -85,6 +84,7 @@ public class TvBookingHandleService {
             schedules.add(schedule);
         }
 
+        @SuppressWarnings("unchecked")
         List<TvBooking> intersections = (List<TvBooking>) checkTimeIntersections(tvBookingService.findAllActive(), schedules);
         if (!intersections.isEmpty()) {
             return List.of(tvMessageService.getIntersectedTvBookingsEditedMsg(user, update, intersections));

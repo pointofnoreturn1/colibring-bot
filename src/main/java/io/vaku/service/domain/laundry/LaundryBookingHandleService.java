@@ -72,7 +72,6 @@ public class LaundryBookingHandleService {
     }
 
     @SneakyThrows
-    @SuppressWarnings("unchecked")
     private List<Response> proceedLaundryBooking(User user, ClassifiedUpdate update) {
         String[] inputArr = update.getCommandName().split("\n");
         List<Schedule> schedules = new ArrayList<>();
@@ -85,6 +84,7 @@ public class LaundryBookingHandleService {
             schedules.add(schedule);
         }
 
+        @SuppressWarnings("unchecked")
         List<LaundryBooking> intersections = (List<LaundryBooking>) checkTimeIntersections(laundryBookingService.findAllActive(), schedules);
         if (!intersections.isEmpty()) {
             return List.of(laundryMessageService.getIntersectedLaundryBookingsEditedMsg(user, update, intersections));

@@ -72,7 +72,6 @@ public class MtRoomBookingHandleService {
     }
 
     @SneakyThrows
-    @SuppressWarnings("unchecked")
     private List<Response> proceedMeetingRoomBooking(User user, ClassifiedUpdate update) {
         String[] inputArr = update.getCommandName().split("\n");
         List<Schedule> schedules = new ArrayList<>();
@@ -85,6 +84,7 @@ public class MtRoomBookingHandleService {
             schedules.add(schedule);
         }
 
+        @SuppressWarnings("unchecked")
         List<MeetingRoomBooking> intersections = (List<MeetingRoomBooking>) checkTimeIntersections(mtRoomBookingService.findAllActive(), schedules);
         if (!intersections.isEmpty()) {
             return List.of(mtRoomMessageService.getIntersectedMtRoomBookingsEditedMsg(user, update, intersections));
