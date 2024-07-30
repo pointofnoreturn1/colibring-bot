@@ -72,6 +72,7 @@ public class MtRoomBookingHandleService {
     }
 
     @SneakyThrows
+    @SuppressWarnings("unchecked")
     private List<Response> proceedMeetingRoomBooking(User user, ClassifiedUpdate update) {
         String[] inputArr = update.getCommandName().split("\n");
         List<Schedule> schedules = new ArrayList<>();

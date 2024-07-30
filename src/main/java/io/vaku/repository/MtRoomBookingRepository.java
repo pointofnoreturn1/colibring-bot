@@ -17,7 +17,7 @@ public interface MtRoomBookingRepository extends CrudRepository<MeetingRoomBooki
     @Query(
             value = "SELECT * " +
                     "FROM meeting_room_booking " +
-                    "WHERE user_id = ?1 AND is_active = TRUE AND start_time >= CURRENT_DATE " +
+                    "WHERE user_id = ?1 AND is_active = TRUE AND end_time >= CURRENT_DATE " +
                     "ORDER BY start_time",
             nativeQuery = true
     )
@@ -26,7 +26,7 @@ public interface MtRoomBookingRepository extends CrudRepository<MeetingRoomBooki
     @Query(
             value = "SELECT * " +
                     "FROM meeting_room_booking " +
-                    "WHERE is_active = TRUE AND start_time >= CURRENT_DATE " +
+                    "WHERE is_active = TRUE AND end_time >= CURRENT_DATE " +
                     "ORDER BY start_time",
             nativeQuery = true
     )

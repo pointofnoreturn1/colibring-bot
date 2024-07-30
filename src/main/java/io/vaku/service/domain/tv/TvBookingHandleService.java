@@ -72,6 +72,7 @@ public class TvBookingHandleService {
     }
 
     @SneakyThrows
+    @SuppressWarnings("unchecked")
     private List<Response> proceedTvBooking(User user, ClassifiedUpdate update) {
         String[] inputArr = update.getCommandName().split("\n");
         List<Schedule> schedules = new ArrayList<>();
