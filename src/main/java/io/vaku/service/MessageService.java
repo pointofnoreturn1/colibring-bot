@@ -3,6 +3,7 @@ package io.vaku.service;
 import io.vaku.model.ClassifiedUpdate;
 import io.vaku.model.Response;
 import io.vaku.model.domain.Booking;
+import io.vaku.model.domain.LaundryBooking;
 import io.vaku.model.domain.User;
 import io.vaku.model.enm.Lang;
 import io.vaku.util.DateTimeUtils;
@@ -47,9 +48,12 @@ public class MessageService {
         sb.append("Дата: ")
                 .append(dateTimeDescription[0])
                 .append("\nВремя: ")
-                .append(dateTimeDescription[1])
-                .append("\nОписание: ")
-                .append(dateTimeDescription.length == 3 ? dateTimeDescription[2] : "\uD83D\uDEAB нет описания");
+                .append(dateTimeDescription[1]);
+
+        if (!(booking instanceof LaundryBooking)) {
+            sb.append("\nОписание: ")
+                    .append(dateTimeDescription.length == 3 ? dateTimeDescription[2] : "\uD83D\uDEAB нет описания");
+        }
 
         return sb.toString();
     }

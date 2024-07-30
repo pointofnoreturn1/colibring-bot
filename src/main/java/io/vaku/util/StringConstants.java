@@ -14,12 +14,15 @@ public final class StringConstants {
     public static final String DATE_FORMAT = "dd.MM.yyyy";
     public static final String DATE_TIME_FORMAT = "dd.MM.yy HH:mm";
     public static final String TEXT_NO_BOOKINGS = "Нет ни одной брони \uD83E\uDD2F";
+    public static final String TEXT_NO_LAUNDRY_BOOKINGS = "Нет ни одной стирки \uD83E\uDD2F";
     public static final String TEXT_CHOOSE_ACTION = "Выберите действие";
     public static final String TEXT_GO_BACK = "⏪ Назад";
     public static final String EMOJI_MT_ROOM_BOOKING = "\uD83D\uDCA6 ";
     public static final String TEXT_MT_ROOM_BOOKING = EMOJI_MT_ROOM_BOOKING + "Бронь эрекционной";
     public static final String EMOJI_TV_BOOKING = "\uD83D\uDCFA ";
     public static final String TEXT_TV_BOOKING = EMOJI_TV_BOOKING + "Бронь телевизора";
+    public static final String EMOJI_LAUNDRY_BOOKING = "\uD83E\uDDFA ";
+    public static final String TEXT_LAUNDRY_BOOKING = EMOJI_LAUNDRY_BOOKING + "Записаться на стирку";
     public static final String DATE_TIME_SUPPORTED_FORMATS =
             """
                     Введи дату и время
@@ -35,6 +38,22 @@ public final class StringConstants {
                     • ***При отсутствии года запись будет сделана на текущий год
                     • Можно указывать время окончания в следующих сутках (например, 23:00-02:00)
                     • Описание опционально во всех форматах
+                    • Записи можно передавать списком с новой строки каждая
+                    """;
+    public static final String DATE_TIME_LAUNDRY_SUPPORTED_FORMATS =
+            """
+                    Введи дату и время
+
+                    Поддерживаемые форматы:
+                    • 10:00*
+                    • 10:00-11:00**
+                    • 30.01 10:00-11:00***
+                    • 30.01.24 10:00-11:00
+
+                    • *При указании только одного времени (например, 15:00) будет произведена запись с текущей минуты до указанного времени на текущий день
+                    • **При отсутствии даты запись будет сделана на текущий день
+                    • ***При отсутствии года запись будет сделана на текущий год
+                    • Можно указывать время окончания в следующих сутках (например, 23:00-02:00)
                     • Записи можно передавать списком с новой строки каждая
                     """;
     public static final String TEXT_INTERSECTION =
