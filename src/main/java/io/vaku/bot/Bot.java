@@ -5,6 +5,7 @@ import io.vaku.model.Response;
 import io.vaku.model.domain.User;
 import io.vaku.service.UpdateHandlerService;
 import io.vaku.service.domain.UserService;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -16,7 +17,6 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
-import javax.annotation.PostConstruct;
 import java.util.List;
 
 @Component

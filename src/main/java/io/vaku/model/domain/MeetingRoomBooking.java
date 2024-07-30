@@ -35,10 +35,9 @@ public class MeetingRoomBooking implements Booking {
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 
-    @Transient
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_at")
-    private Date createdAt;
+    private Date createdAt = new Date();
 
     public MeetingRoomBooking(UUID id, Date startTime, Date endTime, String description, User user) {
         this.id = id;
