@@ -32,7 +32,7 @@ public class HandlersMap {
     }
 
     public List<Response> execute(User user, ClassifiedUpdate update) {
-        if (!hashMap.containsKey(update.getHandlerType())) {
+        if (!hashMap.containsKey(update.getHandlerType()) || update.getHandlerType().equals(TelegramType.UNKNOWN)) {
             return List.of(new Response());
         }
 

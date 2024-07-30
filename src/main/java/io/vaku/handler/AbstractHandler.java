@@ -14,8 +14,7 @@ import java.util.Objects;
 
 public abstract class AbstractHandler implements Handler {
 
-    private final Map<Object, Command> hashMap = new HashMap<>();
-    protected final Map<Object, Command> commandsByName = new HashMap<>();
+    private final Map<Object, Command> commandsByName = new HashMap<>();
 
     @Autowired
     private List<Command> commands;
@@ -23,7 +22,6 @@ public abstract class AbstractHandler implements Handler {
     @PostConstruct
     private void init() {
         commands.forEach(cmd -> {
-            commandsByName.put(cmd.getCommandName(), cmd);
             if (Objects.equals(cmd.getHandler().getName(), this.getClass().getName())) {
                 createMap().put(cmd.getCommandName(), cmd);
                 System.out.println(cmd.getClass().getSimpleName() + " was added for " + this.getClass().getSimpleName());
@@ -33,16 +31,16 @@ public abstract class AbstractHandler implements Handler {
 
     @Override
     public Map<Object, Command> createMap() {
-        return hashMap;
+        return commandsByName;
     }
 
     @Override
     public boolean isApplicable(User user, ClassifiedUpdate update) {
-        return hashMap.containsKey(update.getCommandName());
+        return commandsByName.containsKey(update.getCommandName());
     }
 
     @Override
     public List<Response> getAnswer(User user, ClassifiedUpdate update) {
-        return hashMap.get(update.getCommandName()).getAnswer(user, update);
+        return commandsByName.get(update.getCommandName()).getAnswer(user, update);
     }
 }

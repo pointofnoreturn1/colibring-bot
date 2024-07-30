@@ -53,7 +53,7 @@ public class TvMessageService {
                 .builder()
                 .chatId(update.getChatId())
                 .messageId(user.getLastMsgId())
-                .text(DATE_TIME_SUPPORTED_FORMATS)
+                .text(EMOJI_TV_BOOKING + DATE_TIME_SUPPORTED_FORMATS)
                 .replyMarkup(tvMenuService.getInlineBackToTvBookingMenu())
                 .build();
 
@@ -65,7 +65,7 @@ public class TvMessageService {
                 .builder()
                 .chatId(update.getChatId())
                 .messageId(user.getLastMsgId())
-                .text(bookingsMap.isEmpty() ? TEXT_NO_BOOKINGS : "Мои бронирования телевизора:")
+                .text(EMOJI_TV_BOOKING + (bookingsMap.isEmpty() ? TEXT_NO_BOOKINGS : "Мои бронирования телевизора:"))
                 .replyMarkup(tvMenuService.getInlineMyTvBookingsMenu(bookingsMap))
                 .build();
 
@@ -77,7 +77,7 @@ public class TvMessageService {
                 .builder()
                 .chatId(update.getChatId())
                 .messageId(user.getLastMsgId())
-                .text(bookings.isEmpty() ? TEXT_NO_BOOKINGS : "Бронирования телевизора:\n\n" + messageService.getBookingsFormattedMessage(bookings))
+                .text(EMOJI_TV_BOOKING + (bookings.isEmpty() ? TEXT_NO_BOOKINGS : "Бронирования телевизора:\n\n" + messageService.getBookingsFormattedMessage(bookings)))
                 .replyMarkup(tvMenuService.getInlineBackToTvBookingMenu())
                 .build();
 
@@ -88,7 +88,7 @@ public class TvMessageService {
         SendMessage msg = SendMessage
                 .builder()
                 .chatId(update.getChatId())
-                .text(TEXT_INTERSECTION + messageService.getBookingsFormattedMessage(bookings))
+                .text(EMOJI_TV_BOOKING + TEXT_INTERSECTION + messageService.getBookingsFormattedMessage(bookings))
                 .replyMarkup(tvMenuService.getInlineBackToTvBookingMenu())
                 .build();
 
