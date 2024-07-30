@@ -1,15 +1,14 @@
-package io.vaku.service;
+package io.vaku.service.domain.tv;
 
-import io.vaku.command.mt_room.MtRoomBackToMenuCallback;
-import io.vaku.command.mt_room.MtRoomShowMyRecordsCallback;
+import io.vaku.command.tv.TvBackToMenuCallback;
+import io.vaku.command.tv.TvShowMyRecordsCallback;
 import io.vaku.handler.HandlersMap;
 import io.vaku.model.ClassifiedUpdate;
 import io.vaku.model.Response;
-import io.vaku.model.domain.MeetingRoomBooking;
 import io.vaku.model.domain.Schedule;
+import io.vaku.model.domain.TvBooking;
 import io.vaku.model.domain.User;
-import io.vaku.model.enm.MtRoomBookingStatus;
-import io.vaku.service.domain.MtRoomBookingService;
+import io.vaku.service.MessageService;
 import io.vaku.service.domain.UserService;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,57 +18,62 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static io.vaku.model.enm.BookingStatus.*;
 import static io.vaku.util.DateTimeUtils.checkTimeIntersections;
 import static io.vaku.util.DateTimeUtils.getSchedule;
 
 @Service
-public class MtRoomBookingHandleService {
+public class TvBookingHandleService {
 
     @Autowired
     private UserService userService;
 
     @Autowired
-    private MtRoomBookingService mtRoomBookingService;
+    private TvBookingService tvBookingService;
 
     @Autowired
     private HandlersMap commandMap;
 
     @Autowired
+    private TvMessageService tvMessageService;
+
+    @Autowired
     private MessageService messageService;
 
     @Autowired
-    private MtRoomBackToMenuCallback mtRoomBackToMenuCallback;
+    private TvBackToMenuCallback tvBackToMenuCallback;
 
     @Autowired
-    private MtRoomShowMyRecordsCallback mtRoomShowMyRecordsCallback;
+    private TvShowMyRecordsCallback tvShowMyRecordsCallback;
 
     public List<Response> execute(User user, ClassifiedUpdate update) {
 
-        if (user.getMtRoomBookingStatus().equals(MtRoomBookingStatus.REQUIRE_INPUT) &&
-                !update.getCommandName().equals(mtRoomBackToMenuCallback.getCommandName())) {
-            return proceedMeetingRoomBooking(user, update);
-        } else if (update.getCommandName().startsWith("callBackShowBookingMenu_")) {
+        if (user.getTvBookingStatus().equals(REQUIRE_INPUT) &&
+                !update.getCommandName().equals(tvBackToMenuCallback.getCommandName())) {
+            return proceedTvBooking(user, update);
+        } else if (update.getCommandName().startsWith("callBackShowTvBookingMenu_")) {
             String bookingId = update.getCommandName().split("_")[1];
-            MeetingRoomBooking booking = mtRoomBookingService.findById(UUID.fromString(bookingId));
+            TvBooking booking = tvBookingService.findById(UUID.fromString(bookingId));
 
             if (booking != null) {
-                user.setMtRoomBookingStatus(MtRoomBookingStatus.REQUIRE_ITEM_ACTION);
+                user.setTvBookingStatus(REQUIRE_ITEM_ACTION);
                 userService.createOrUpdate(user);
 
-                return List.of(messageService.getBookingDetailsEditedMsg(user, update, booking));
+                return List.of(tvMessageService.getTvBookingDetailsEditedMsg(user, update, booking));
             }
-        } else if (update.getCommandName().startsWith("callbackRemoveBooking_")) {
+        } else if (update.getCommandName().startsWith("callbackRemoveTvBooking_")) {
             String bookingId = update.getCommandName().split("_")[1];
-            mtRoomBookingService.removeById(UUID.fromString(bookingId));
+            tvBookingService.removeById(UUID.fromString(bookingId));
 
-            return mtRoomShowMyRecordsCallback.getAnswer(user, update);
+            return tvShowMyRecordsCallback.getAnswer(user, update);
         }
 
         return commandMap.execute(user, update);
     }
 
     @SneakyThrows
-    private List<Response> proceedMeetingRoomBooking(User user, ClassifiedUpdate update) {
+    @SuppressWarnings("unchecked")
+    private List<Response> proceedTvBooking(User user, ClassifiedUpdate update) {
         String[] inputArr = update.getCommandName().split("\n");
         List<Schedule> schedules = new ArrayList<>();
 
@@ -81,23 +85,23 @@ public class MtRoomBookingHandleService {
             schedules.add(schedule);
         }
 
-        List<MeetingRoomBooking> intersections = checkTimeIntersections(mtRoomBookingService.findAllActive(), schedules);
+        List<TvBooking> intersections = (List<TvBooking>) checkTimeIntersections(tvBookingService.findAllActive(), schedules);
         if (!intersections.isEmpty()) {
-            return List.of(messageService.getIntersectedBookingsEditedMsg(user, update, intersections));
+            return List.of(tvMessageService.getIntersectedTvBookingsEditedMsg(user, update, intersections));
         }
 
         for (Schedule schedule : schedules) {
-            MeetingRoomBooking booking = new MeetingRoomBooking(
+            TvBooking booking = new TvBooking(
                     UUID.randomUUID(),
                     schedule.getStartTime(),
                     schedule.getEndTime(),
                     schedule.getDescription(),
                     user
             );
-            mtRoomBookingService.createOrUpdate(booking);
+            tvBookingService.createOrUpdate(booking);
         }
 
-        user.setMtRoomBookingStatus(MtRoomBookingStatus.NO_STATUS);
+        user.setTvBookingStatus(NO_STATUS);
         userService.createOrUpdate(user);
 
         return List.of(messageService.getDoneMsg(user, update));

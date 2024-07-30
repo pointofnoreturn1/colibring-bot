@@ -1,42 +1,42 @@
-package io.vaku.command.mt_room;
+package io.vaku.command.tv;
 
 import io.vaku.command.Command;
-import io.vaku.handler.mt_room.MtRoomBookingCommandHandler;
+import io.vaku.handler.tv.TvBookCallbackHandler;
 import io.vaku.model.ClassifiedUpdate;
 import io.vaku.model.Response;
 import io.vaku.model.domain.User;
-import io.vaku.service.domain.mt_room.MtRoomMessageService;
+import io.vaku.model.enm.BookingStatus;
 import io.vaku.service.domain.UserService;
+import io.vaku.service.domain.tv.TvMessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-import static io.vaku.util.StringConstants.TEXT_MT_ROOM_BOOKING;
-
 @Component
-public class MtRoomBookingCommand implements Command {
-    
-    @Autowired
-    private MtRoomMessageService mtRoomMessageService;
+public class TvBookCallback implements Command {
 
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private TvMessageService tvMessageService;
+
     @Override
     public Class<?> getHandler() {
-        return MtRoomBookingCommandHandler.class;
+        return TvBookCallbackHandler.class;
     }
 
     @Override
     public Object getCommandName() {
-        return TEXT_MT_ROOM_BOOKING;
+        return "callbackTvBook";
     }
 
     @Override
     public List<Response> getAnswer(User user, ClassifiedUpdate update) {
-        userService.resetUserState(user);
+        user.setTvBookingStatus(BookingStatus.REQUIRE_INPUT);
+        userService.createOrUpdate(user);
 
-        return List.of(mtRoomMessageService.getMeetingRoomMenuMsg(user, update));
+        return List.of(tvMessageService.getTvBookingPromptEditedMsg(user, update)); // TODO: поменять вызов
     }
 }

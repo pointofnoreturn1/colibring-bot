@@ -1,7 +1,7 @@
 package io.vaku.model.domain;
 
 import io.vaku.model.enm.Lang;
-import io.vaku.model.enm.MtRoomBookingStatus;
+import io.vaku.model.enm.BookingStatus;
 import io.vaku.model.enm.UserStatus;
 import jakarta.persistence.*;
 import lombok.*;
@@ -62,7 +62,12 @@ public class User {
     @Enumerated(EnumType.STRING)
     @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     @Column(name = "mt_room_booking_status", nullable = false)
-    private MtRoomBookingStatus mtRoomBookingStatus = MtRoomBookingStatus.NO_STATUS;
+    private BookingStatus mtRoomBookingStatus = BookingStatus.NO_STATUS;
+
+    @Enumerated(EnumType.STRING)
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
+    @Column(name = "tv_booking_status", nullable = false)
+    private BookingStatus tvBookingStatus = BookingStatus.NO_STATUS;
 
     @Enumerated(EnumType.STRING)
     @JdbcTypeCode(SqlTypes.NAMED_ENUM)

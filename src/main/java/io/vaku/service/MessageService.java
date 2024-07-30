@@ -2,26 +2,19 @@ package io.vaku.service;
 
 import io.vaku.model.ClassifiedUpdate;
 import io.vaku.model.Response;
-import io.vaku.model.domain.MeetingRoomBooking;
+import io.vaku.model.domain.Booking;
 import io.vaku.model.domain.User;
 import io.vaku.model.enm.Lang;
 import io.vaku.util.DateTimeUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
 import static io.vaku.util.StringConstants.*;
 
 @Service
 public class MessageService {
-
-    @Autowired
-    private MenuService menuService;
 
     public Response getDoneMsg(User user, ClassifiedUpdate update) {
         SendMessage msg = SendMessage
@@ -43,89 +36,7 @@ public class MessageService {
         return new Response(msg);
     }
 
-    public Response getMeetingRoomMenuMsg(User user, ClassifiedUpdate update) {
-        SendMessage msg = SendMessage
-                .builder()
-                .chatId(update.getChatId())
-                .text(TEXT_CHOOSE_ACTION)
-                .replyMarkup(menuService.getInlineMeetingRoomMenu())
-                .build();
-
-        return new Response(msg);
-    }
-
-    public Response getMeetingRoomMenuEditedMsg(User user, ClassifiedUpdate update) {
-        EditMessageText msg = EditMessageText
-                .builder()
-                .chatId(update.getChatId())
-                .messageId(user.getLastMsgId())
-                .text(TEXT_CHOOSE_ACTION)
-                .replyMarkup(menuService.getInlineMeetingRoomMenu())
-                .build();
-
-        return new Response(msg);
-    }
-
-    public Response getBookingPromptEditedMsg(User user, ClassifiedUpdate update) {
-        EditMessageText msg = EditMessageText
-                .builder()
-                .chatId(update.getChatId())
-                .messageId(user.getLastMsgId())
-                .text(DATE_TIME_SUPPORTED_FORMATS)
-                .replyMarkup(menuService.getInlineBackToBookingMenu())
-                .build();
-
-        return new Response(msg);
-    }
-
-    public Response getMyBookingsEditedMsg(User user, ClassifiedUpdate update, Map<UUID, String> bookingsMap) {
-        EditMessageText msg = EditMessageText
-                .builder()
-                .chatId(update.getChatId())
-                .messageId(user.getLastMsgId())
-                .text(bookingsMap.isEmpty() ? TEXT_NO_BOOKINGS : "Мои бронирования эрекционной:")
-                .replyMarkup(menuService.getInlineMyMeetingRoomBookingsMenu(bookingsMap))
-                .build();
-
-        return new Response(msg);
-    }
-
-    public Response getAllBookingsEditedMsg(User user, ClassifiedUpdate update, List<MeetingRoomBooking> bookings) {
-        EditMessageText msg = EditMessageText
-                .builder()
-                .chatId(update.getChatId())
-                .messageId(user.getLastMsgId())
-                .text(bookings.isEmpty() ? TEXT_NO_BOOKINGS : "Бронирования эрекционной:\n\n" + getBookingsFormattedMessage(bookings))
-                .replyMarkup(menuService.getInlineBackToBookingMenu())
-                .build();
-
-        return new Response(msg);
-    }
-
-    public Response getIntersectedBookingsEditedMsg(User user, ClassifiedUpdate update, List<MeetingRoomBooking> bookings) {
-        SendMessage msg = SendMessage
-                .builder()
-                .chatId(update.getChatId())
-                .text(TEXT_INTERSECTION + getBookingsFormattedMessage(bookings))
-                .replyMarkup(menuService.getInlineBackToBookingMenu())
-                .build();
-
-        return new Response(msg);
-    }
-
-    public Response getBookingDetailsEditedMsg(User user, ClassifiedUpdate update, MeetingRoomBooking booking) {
-        EditMessageText msg = EditMessageText
-                .builder()
-                .chatId(update.getChatId())
-                .messageId(user.getLastMsgId())
-                .text(getBookingDetails(booking))
-                .replyMarkup(menuService.getInlineBookingDetailsMenu(booking))
-                .build();
-
-        return new Response(msg);
-    }
-
-    private String getBookingDetails(MeetingRoomBooking booking) {
+    public String getBookingDetails(Booking booking) {
         String[] dateTimeDescription = DateTimeUtils.getHumanSchedule(
                 booking.getStartTime(),
                 booking.getEndTime(),
@@ -143,10 +54,10 @@ public class MessageService {
         return sb.toString();
     }
 
-    private String getBookingsFormattedMessage(List<MeetingRoomBooking> bookings) {
+    public String getBookingsFormattedMessage(List<? extends Booking> bookings) {
         StringBuilder sb = new StringBuilder();
 
-        for (MeetingRoomBooking booking : bookings) {
+        for (Booking booking : bookings) {
             sb.append(DateTimeUtils.getHumanSchedule(
                             booking.getStartTime(),
                             booking.getEndTime(),

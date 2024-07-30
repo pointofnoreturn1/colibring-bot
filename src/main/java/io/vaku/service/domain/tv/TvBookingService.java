@@ -1,7 +1,7 @@
-package io.vaku.service.domain;
+package io.vaku.service.domain.tv;
 
-import io.vaku.model.domain.MeetingRoomBooking;
-import io.vaku.repository.MtRoomBookingRepository;
+import io.vaku.model.domain.TvBooking;
+import io.vaku.repository.TvBookingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,25 +11,25 @@ import java.util.UUID;
 
 @Service
 @Transactional(readOnly = true)
-public class MtRoomBookingService {
+public class TvBookingService {
 
     @Autowired
-    private MtRoomBookingRepository repository;
+    private TvBookingRepository repository;
 
     @Transactional
-    public void createOrUpdate(MeetingRoomBooking booking) {
+    public void createOrUpdate(TvBooking booking) {
         repository.save(booking);
     }
 
-    public MeetingRoomBooking findById(UUID id) {
+    public TvBooking findById(UUID id) {
         return repository.findById(id).orElse(null);
     }
 
-    public List<MeetingRoomBooking> findByUserId(long userId) {
+    public List<TvBooking> findByUserId(long userId) {
         return repository.findByUserId(userId);
     }
 
-    public List<MeetingRoomBooking> findAllActive() {
+    public List<TvBooking> findAllActive() {
         return repository.findAllActive();
     }
 

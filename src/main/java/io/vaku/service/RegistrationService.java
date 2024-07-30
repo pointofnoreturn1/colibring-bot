@@ -35,7 +35,7 @@ public class RegistrationService {
     private static final String TEXT_BIO_REQUEST_RU = "Расскажи нам о себе";
     private static final String TEXT_BIO_REQUEST_EN = "Tell us about yourself";
     private static final String TEXT_SUCCESSFUL_REGISTRATION_RU = "\uD83C\uDF89 Поздравляем! \uD83C\uDF89\nРегистрация успешно завершена";
-    private static final String TEXT_SUCCESSFUL_REGISTRATION_EN = "\uD83C\uDF89Congratulations! \uD83C\uDF89\nRegistration successfully completed";
+    private static final String TEXT_SUCCESSFUL_REGISTRATION_EN = "\uD83C\uDF89 Congratulations! \uD83C\uDF89\nRegistration successfully completed";
 
     @Value("${app.feature.register.password}")
     private String password;
