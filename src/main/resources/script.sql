@@ -96,13 +96,10 @@ CREATE TABLE laundry_booking(
 
 CREATE TABLE meal_menu(
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id BIGINT NOT NULL,
     day_of_week DAY_OF_WEEK NOT NULL,
     meal_type MEAL_TYPE NOT NULL,
     name VARCHAR(255),
     price INTEGER NOT NULL,
-    start_date DATE NOT NULL,
-    end_date DATE NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT now()
 );
 
