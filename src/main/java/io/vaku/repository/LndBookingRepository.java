@@ -32,6 +32,15 @@ public interface LndBookingRepository extends CrudRepository<LaundryBooking, UUI
     )
     List<LaundryBooking> findAllActive();
 
+    @Query(
+            value = "SELECT * " +
+                    "FROM laundry_booking " +
+                    "WHERE is_active = TRUE AND end_time >= CURRENT_DATE AND is_notified = FALSE " +
+                    "ORDER BY start_time",
+            nativeQuery = true
+    )
+    List<LaundryBooking> findAllActiveNotNotified();
+
     @Modifying
     @Query(
             value = "UPDATE laundry_booking " +

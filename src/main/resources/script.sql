@@ -75,6 +75,7 @@ CREATE TABLE laundry_booking(
     start_time TIMESTAMP NOT NULL,
     end_time TIMESTAMP NOT NULL,
     is_active BOOL NOT NULL DEFAULT TRUE,
+    is_notified BOOL NOT NULL DEFAULT FALSE,
     description VARCHAR(255),
     user_id BIGINT NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT now()

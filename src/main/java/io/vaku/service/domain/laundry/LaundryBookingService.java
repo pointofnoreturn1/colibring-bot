@@ -33,6 +33,10 @@ public class LaundryBookingService {
         return repository.findAllActive();
     }
 
+    public List<LaundryBooking> findAllActiveNotNotified() {
+        return repository.findAllActiveNotNotified();
+    }
+
     @Transactional
     public void removeById(UUID id) {
         repository.removeById(id);

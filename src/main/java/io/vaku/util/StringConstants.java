@@ -23,6 +23,8 @@ public final class StringConstants {
     public static final String TEXT_TV_BOOKING = EMOJI_TV_BOOKING + "Бронь телевизора";
     public static final String EMOJI_LAUNDRY_BOOKING = "\uD83E\uDDFA ";
     public static final String TEXT_LAUNDRY_BOOKING = EMOJI_LAUNDRY_BOOKING + "Записаться на стирку";
+    public static final String EMOJI_NOTIFICATION = "\uD83D\uDD14 ";
+    public static final String TEXT_LAUNDRY_NOTIFICATION = "Напоминаю, что у тебя через 15 минут стирка";
     public static final String DATE_TIME_SUPPORTED_FORMATS =
             """
                     Введи дату и время

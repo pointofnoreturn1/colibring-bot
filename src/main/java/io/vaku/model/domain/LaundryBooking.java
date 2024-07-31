@@ -1,15 +1,12 @@
 package io.vaku.model.domain;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.Date;
 import java.util.UUID;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @Entity
 @Table(name = "laundry_booking")
@@ -29,6 +26,9 @@ public class LaundryBooking implements Booking {
 
     @Column(name = "is_active")
     private boolean isActive = true;
+
+    @Column(name = "is_notified")
+    private boolean isNotified = false;
 
     @Column(name = "description")
     private String description;

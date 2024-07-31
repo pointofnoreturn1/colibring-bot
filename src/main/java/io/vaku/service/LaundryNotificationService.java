@@ -24,6 +24,9 @@ import java.time.ZoneId;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static io.vaku.util.StringConstants.EMOJI_NOTIFICATION;
+import static io.vaku.util.StringConstants.TEXT_LAUNDRY_NOTIFICATION;
+
 @Service
 public class LaundryNotificationService {
 
@@ -38,18 +41,20 @@ public class LaundryNotificationService {
 
     @Scheduled(fixedRate = 60000)
     public void checkUpcomingWashes() {
-        Map<User, LaundryBooking> userToLaundryBooking = laundryBookingService.findAllActive()
+        Map<LaundryBooking, User> laundryBookingToUser = laundryBookingService
+                .findAllActiveNotNotified()
                 .stream()
-                .collect(Collectors.toMap(LaundryBooking::getUser, it -> it));
+                .collect(Collectors.toMap(it -> it, LaundryBooking::getUser));
 
-        for (Map.Entry<User, LaundryBooking> entry : userToLaundryBooking.entrySet()) {
-            if (isInFifteenMinutes(entry.getValue())) {
-                notify(entry.getKey().getChatId(), "У тебя скоро стирка");
+        for (Map.Entry<LaundryBooking, User> entry : laundryBookingToUser.entrySet()) {
+            LaundryBooking booking = entry.getKey();
+            if (isInFifteenMinutes(booking)) {
+                notify(entry.getValue().getChatId(), EMOJI_NOTIFICATION + TEXT_LAUNDRY_NOTIFICATION);
+                booking.setNotified(true);
+                laundryBookingService.createOrUpdate(booking);
             }
         }
     }
-
-    // TODO сейчас бот спамит сообщениями о стирке каждую минуту, сделать чтобы отправлял 1 раз. WeakHashMap?
 
     @SneakyThrows
     private void notify(long chatId, String msg) {
@@ -78,6 +83,6 @@ public class LaundryNotificationService {
 
         long duration = Duration.between(now, startTime).toMinutes();
 
-        return duration <= 15 && duration > 0;
+        return duration < 15 && duration > 0;
     }
 }
