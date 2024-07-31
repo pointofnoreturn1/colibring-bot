@@ -28,6 +28,7 @@ public class UserService {
     public void resetUserState(User user) {
         user.setMtRoomBookingStatus(BookingStatus.NO_STATUS);
         user.setTvBookingStatus(BookingStatus.NO_STATUS);
+        user.setLaundryBookingStatus(BookingStatus.NO_STATUS);
 
         createOrUpdate(user);
     }

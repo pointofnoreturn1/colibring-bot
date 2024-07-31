@@ -1,42 +1,42 @@
-package io.vaku.command.tv;
+package io.vaku.command.laundry;
 
 import io.vaku.command.Command;
-import io.vaku.handler.tv.TvBookCallbackHandler;
+import io.vaku.handler.laundry.LaundryBackToMenuCallbackHandler;
 import io.vaku.model.ClassifiedUpdate;
 import io.vaku.model.Response;
 import io.vaku.model.domain.User;
 import io.vaku.model.enm.BookingStatus;
 import io.vaku.service.domain.UserService;
-import io.vaku.service.domain.tv.TvMessageService;
+import io.vaku.service.domain.laundry.LaundryMessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @Component
-public class TvBookCallback implements Command {
+public class LaundryBackToMenuCallback implements Command {
 
     @Autowired
     private UserService userService;
 
     @Autowired
-    private TvMessageService tvMessageService;
+    private LaundryMessageService laundryMessageService;
 
     @Override
     public Class<?> getHandler() {
-        return TvBookCallbackHandler.class;
+        return LaundryBackToMenuCallbackHandler.class;
     }
 
     @Override
     public Object getCommandName() {
-        return "callbackTvBook";
+        return "callbackBackToLndBookingMenu";
     }
 
     @Override
     public List<Response> getAnswer(User user, ClassifiedUpdate update) {
-        user.setTvBookingStatus(BookingStatus.REQUIRE_INPUT);
+        user.setLaundryBookingStatus(BookingStatus.NO_STATUS);
         userService.createOrUpdate(user);
 
-        return List.of(tvMessageService.getTvBookingPromptEditedMsg(user, update));
+        return List.of(laundryMessageService.getLaundryMenuEditedMsg(user, update));
     }
 }

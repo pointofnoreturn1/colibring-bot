@@ -1,8 +1,8 @@
-package io.vaku.service.domain.mt_room;
+package io.vaku.service.domain.laundry;
 
 import io.vaku.model.ClassifiedUpdate;
 import io.vaku.model.Response;
-import io.vaku.model.domain.MeetingRoomBooking;
+import io.vaku.model.domain.LaundryBooking;
 import io.vaku.model.domain.User;
 import io.vaku.service.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,91 +17,91 @@ import java.util.UUID;
 import static io.vaku.util.StringConstants.*;
 
 @Service
-public class MtRoomMessageService {
+public class LaundryMessageService {
 
     @Autowired
-    private MtRoomMenuService menuService;
+    private LaundryMenuService laundryMenuService;
 
     @Autowired
     private MessageService messageService;
 
-    public Response getMeetingRoomMenuMsg(User user, ClassifiedUpdate update) {
+    public Response getLaundryMenuMsg(User user, ClassifiedUpdate update) {
         SendMessage msg = SendMessage
                 .builder()
                 .chatId(update.getChatId())
-                .text(TEXT_MT_ROOM_BOOKING + "\n" + TEXT_CHOOSE_ACTION)
-                .replyMarkup(menuService.getInlineMtRoomMenu())
+                .text(TEXT_LAUNDRY_BOOKING + "\n" + TEXT_CHOOSE_ACTION)
+                .replyMarkup(laundryMenuService.getInlineLaundryMenu())
                 .build();
 
         return new Response(msg);
     }
 
-    public Response getMeetingRoomMenuEditedMsg(User user, ClassifiedUpdate update) {
+    public Response getLaundryMenuEditedMsg(User user, ClassifiedUpdate update) {
         EditMessageText msg = EditMessageText
                 .builder()
                 .chatId(update.getChatId())
                 .messageId(user.getLastMsgId())
-                .text(TEXT_MT_ROOM_BOOKING + "\n" + TEXT_CHOOSE_ACTION)
-                .replyMarkup(menuService.getInlineMtRoomMenu())
+                .text(TEXT_LAUNDRY_BOOKING + "\n" + TEXT_CHOOSE_ACTION)
+                .replyMarkup(laundryMenuService.getInlineLaundryMenu())
                 .build();
 
         return new Response(msg);
     }
 
-    public Response getMtRoomBookingPromptEditedMsg(User user, ClassifiedUpdate update) {
+    public Response getLaundryBookingPromptEditedMsg(User user, ClassifiedUpdate update) {
         EditMessageText msg = EditMessageText
                 .builder()
                 .chatId(update.getChatId())
                 .messageId(user.getLastMsgId())
-                .text(EMOJI_MT_ROOM_BOOKING + DATE_TIME_SUPPORTED_FORMATS)
-                .replyMarkup(menuService.getInlineBackToMtRoomBookingMenu())
+                .text(EMOJI_LAUNDRY_BOOKING + DATE_TIME_LAUNDRY_SUPPORTED_FORMATS)
+                .replyMarkup(laundryMenuService.getInlineBackToLaundryBookingMenu())
                 .build();
 
         return new Response(msg);
     }
 
-    public Response getMyMtRoomBookingsEditedMsg(User user, ClassifiedUpdate update, Map<UUID, String> bookingsMap) {
+    public Response getMyLaundryBookingsEditedMsg(User user, ClassifiedUpdate update, Map<UUID, String> bookingsMap) {
         EditMessageText msg = EditMessageText
                 .builder()
                 .chatId(update.getChatId())
                 .messageId(user.getLastMsgId())
-                .text(EMOJI_MT_ROOM_BOOKING + (bookingsMap.isEmpty() ? TEXT_NO_BOOKINGS : "Мои бронирования эрекционной (кликабельны)"))
-                .replyMarkup(menuService.getInlineMyMtRoomBookingsMenu(bookingsMap))
+                .text(EMOJI_LAUNDRY_BOOKING + (bookingsMap.isEmpty() ? TEXT_NO_LAUNDRY_BOOKINGS : "Мои стирки (кликабельны)"))
+                .replyMarkup(laundryMenuService.getInlineMyLaundryBookingsMenu(bookingsMap))
                 .build();
 
         return new Response(msg);
     }
 
-    public Response getAllMtRoomBookingsEditedMsg(User user, ClassifiedUpdate update, List<MeetingRoomBooking> bookings) {
+    public Response getAllLaundryBookingsEditedMsg(User user, ClassifiedUpdate update, List<LaundryBooking> bookings) {
         EditMessageText msg = EditMessageText
                 .builder()
                 .chatId(update.getChatId())
                 .messageId(user.getLastMsgId())
-                .text(EMOJI_MT_ROOM_BOOKING + (bookings.isEmpty() ? TEXT_NO_BOOKINGS : "Бронирования эрекционной:\n\n" + messageService.getBookingsFormattedMessage(bookings)))
-                .replyMarkup(menuService.getInlineBackToMtRoomBookingMenu())
+                .text(EMOJI_LAUNDRY_BOOKING + (bookings.isEmpty() ? TEXT_NO_LAUNDRY_BOOKINGS : "Расписание стирок:\n\n" + messageService.getBookingsFormattedMessage(bookings)))
+                .replyMarkup(laundryMenuService.getInlineBackToLaundryBookingMenu())
                 .build();
 
         return new Response(msg);
     }
 
-    public Response getIntersectedMtRoomBookingsEditedMsg(User user, ClassifiedUpdate update, List<MeetingRoomBooking> bookings) {
+    public Response getIntersectedLaundryBookingsEditedMsg(User user, ClassifiedUpdate update, List<LaundryBooking> bookings) {
         SendMessage msg = SendMessage
                 .builder()
                 .chatId(update.getChatId())
-                .text(EMOJI_MT_ROOM_BOOKING + TEXT_INTERSECTION + messageService.getBookingsFormattedMessage(bookings))
-                .replyMarkup(menuService.getInlineBackToMtRoomBookingMenu())
+                .text(EMOJI_LAUNDRY_BOOKING + TEXT_INTERSECTION + messageService.getBookingsFormattedMessage(bookings))
+                .replyMarkup(laundryMenuService.getInlineBackToLaundryBookingMenu())
                 .build();
 
         return new Response(msg);
     }
 
-    public Response getMtRoomBookingDetailsEditedMsg(User user, ClassifiedUpdate update, MeetingRoomBooking booking) {
+    public Response getLaundryBookingDetailsEditedMsg(User user, ClassifiedUpdate update, LaundryBooking booking) {
         EditMessageText msg = EditMessageText
                 .builder()
                 .chatId(update.getChatId())
                 .messageId(user.getLastMsgId())
                 .text(messageService.getBookingDetails(booking))
-                .replyMarkup(menuService.getInlineMtRoomBookingDetailsMenu(booking))
+                .replyMarkup(laundryMenuService.getInlineLaundryBookingDetailsMenu(booking))
                 .build();
 
         return new Response(msg);

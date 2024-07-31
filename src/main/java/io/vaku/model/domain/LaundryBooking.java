@@ -6,12 +6,11 @@ import lombok.*;
 import java.util.Date;
 import java.util.UUID;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @Entity
-@Table(name = "meeting_room_booking")
-public class MeetingRoomBooking implements Booking {
+@Table(name = "laundry_booking")
+public class LaundryBooking implements Booking {
 
     @Id
     @Column(name = "id")
@@ -28,6 +27,9 @@ public class MeetingRoomBooking implements Booking {
     @Column(name = "is_active")
     private boolean isActive = true;
 
+    @Column(name = "is_notified")
+    private boolean isNotified = false;
+
     @Column(name = "description")
     private String description;
 
@@ -39,7 +41,7 @@ public class MeetingRoomBooking implements Booking {
     @Column(name = "created_at")
     private Date createdAt = new Date();
 
-    public MeetingRoomBooking(UUID id, Date startTime, Date endTime, String description, User user) {
+    public LaundryBooking(UUID id, Date startTime, Date endTime, String description, User user) {
         this.id = id;
         this.startTime = startTime;
         this.endTime = endTime;

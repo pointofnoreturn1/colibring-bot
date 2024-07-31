@@ -1,12 +1,12 @@
-package io.vaku.service.domain.tv;
+package io.vaku.service.domain.laundry;
 
-import io.vaku.command.tv.TvBackToMenuCallback;
-import io.vaku.command.tv.TvShowMyRecordsCallback;
+import io.vaku.command.laundry.LaundryBackToMenuCallback;
+import io.vaku.command.laundry.LaundryShowMyRecordsCallback;
 import io.vaku.handler.HandlersMap;
 import io.vaku.model.ClassifiedUpdate;
 import io.vaku.model.Response;
+import io.vaku.model.domain.LaundryBooking;
 import io.vaku.model.domain.Schedule;
-import io.vaku.model.domain.TvBooking;
 import io.vaku.model.domain.User;
 import io.vaku.service.MessageService;
 import io.vaku.service.domain.UserService;
@@ -23,56 +23,56 @@ import static io.vaku.util.DateTimeUtils.checkTimeIntersections;
 import static io.vaku.util.DateTimeUtils.getSchedule;
 
 @Service
-public class TvBookingHandleService {
+public class LaundryBookingHandleService {
 
     @Autowired
     private UserService userService;
 
     @Autowired
-    private TvBookingService tvBookingService;
+    private LaundryBookingService laundryBookingService;
 
     @Autowired
     private HandlersMap commandMap;
 
     @Autowired
-    private TvMessageService tvMessageService;
+    private LaundryMessageService laundryMessageService;
 
     @Autowired
     private MessageService messageService;
 
     @Autowired
-    private TvBackToMenuCallback tvBackToMenuCallback;
+    private LaundryBackToMenuCallback laundryBackToMenuCallback;
 
     @Autowired
-    private TvShowMyRecordsCallback tvShowMyRecordsCallback;
+    private LaundryShowMyRecordsCallback laundryShowMyRecordsCallback;
 
     public List<Response> execute(User user, ClassifiedUpdate update) {
 
-        if (user.getTvBookingStatus().equals(REQUIRE_INPUT) &&
-                !update.getCommandName().equals(tvBackToMenuCallback.getCommandName())) {
-            return proceedTvBooking(user, update);
-        } else if (update.getCommandName().startsWith("callBackShowTvBookingMenu_")) {
+        if (user.getLaundryBookingStatus().equals(REQUIRE_INPUT) &&
+                !update.getCommandName().equals(laundryBackToMenuCallback.getCommandName())) {
+            return proceedLaundryBooking(user, update);
+        } else if (update.getCommandName().startsWith("callBackShowLndBookingMenu_")) {
             String bookingId = update.getCommandName().split("_")[1];
-            TvBooking booking = tvBookingService.findById(UUID.fromString(bookingId));
+            LaundryBooking booking = laundryBookingService.findById(UUID.fromString(bookingId));
 
             if (booking != null) {
-                user.setTvBookingStatus(REQUIRE_ITEM_ACTION);
+                user.setLaundryBookingStatus(REQUIRE_ITEM_ACTION);
                 userService.createOrUpdate(user);
 
-                return List.of(tvMessageService.getTvBookingDetailsEditedMsg(user, update, booking));
+                return List.of(laundryMessageService.getLaundryBookingDetailsEditedMsg(user, update, booking));
             }
-        } else if (update.getCommandName().startsWith("callbackRemoveTvBooking_")) {
+        } else if (update.getCommandName().startsWith("callbackRemoveLndBooking_")) {
             String bookingId = update.getCommandName().split("_")[1];
-            tvBookingService.removeById(UUID.fromString(bookingId));
+            laundryBookingService.removeById(UUID.fromString(bookingId));
 
-            return tvShowMyRecordsCallback.getAnswer(user, update);
+            return laundryShowMyRecordsCallback.getAnswer(user, update);
         }
 
         return commandMap.execute(user, update);
     }
 
     @SneakyThrows
-    private List<Response> proceedTvBooking(User user, ClassifiedUpdate update) {
+    private List<Response> proceedLaundryBooking(User user, ClassifiedUpdate update) {
         String[] inputArr = update.getCommandName().split("\n");
         List<Schedule> schedules = new ArrayList<>();
 
@@ -85,23 +85,23 @@ public class TvBookingHandleService {
         }
 
         @SuppressWarnings("unchecked")
-        List<TvBooking> intersections = (List<TvBooking>) checkTimeIntersections(tvBookingService.findAllActive(), schedules);
+        List<LaundryBooking> intersections = (List<LaundryBooking>) checkTimeIntersections(laundryBookingService.findAllActive(), schedules);
         if (!intersections.isEmpty()) {
-            return List.of(tvMessageService.getIntersectedTvBookingsEditedMsg(user, update, intersections));
+            return List.of(laundryMessageService.getIntersectedLaundryBookingsEditedMsg(user, update, intersections));
         }
 
         for (Schedule schedule : schedules) {
-            TvBooking booking = new TvBooking(
+            LaundryBooking booking = new LaundryBooking(
                     UUID.randomUUID(),
                     schedule.getStartTime(),
                     schedule.getEndTime(),
-                    schedule.getDescription(),
+                    null, // for laundry description is always empty
                     user
             );
-            tvBookingService.createOrUpdate(booking);
+            laundryBookingService.createOrUpdate(booking);
         }
 
-        user.setTvBookingStatus(NO_STATUS);
+        user.setLaundryBookingStatus(NO_STATUS);
         userService.createOrUpdate(user);
 
         return List.of(messageService.getDoneMsg(user, update));

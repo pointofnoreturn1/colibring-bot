@@ -33,6 +33,6 @@ public class TvShowScheduleCallback implements Command {
 
     @Override
     public List<Response> getAnswer(User user, ClassifiedUpdate update) {
-        return List.of(tvMessageService.getAllTvBookingsEditedMsg(user, update, tvBookingService.findAllActive())); // TODO: поменять вызов
+        return List.of(tvMessageService.getAllTvBookingsEditedMsg(user, update, tvBookingService.findAllActive()));
     }
 }

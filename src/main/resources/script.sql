@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS laundry_booking;
 DROP TABLE IF EXISTS meeting_room_booking;
 DROP TABLE IF EXISTS tv_booking;
 DROP TABLE IF EXISTS "user";
@@ -38,6 +39,7 @@ CREATE TABLE "user"(
 	status STATUS NOT NULL,
 	mt_room_booking_status BOOKING_STATUS NOT NULL DEFAULT 'NO_STATUS',
 	tv_booking_status BOOKING_STATUS NOT NULL DEFAULT 'NO_STATUS',
+	lnd_booking_status BOOKING_STATUS NOT NULL DEFAULT 'NO_STATUS',
 	lang LANG NOT NULL DEFAULT 'RU',
 	created_at TIMESTAMP NOT NULL DEFAULT now()
 );
@@ -68,9 +70,21 @@ CREATE TABLE tv_booking(
     created_at TIMESTAMP NOT NULL DEFAULT now()
 );
 
+CREATE TABLE laundry_booking(
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    start_time TIMESTAMP NOT NULL,
+    end_time TIMESTAMP NOT NULL,
+    is_active BOOL NOT NULL DEFAULT TRUE,
+    is_notified BOOL NOT NULL DEFAULT FALSE,
+    description VARCHAR(255),
+    user_id BIGINT NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT now()
+);
+
 ALTER TABLE "user" ADD CONSTRAINT user_room_id_fkey FOREIGN KEY (room_id) REFERENCES room(id);
 ALTER TABLE meeting_room_booking ADD CONSTRAINT meeting_room_booking_user_id_fkey FOREIGN KEY (user_id) REFERENCES "user"(id);
 ALTER TABLE tv_booking ADD CONSTRAINT tv_booking_user_id_fkey FOREIGN KEY (user_id) REFERENCES "user"(id);
+ALTER TABLE laundry_booking ADD CONSTRAINT laundry_booking_user_id_fkey FOREIGN KEY (user_id) REFERENCES "user"(id);
 
 INSERT INTO room (number, is_hostel) VALUES
 ('01', false),

@@ -65,7 +65,7 @@ public class TvMessageService {
                 .builder()
                 .chatId(update.getChatId())
                 .messageId(user.getLastMsgId())
-                .text(EMOJI_TV_BOOKING + (bookingsMap.isEmpty() ? TEXT_NO_BOOKINGS : "Мои бронирования телевизора:"))
+                .text(EMOJI_TV_BOOKING + (bookingsMap.isEmpty() ? TEXT_NO_BOOKINGS : "Мои бронирования телевизора (кликабельны)"))
                 .replyMarkup(tvMenuService.getInlineMyTvBookingsMenu(bookingsMap))
                 .build();
 

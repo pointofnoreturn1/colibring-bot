@@ -71,6 +71,11 @@ public class User {
 
     @Enumerated(EnumType.STRING)
     @JdbcTypeCode(SqlTypes.NAMED_ENUM)
+    @Column(name = "lnd_booking_status", nullable = false)
+    private BookingStatus laundryBookingStatus = BookingStatus.NO_STATUS;
+
+    @Enumerated(EnumType.STRING)
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     @Column(name = "lang", nullable = false)
     private Lang lang;
 
@@ -80,7 +85,13 @@ public class User {
     private Date createdAt;
 
     @OneToMany(mappedBy = "user")
-    private List<MeetingRoomBooking> meetingRoomBookings;
+    private List<MeetingRoomBooking> mtRoomBookings;
+
+    @OneToMany(mappedBy = "user")
+    private List<TvBooking> tvBookings;
+
+    @OneToMany(mappedBy = "user")
+    private List<LaundryBooking> laundryBookings;
 
     public User(long id, long chatId, String tgUserName, String tgFirstName, String tgLastName) {
         this.id = id;
