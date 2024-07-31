@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS meal_menu;
 DROP TABLE IF EXISTS laundry_booking;
 DROP TABLE IF EXISTS meeting_room_booking;
 DROP TABLE IF EXISTS tv_booking;
@@ -6,8 +7,11 @@ DROP TABLE IF EXISTS room;
 DROP TYPE IF EXISTS lang;
 DROP TYPE IF EXISTS status;
 DROP TYPE IF EXISTS booking_status;
+DROP TYPE IF EXISTS day_of_week;
+DROP TYPE IF EXISTS meal_type;
 
 CREATE TYPE lang AS ENUM('EN', 'RU');
+
 CREATE TYPE status AS ENUM(
     'REQUIRE_REGISTRATION',
     'REQUIRE_PASSWORD',
@@ -18,11 +22,20 @@ CREATE TYPE status AS ENUM(
     'REGISTERED',
     'BLOCKED'
 );
+
 CREATE TYPE booking_status AS ENUM(
     'NO_STATUS',
     'REQUIRE_INPUT',
     'REQUIRE_ITEM_CHOICE',
     'REQUIRE_ITEM_ACTION'
+);
+
+CREATE TYPE day_of_week AS ENUM(
+    'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'
+);
+
+CREATE TYPE meal_type AS ENUM(
+    'BREAKFAST', 'LUNCH', 'SUPPER'
 );
 
 CREATE TABLE "user"(
@@ -78,6 +91,18 @@ CREATE TABLE laundry_booking(
     is_notified BOOL NOT NULL DEFAULT FALSE,
     description VARCHAR(255),
     user_id BIGINT NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT now()
+);
+
+CREATE TABLE meal_menu(
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id BIGINT NOT NULL,
+    day_of_week DAY_OF_WEEK NOT NULL,
+    meal_type MEAL_TYPE NOT NULL,
+    name VARCHAR(255),
+    price INTEGER NOT NULL,
+    start_date DATE NOT NULL,
+    end_date DATE NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT now()
 );
 
