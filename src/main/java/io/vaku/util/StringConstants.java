@@ -25,6 +25,10 @@ public final class StringConstants {
     public static final String TEXT_LAUNDRY_BOOKING = EMOJI_LAUNDRY_BOOKING + "Записаться на стирку";
     public static final String EMOJI_NOTIFICATION = "\uD83D\uDD14 ";
     public static final String TEXT_LAUNDRY_NOTIFICATION = "Напоминаю, что у тебя через 15 минут стирка";
+    public static final String EMOJI_MEAL_SIGN_UP = "\uD83C\uDF7D ";
+    public static final String TEXT_MEAL_SIGN_UP = EMOJI_MEAL_SIGN_UP + "Питание";
+    public static final String EMOJI_RELOAD_MENU = "\uD83D\uDD04 ";
+    public static final String TEXT_RELOAD_MENU = EMOJI_RELOAD_MENU + "Обновить меню бота";
     public static final String DATE_TIME_SUPPORTED_FORMATS =
             """
                     Введи дату и время

@@ -36,7 +36,9 @@ public class MenuService {
         List<KeyboardRow> keyboard = List.of(
                 new KeyboardRow(List.of(new KeyboardButton(TEXT_MT_ROOM_BOOKING))),
                 new KeyboardRow(List.of(new KeyboardButton(TEXT_TV_BOOKING))),
-                new KeyboardRow(List.of(new KeyboardButton(TEXT_LAUNDRY_BOOKING)))
+                new KeyboardRow(List.of(new KeyboardButton(TEXT_LAUNDRY_BOOKING))),
+                new KeyboardRow(List.of(new KeyboardButton(TEXT_MEAL_SIGN_UP))),
+                new KeyboardRow(List.of(new KeyboardButton(TEXT_RELOAD_MENU)))
         );
 
         return ReplyKeyboardMarkup.builder().keyboard(keyboard).resizeKeyboard(true).build();
