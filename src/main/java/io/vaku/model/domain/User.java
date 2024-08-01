@@ -76,6 +76,11 @@ public class User {
 
     @Enumerated(EnumType.STRING)
     @JdbcTypeCode(SqlTypes.NAMED_ENUM)
+    @Column(name = "meal_sign_up_status", nullable = false)
+    private BookingStatus mealSignUpStatus = BookingStatus.NO_STATUS;
+
+    @Enumerated(EnumType.STRING)
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     @Column(name = "lang", nullable = false)
     private Lang lang;
 

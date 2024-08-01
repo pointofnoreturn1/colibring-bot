@@ -38,6 +38,7 @@ public class MenuService {
                 new KeyboardRow(List.of(new KeyboardButton(TEXT_TV_BOOKING))),
                 new KeyboardRow(List.of(new KeyboardButton(TEXT_LAUNDRY_BOOKING))),
                 new KeyboardRow(List.of(new KeyboardButton(TEXT_MEAL_SIGN_UP))),
+                new KeyboardRow(List.of(new KeyboardButton(TEXT_ADMIN))),
                 new KeyboardRow(List.of(new KeyboardButton(TEXT_RELOAD_MENU)))
         );
 

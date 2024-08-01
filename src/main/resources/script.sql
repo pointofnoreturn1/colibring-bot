@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS user_meal_menu;
 DROP TABLE IF EXISTS meal_menu;
 DROP TABLE IF EXISTS laundry_booking;
 DROP TABLE IF EXISTS meeting_room_booking;
@@ -53,6 +54,7 @@ CREATE TABLE "user"(
 	mt_room_booking_status BOOKING_STATUS NOT NULL DEFAULT 'NO_STATUS',
 	tv_booking_status BOOKING_STATUS NOT NULL DEFAULT 'NO_STATUS',
 	lnd_booking_status BOOKING_STATUS NOT NULL DEFAULT 'NO_STATUS',
+	meal_sign_up_status BOOKING_STATUS NOT NULL DEFAULT 'NO_STATUS',
 	lang LANG NOT NULL DEFAULT 'RU',
 	created_at TIMESTAMP NOT NULL DEFAULT now()
 );
@@ -103,10 +105,19 @@ CREATE TABLE meal_menu(
     created_at TIMESTAMP NOT NULL DEFAULT now()
 );
 
+CREATE TABLE user_meal_menu(
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id BIGINT NOT NULL,
+    meal_menu_id UUID NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT now()
+);
+
 ALTER TABLE "user" ADD CONSTRAINT user_room_id_fkey FOREIGN KEY (room_id) REFERENCES room(id);
 ALTER TABLE meeting_room_booking ADD CONSTRAINT meeting_room_booking_user_id_fkey FOREIGN KEY (user_id) REFERENCES "user"(id);
 ALTER TABLE tv_booking ADD CONSTRAINT tv_booking_user_id_fkey FOREIGN KEY (user_id) REFERENCES "user"(id);
 ALTER TABLE laundry_booking ADD CONSTRAINT laundry_booking_user_id_fkey FOREIGN KEY (user_id) REFERENCES "user"(id);
+ALTER TABLE user_meal_menu ADD CONSTRAINT user_meal_menu_user_id_fkey FOREIGN KEY (user_id) REFERENCES "user"(id);
+ALTER TABLE user_meal_menu ADD CONSTRAINT user_meal_menu_meal_menu_id_fkey FOREIGN KEY (meal_menu_id) REFERENCES "meal_menu"(id);
 
 INSERT INTO room (number, is_hostel) VALUES
 ('01', false),

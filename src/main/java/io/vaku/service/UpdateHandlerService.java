@@ -6,6 +6,7 @@ import io.vaku.model.ClassifiedUpdate;
 import io.vaku.model.domain.User;
 import io.vaku.model.enm.UserStatus;
 import io.vaku.service.domain.laundry.LaundryBookingHandleService;
+import io.vaku.service.domain.meal.MealSignUpHandleService;
 import io.vaku.service.domain.mt_room.MtRoomBookingHandleService;
 import io.vaku.service.domain.tv.TvBookingHandleService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,9 @@ public class UpdateHandlerService {
     @Autowired
     private LaundryBookingHandleService laundryBookingHandleService;
 
+    @Autowired
+    private MealSignUpHandleService mealSignUpHandleService;
+
     public List<Response> handleUpdate(ClassifiedUpdate update, User user) {
         if (user == null) {
             if (update.getCommandName().equals("/start") || update.getCommandName().startsWith("callbackSetLanguage")) {
@@ -48,6 +52,8 @@ public class UpdateHandlerService {
             return tvBookingHandleService.execute(user, update);
         } else if (!user.getLaundryBookingStatus().equals(NO_STATUS)) {
             return laundryBookingHandleService.execute(user, update);
+        } else if (!user.getMealSignUpStatus().equals(NO_STATUS)) {
+            return mealSignUpHandleService.execute(user, update);
         }
 
         return commandMap.execute(user, update);

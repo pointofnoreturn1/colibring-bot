@@ -74,11 +74,8 @@ public class Bot extends TelegramLongPollingBot {
                                 user.setLastMsgId(msg.getMessageId());
                                 userService.createOrUpdate(user);
                             }
-                            Thread.sleep(1000);
                         } catch (TelegramApiException e) {
                             e.printStackTrace();
-                        } catch (InterruptedException e) {
-                            throw new RuntimeException(e);
                         }
                     }
                 }

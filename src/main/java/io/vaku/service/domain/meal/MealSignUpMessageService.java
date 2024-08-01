@@ -31,7 +31,7 @@ public class MealSignUpMessageService {
         return new Response(msg);
     }
 
-    public Response getTvMenuEditedMsg(User user, ClassifiedUpdate update) {
+    public Response getMealMenuEditedMsg(User user, ClassifiedUpdate update) {
         EditMessageText msg = EditMessageText
                 .builder()
                 .chatId(update.getChatId())
@@ -43,62 +43,15 @@ public class MealSignUpMessageService {
         return new Response(msg);
     }
 
-//    public Response getTvBookingPromptEditedMsg(User user, ClassifiedUpdate update) {
-//        EditMessageText msg = EditMessageText
-//                .builder()
-//                .chatId(update.getChatId())
-//                .messageId(user.getLastMsgId())
-//                .text(EMOJI_TV_BOOKING + DATE_TIME_SUPPORTED_FORMATS)
-//                .replyMarkup(tvMenuService.getInlineBackToTvBookingMenu())
-//                .build();
-//
-//        return new Response(msg);
-//    }
-//
-//    public Response getMyTvBookingsEditedMsg(User user, ClassifiedUpdate update, Map<UUID, String> bookingsMap) {
-//        EditMessageText msg = EditMessageText
-//                .builder()
-//                .chatId(update.getChatId())
-//                .messageId(user.getLastMsgId())
-//                .text(EMOJI_TV_BOOKING + (bookingsMap.isEmpty() ? TEXT_NO_BOOKINGS : "Мои бронирования телевизора (кликабельны)"))
-//                .replyMarkup(tvMenuService.getInlineMyTvBookingsMenu(bookingsMap))
-//                .build();
-//
-//        return new Response(msg);
-//    }
-//
-//    public Response getAllTvBookingsEditedMsg(User user, ClassifiedUpdate update, List<TvBooking> bookings) {
-//        EditMessageText msg = EditMessageText
-//                .builder()
-//                .chatId(update.getChatId())
-//                .messageId(user.getLastMsgId())
-//                .text(EMOJI_TV_BOOKING + (bookings.isEmpty() ? TEXT_NO_BOOKINGS : "Бронирования телевизора:\n\n" + messageService.getBookingsFormattedMessage(bookings)))
-//                .replyMarkup(tvMenuService.getInlineBackToTvBookingMenu())
-//                .build();
-//
-//        return new Response(msg);
-//    }
-//
-//    public Response getIntersectedTvBookingsEditedMsg(User user, ClassifiedUpdate update, List<TvBooking> bookings) {
-//        SendMessage msg = SendMessage
-//                .builder()
-//                .chatId(update.getChatId())
-//                .text(EMOJI_TV_BOOKING + TEXT_INTERSECTION + messageService.getBookingsFormattedMessage(bookings))
-//                .replyMarkup(tvMenuService.getInlineBackToTvBookingMenu())
-//                .build();
-//
-//        return new Response(msg);
-//    }
-//
-//    public Response getTvBookingDetailsEditedMsg(User user, ClassifiedUpdate update, TvBooking booking) {
-//        EditMessageText msg = EditMessageText
-//                .builder()
-//                .chatId(update.getChatId())
-//                .messageId(user.getLastMsgId())
-//                .text(messageService.getBookingDetails(booking))
-//                .replyMarkup(tvMenuService.getInlineTvBookingDetailsMenu(booking))
-//                .build();
-//
-//        return new Response(msg);
-//    }
+    public Response getMealSignUpMsg(User user, ClassifiedUpdate update) {
+        EditMessageText msg = EditMessageText
+                .builder()
+                .chatId(update.getChatId())
+                .messageId(user.getLastMsgId())
+                .text(TEXT_MEAL_SIGN_UP + "\nВыбери блюда, нажми \"Подтвердить\" или нажми \"Назад\"")
+                .replyMarkup(mealSignUpMenuService.getInlineMealsMenu())
+                .build();
+
+        return new Response(msg);
+    }
 }
