@@ -15,6 +15,7 @@ public final class StringConstants {
     public static final String DATE_TIME_FORMAT = "dd.MM.yy HH:mm";
     public static final String TEXT_NO_BOOKINGS = "Нет ни одной брони \uD83E\uDD2F";
     public static final String TEXT_NO_LAUNDRY_BOOKINGS = "Нет ни одной стирки \uD83E\uDD2F";
+    public static final String TEXT_NO_MEAL_SCHEDULE = "Нет меню \uD83E\uDD2F";
     public static final String TEXT_CHOOSE_ACTION = "Выберите действие";
     public static final String TEXT_CHOOSE_SECTION = "Выберите раздел";
     public static final String TEXT_GO_BACK = "⏪ Назад";
@@ -71,5 +72,19 @@ public final class StringConstants {
                     Есть пересечения с другими записями \uD83D\uDE1E
                     Введи дату и время еще раз или нажми "Назад"
                     
+                    """;
+    public static final String TEXT_ADD_NEW_MENU_PROMPT =
+            """
+                    Отправь меню на всю неделю или нажми "Назад"
+                    
+                    Формат меню:
+                    Понедельник
+                    # Завтрак
+                    # Первое
+                    # Второе | цена
+                    
+                    • Не нарушай порядок дней недели и порядок блюд
+                    • Цена опциональна. Если не указана, будет установлено по умолчанию значение 10₾
+                    • Символы '#' и '|' удалять/заменять нельзя, по ним распознаются данные
                     """;
 }

@@ -5,6 +5,7 @@ import io.vaku.model.Response;
 import io.vaku.model.ClassifiedUpdate;
 import io.vaku.model.domain.User;
 import io.vaku.model.enm.UserStatus;
+import io.vaku.service.domain.admin.meal.MealAdminHandleService;
 import io.vaku.service.domain.laundry.LaundryBookingHandleService;
 import io.vaku.service.domain.meal.MealSignUpHandleService;
 import io.vaku.service.domain.mt_room.MtRoomBookingHandleService;
@@ -37,6 +38,9 @@ public class UpdateHandlerService {
     @Autowired
     private MealSignUpHandleService mealSignUpHandleService;
 
+    @Autowired
+    private MealAdminHandleService mealAdminHandleService;
+
     public List<Response> handleUpdate(ClassifiedUpdate update, User user) {
         if (user == null) {
             if (update.getCommandName().equals("/start") || update.getCommandName().startsWith("callbackSetLanguage")) {
@@ -54,6 +58,8 @@ public class UpdateHandlerService {
             return laundryBookingHandleService.execute(user, update);
         } else if (!user.getMealSignUpStatus().equals(NO_STATUS)) {
             return mealSignUpHandleService.execute(user, update);
+        } else if (!user.getAdminStatus().equals(NO_STATUS)) {
+            return mealAdminHandleService.execute(user, update);
         }
 
         return commandMap.execute(user, update);

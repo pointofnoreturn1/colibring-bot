@@ -8,6 +8,7 @@ import io.vaku.model.domain.MealMenu;
 import io.vaku.model.domain.User;
 import io.vaku.model.enm.DayOfWeek;
 import io.vaku.service.domain.meal.MealMenuService;
+import io.vaku.service.domain.meal.MealSignUpMessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -19,6 +20,9 @@ public class MealShowActualMenuCallback implements Command {
 
     @Autowired
     private MealMenuService mealMenuService;
+
+    @Autowired
+    private MealSignUpMessageService mealSignUpMessageService;
 
     @Override
     public Class<?> getHandler() {
@@ -55,12 +59,6 @@ public class MealShowActualMenuCallback implements Command {
 
         String text = String.join("\n\n", stringDayMeals);
 
-        SendMessage msg = SendMessage
-                .builder()
-                .chatId(update.getChatId())
-                .text(text)
-                .build();
-
-        return List.of(new Response(msg));
+        return List.of(mealSignUpMessageService.getMealScheduleMsg(user, update, text));
     }
 }

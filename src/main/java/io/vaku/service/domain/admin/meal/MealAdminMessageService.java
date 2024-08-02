@@ -1,4 +1,4 @@
-package io.vaku.service.domain.admin;
+package io.vaku.service.domain.admin.meal;
 
 import io.vaku.model.ClassifiedUpdate;
 import io.vaku.model.Response;
@@ -11,29 +11,30 @@ import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageTe
 import static io.vaku.util.StringConstants.*;
 
 @Service
-public class AdminMessageService {
+public class MealAdminMessageService {
 
     @Autowired
-    private AdminMenuService adminMenuService;
+    private MealAdminMenuService mealAdminMenuService;
 
-    public Response getAdminMenuMsg(User user, ClassifiedUpdate update) {
-        SendMessage msg = SendMessage
+    public Response getMealAdminMenuEditedMsg(User user, ClassifiedUpdate update) {
+        EditMessageText msg = EditMessageText
                 .builder()
                 .chatId(update.getChatId())
-                .text(TEXT_ADMIN + "\n" + TEXT_CHOOSE_SECTION)
-                .replyMarkup(adminMenuService.getInlineAdminMenu())
+                .messageId(user.getLastMsgId())
+                .text(TEXT_CHOOSE_ACTION)
+                .replyMarkup(mealAdminMenuService.getInlineAdminMenu())
                 .build();
 
         return new Response(msg);
     }
 
-    public Response getAdminMenuEditedMsg(User user, ClassifiedUpdate update) {
+    public Response getMealAdminAddNewMenuPromptMsg(User user, ClassifiedUpdate update) {
         EditMessageText msg = EditMessageText
                 .builder()
                 .chatId(update.getChatId())
                 .messageId(user.getLastMsgId())
-                .text(TEXT_ADMIN + "\n" + TEXT_CHOOSE_SECTION)
-                .replyMarkup(adminMenuService.getInlineAdminMenu())
+                .text(TEXT_ADD_NEW_MENU_PROMPT)
+                .replyMarkup(mealAdminMenuService.getInlineBackToMainMealAdminMenu())
                 .build();
 
         return new Response(msg);

@@ -43,6 +43,18 @@ public class MealSignUpMessageService {
         return new Response(msg);
     }
 
+    public Response getMealScheduleMsg(User user, ClassifiedUpdate update, String text) {
+        EditMessageText msg = EditMessageText
+                .builder()
+                .chatId(update.getChatId())
+                .messageId(user.getLastMsgId())
+                .text(text.isBlank() || text.isEmpty() ? EMOJI_MEAL_SIGN_UP + TEXT_NO_MEAL_SCHEDULE : text)
+                .replyMarkup(mealSignUpMenuService.getInlineBackToMainMealMenu())
+                .build();
+
+        return new Response(msg);
+    }
+
     public Response getMealSignUpMsg(User user, ClassifiedUpdate update) {
         EditMessageText msg = EditMessageText
                 .builder()

@@ -1,5 +1,6 @@
 package io.vaku.model.domain;
 
+import io.vaku.model.enm.AdminStatus;
 import io.vaku.model.enm.Lang;
 import io.vaku.model.enm.BookingStatus;
 import io.vaku.model.enm.UserStatus;
@@ -81,6 +82,11 @@ public class User {
 
     @Enumerated(EnumType.STRING)
     @JdbcTypeCode(SqlTypes.NAMED_ENUM)
+    @Column(name = "admin_status", nullable = false)
+    private AdminStatus adminStatus = AdminStatus.NO_STATUS;
+
+    @Enumerated(EnumType.STRING)
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     @Column(name = "lang", nullable = false)
     private Lang lang;
 
@@ -97,6 +103,9 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     private List<LaundryBooking> laundryBookings;
+
+    @ManyToMany(mappedBy = "users")
+    private List<MealMenu> userMeals;
 
     public User(long id, long chatId, String tgUserName, String tgFirstName, String tgLastName) {
         this.id = id;

@@ -2,6 +2,7 @@ package io.vaku.service.domain;
 
 import io.vaku.model.ClassifiedUpdate;
 import io.vaku.model.domain.User;
+import io.vaku.model.enm.AdminStatus;
 import io.vaku.model.enm.BookingStatus;
 import io.vaku.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,7 @@ public class UserService {
         user.setMtRoomBookingStatus(BookingStatus.NO_STATUS);
         user.setTvBookingStatus(BookingStatus.NO_STATUS);
         user.setLaundryBookingStatus(BookingStatus.NO_STATUS);
+        user.setAdminStatus(AdminStatus.NO_STATUS);
 
         createOrUpdate(user);
     }

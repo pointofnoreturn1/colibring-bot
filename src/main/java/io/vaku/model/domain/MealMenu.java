@@ -10,6 +10,7 @@ import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -42,6 +43,14 @@ public class MealMenu {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_at")
     private Date createdAt = new Date();
+
+    @ManyToMany
+    @JoinTable(
+            name = "user_meal_menu",
+            joinColumns = @JoinColumn(name = "meal_menu_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private List<User> users;
 
     public MealMenu(UUID id, DayOfWeek dayOfWeek, MealType mealType, String name, int price) {
         this.id = id;
