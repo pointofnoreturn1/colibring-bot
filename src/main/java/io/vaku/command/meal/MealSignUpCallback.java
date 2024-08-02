@@ -4,9 +4,11 @@ import io.vaku.command.Command;
 import io.vaku.handler.meal.MealSignUpCallbackHandler;
 import io.vaku.model.ClassifiedUpdate;
 import io.vaku.model.Response;
+import io.vaku.model.domain.MealMenu;
 import io.vaku.model.domain.User;
 import io.vaku.model.enm.BookingStatus;
 import io.vaku.service.domain.UserService;
+import io.vaku.service.domain.meal.MealMenuService;
 import io.vaku.service.domain.meal.MealSignUpMessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -22,6 +24,9 @@ public class MealSignUpCallback implements Command {
     @Autowired
     private MealSignUpMessageService mealSignUpMessageService;
 
+    @Autowired
+    private MealMenuService mealMenuService;
+
     @Override
     public Class<?> getHandler() {
         return MealSignUpCallbackHandler.class;
@@ -34,9 +39,14 @@ public class MealSignUpCallback implements Command {
 
     @Override
     public List<Response> getAnswer(User user, ClassifiedUpdate update) {
+        List<MealMenu> meals = mealMenuService.findAllSorted();
+        if (meals.size() != 21) {
+            return List.of(mealSignUpMessageService.getMealScheduleMsg(user, update, ""));
+        }
+
         user.setMealSignUpStatus(BookingStatus.REQUIRE_INPUT);
         userService.createOrUpdate(user);
 
-       return List.of(mealSignUpMessageService.getMealSignUpMsg(user, update));
+       return List.of(mealSignUpMessageService.getMealSignUpMsg(user, update, meals));
     }
 }

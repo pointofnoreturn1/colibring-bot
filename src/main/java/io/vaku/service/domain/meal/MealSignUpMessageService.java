@@ -2,12 +2,15 @@ package io.vaku.service.domain.meal;
 
 import io.vaku.model.ClassifiedUpdate;
 import io.vaku.model.Response;
+import io.vaku.model.domain.MealMenu;
 import io.vaku.model.domain.User;
 import io.vaku.service.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
+
+import java.util.List;
 
 import static io.vaku.util.StringConstants.*;
 
@@ -55,13 +58,13 @@ public class MealSignUpMessageService {
         return new Response(msg);
     }
 
-    public Response getMealSignUpMsg(User user, ClassifiedUpdate update) {
+    public Response getMealSignUpMsg(User user, ClassifiedUpdate update, List<MealMenu> meals) {
         EditMessageText msg = EditMessageText
                 .builder()
                 .chatId(update.getChatId())
                 .messageId(user.getLastMsgId())
                 .text(TEXT_MEAL_SIGN_UP + "\nВыбери блюда, нажми \"Подтвердить\" или нажми \"Назад\"")
-                .replyMarkup(mealSignUpMenuService.getInlineMealsMenu())
+                .replyMarkup(mealSignUpMenuService.getInlineMealsMenu(meals))
                 .build();
 
         return new Response(msg);

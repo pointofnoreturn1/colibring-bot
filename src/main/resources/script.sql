@@ -56,6 +56,7 @@ CREATE TABLE "user"(
 	room_id UUID,
 	bio TEXT,
 	status STATUS NOT NULL,
+	is_admin BOOL NOT NULL DEFAULT FALSE,
 	mt_room_booking_status BOOKING_STATUS NOT NULL DEFAULT 'NO_STATUS',
 	tv_booking_status BOOKING_STATUS NOT NULL DEFAULT 'NO_STATUS',
 	lnd_booking_status BOOKING_STATUS NOT NULL DEFAULT 'NO_STATUS',
