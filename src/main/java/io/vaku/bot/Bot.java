@@ -71,8 +71,7 @@ public class Bot extends TelegramLongPollingBot {
                         try {
                             Message msg = (Message) execute(resp.getBotApiMethod());
                             if (user != null) {
-                                user.setLastMsgId(msg.getMessageId());
-                                userService.createOrUpdate(user);
+                                userService.updateLastMsgId(user.getId(), msg.getMessageId());
                             }
                         } catch (TelegramApiException e) {
                             e.printStackTrace();

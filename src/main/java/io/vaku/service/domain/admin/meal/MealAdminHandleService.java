@@ -4,13 +4,13 @@ import io.vaku.command.admin.meal.BackToMainMealAdminMenuCallback;
 import io.vaku.handler.HandlersMap;
 import io.vaku.model.ClassifiedUpdate;
 import io.vaku.model.Response;
-import io.vaku.model.domain.MealMenu;
+import io.vaku.model.domain.Meal;
 import io.vaku.model.domain.User;
 import io.vaku.model.enm.DayOfWeek;
 import io.vaku.model.enm.MealType;
 import io.vaku.service.MessageService;
 import io.vaku.service.domain.UserService;
-import io.vaku.service.domain.meal.MealMenuService;
+import io.vaku.service.domain.meal.MealService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,7 +33,7 @@ public class MealAdminHandleService {
     private MessageService messageService;
 
     @Autowired
-    private MealMenuService mealMenuService;
+    private MealService mealService;
 
     @Autowired
     private UserService userService;
@@ -75,36 +75,36 @@ public class MealAdminHandleService {
             suppers.add(meals.get(i));
         }
 
-        List<MealMenu> allMeals = new ArrayList<>();
+        List<Meal> allMeals = new ArrayList<>();
         allMeals.addAll(getMealMenuItems(breakfasts, BREAKFAST));
         allMeals.addAll(getMealMenuItems(lunches, LUNCH));
         allMeals.addAll(getMealMenuItems(suppers, SUPPER));
 
-        mealMenuService.deleteAll();
-        mealMenuService.saveAll(allMeals);
+        mealService.deleteAll();
+        mealService.saveAll(allMeals);
         user.setAdminStatus(NO_STATUS);
         userService.createOrUpdate(user);
 
         return List.of(messageService.getDoneMsg(user, update));
     }
 
-    private List<MealMenu> getMealMenuItems(List<String> meals, MealType mealType) {
-        List<MealMenu> mealMenuItems = new ArrayList<>();
+    private List<Meal> getMealMenuItems(List<String> meals, MealType mealType) {
+        List<Meal> mealItems = new ArrayList<>();
 
         for (int i = 0; i < meals.size(); i++) {
-            String[] arr = meals.get(i).split("\\|");
+            String[] arr = meals.get(i).split("\\$");
             String mealName = arr[0].trim();
             int mealPrice = arr.length == 2 ? Integer.parseInt(arr[1].trim()) : 10;
-            MealMenu mealMenuItem = new MealMenu(
+            Meal mealItem = new Meal(
                     UUID.randomUUID(),
                     DayOfWeek.values()[i],
                     mealType,
                     mealName,
                     mealPrice
             );
-            mealMenuItems.add(mealMenuItem);
+            mealItems.add(mealItem);
         }
 
-        return mealMenuItems;
+        return mealItems;
     }
 }

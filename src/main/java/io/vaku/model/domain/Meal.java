@@ -3,22 +3,21 @@ package io.vaku.model.domain;
 import io.vaku.model.enm.DayOfWeek;
 import io.vaku.model.enm.MealType;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name = "meal_menu")
-public class MealMenu {
+@Table(name = "meal")
+public class Meal {
 
     @Id
     @Column(name = "id")
@@ -44,15 +43,28 @@ public class MealMenu {
     @Column(name = "created_at")
     private Date createdAt = new Date();
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
-            name = "user_meal_menu",
-            joinColumns = @JoinColumn(name = "meal_menu_id"),
+            name = "user_meal",
+            joinColumns = @JoinColumn(name = "meal_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
     private List<User> users;
 
-    public MealMenu(UUID id, DayOfWeek dayOfWeek, MealType mealType, String name, int price) {
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Meal meal = (Meal) o;
+        return price == meal.price && Objects.equals(id, meal.id) && dayOfWeek == meal.dayOfWeek && mealType == meal.mealType && Objects.equals(name, meal.name) && Objects.equals(createdAt, meal.createdAt);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, dayOfWeek, mealType, name, price, createdAt);
+    }
+
+    public Meal(UUID id, DayOfWeek dayOfWeek, MealType mealType, String name, int price) {
         this.id = id;
         this.dayOfWeek = dayOfWeek;
         this.mealType = mealType;

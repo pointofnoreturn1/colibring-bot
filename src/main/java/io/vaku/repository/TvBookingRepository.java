@@ -16,11 +16,11 @@ public interface TvBookingRepository extends CrudRepository<TvBooking, UUID> {
     @Query(
             value = "SELECT * " +
                     "FROM tv_booking " +
-                    "WHERE user_id = ?1 AND is_active = TRUE AND end_time >= CURRENT_DATE " +
+                    "WHERE user_id = :userId AND is_active = TRUE AND end_time >= CURRENT_DATE " +
                     "ORDER BY start_time",
             nativeQuery = true
     )
-    List<TvBooking> findByUserId(long userId);
+    List<TvBooking> findByUserId(@Param("userId") long userId);
 
     @Query(
             value = "SELECT * " +

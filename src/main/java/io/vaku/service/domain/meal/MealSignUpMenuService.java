@@ -1,6 +1,8 @@
 package io.vaku.service.domain.meal;
 
-import io.vaku.model.domain.MealMenu;
+import io.vaku.model.ClassifiedUpdate;
+import io.vaku.model.domain.Meal;
+import io.vaku.model.domain.User;
 import io.vaku.model.enm.DayOfWeek;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,6 +19,9 @@ import static io.vaku.util.StringConstants.TEXT_GO_BACK;
 public class MealSignUpMenuService {
 
     public static final String EMOJI_MEAL_SELECTED = "\uD83D\uDCA5 ";
+
+    @Autowired
+    private MealSignUpService mealSignUpService;
 
     public InlineKeyboardMarkup getInlineMealSignUpMenu() {
         return InlineKeyboardMarkup
@@ -41,7 +46,7 @@ public class MealSignUpMenuService {
                 .build();
     }
 
-    public InlineKeyboardMarkup getInlineMealsMenu(List<MealMenu> meals) {
+    public InlineKeyboardMarkup getInlineMealsMenu(ClassifiedUpdate update, List<Meal> meals) {
         InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> keyboard = new ArrayList<>();
 
@@ -59,7 +64,7 @@ public class MealSignUpMenuService {
             keyboard.add(List.of(
                     InlineKeyboardButton
                             .builder()
-                            .text(meals.get(i).getName())
+                            .text(getMealButtonText(update.getChatId(), meals.get(i)))
                             .callbackData("meal_" + meals.get(i).getDayOfWeek() + ":" + meals.get(i).getMealType())
                             .build())
             );
@@ -81,5 +86,13 @@ public class MealSignUpMenuService {
 
     private InlineKeyboardButton getConfirmMealButton() {
         return InlineKeyboardButton.builder().text(TEXT_CONFIRM).callbackData("callbackConfirmMeal").build();
+    }
+
+    private String getMealButtonText(long chatId, Meal meal) {
+        if (mealSignUpService.isMealAdded(chatId, meal)) {
+            return EMOJI_MEAL_SELECTED + meal.getName();
+        } else {
+            return meal.getName();
+        }
     }
 }

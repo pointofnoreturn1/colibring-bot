@@ -1,16 +1,16 @@
-DROP TABLE IF EXISTS user_meal_menu;
-DROP TABLE IF EXISTS meal_menu;
-DROP TABLE IF EXISTS laundry_booking;
-DROP TABLE IF EXISTS meeting_room_booking;
-DROP TABLE IF EXISTS tv_booking;
-DROP TABLE IF EXISTS "user";
-DROP TABLE IF EXISTS room;
-DROP TYPE IF EXISTS lang;
-DROP TYPE IF EXISTS status;
-DROP TYPE IF EXISTS booking_status;
-DROP TYPE IF EXISTS day_of_week;
-DROP TYPE IF EXISTS meal_type;
-DROP TYPE IF EXISTS admin_status;
+DROP TABLE IF EXISTS user_meal CASCADE;
+DROP TABLE IF EXISTS meal CASCADE;
+DROP TABLE IF EXISTS laundry_booking CASCADE;
+DROP TABLE IF EXISTS meeting_room_booking CASCADE;
+DROP TABLE IF EXISTS tv_booking CASCADE;
+DROP TABLE IF EXISTS "user" CASCADE;
+DROP TABLE IF EXISTS room CASCADE;
+DROP TYPE IF EXISTS lang CASCADE;
+DROP TYPE IF EXISTS status CASCADE;
+DROP TYPE IF EXISTS booking_status CASCADE;
+DROP TYPE IF EXISTS day_of_week CASCADE;
+DROP TYPE IF EXISTS meal_type CASCADE;
+DROP TYPE IF EXISTS admin_status CASCADE;
 
 CREATE TYPE lang AS ENUM('EN', 'RU');
 
@@ -103,7 +103,7 @@ CREATE TABLE laundry_booking(
     created_at TIMESTAMP NOT NULL DEFAULT now()
 );
 
-CREATE TABLE meal_menu(
+CREATE TABLE meal(
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     day_of_week DAY_OF_WEEK NOT NULL,
     meal_type MEAL_TYPE NOT NULL,
@@ -112,10 +112,10 @@ CREATE TABLE meal_menu(
     created_at TIMESTAMP NOT NULL DEFAULT now()
 );
 
-CREATE TABLE user_meal_menu(
+CREATE TABLE user_meal(
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id BIGINT NOT NULL,
-    meal_menu_id UUID NOT NULL,
+    meal_id UUID NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT now()
 );
 
@@ -123,8 +123,8 @@ ALTER TABLE "user" ADD CONSTRAINT user_room_id_fkey FOREIGN KEY (room_id) REFERE
 ALTER TABLE meeting_room_booking ADD CONSTRAINT meeting_room_booking_user_id_fkey FOREIGN KEY (user_id) REFERENCES "user"(id);
 ALTER TABLE tv_booking ADD CONSTRAINT tv_booking_user_id_fkey FOREIGN KEY (user_id) REFERENCES "user"(id);
 ALTER TABLE laundry_booking ADD CONSTRAINT laundry_booking_user_id_fkey FOREIGN KEY (user_id) REFERENCES "user"(id);
-ALTER TABLE user_meal_menu ADD CONSTRAINT user_meal_menu_user_id_fkey FOREIGN KEY (user_id) REFERENCES "user"(id);
-ALTER TABLE user_meal_menu ADD CONSTRAINT user_meal_menu_meal_menu_id_fkey FOREIGN KEY (meal_menu_id) REFERENCES "meal_menu"(id);
+ALTER TABLE user_meal ADD CONSTRAINT user_meal_user_id_fkey FOREIGN KEY (user_id) REFERENCES "user"(id);
+ALTER TABLE user_meal ADD CONSTRAINT user_meal_meal_id_fkey FOREIGN KEY (meal_id) REFERENCES "meal"(id);
 
 INSERT INTO room (number, is_hostel) VALUES
 ('01', false),

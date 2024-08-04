@@ -13,8 +13,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import java.util.Date;
 import java.util.List;
 
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -107,8 +106,8 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<LaundryBooking> laundryBookings;
 
-    @ManyToMany(mappedBy = "users")
-    private List<MealMenu> userMeals;
+    @ManyToMany(mappedBy = "users", cascade = CascadeType.ALL)
+    private List<Meal> userMeals;
 
     public User(long id, long chatId, String tgUserName, String tgFirstName, String tgLastName) {
         this.id = id;
