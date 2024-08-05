@@ -1,6 +1,7 @@
 package io.vaku.service;
 
 import io.vaku.model.domain.Room;
+import io.vaku.model.domain.User;
 import io.vaku.service.domain.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,6 +11,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static io.vaku.util.StringConstants.*;
@@ -32,15 +34,19 @@ public class MenuService {
         return new InlineKeyboardMarkup(List.of(buttons));
     }
 
-    public ReplyKeyboardMarkup getUserMenu() {
-        List<KeyboardRow> keyboard = List.of(
-                new KeyboardRow(List.of(new KeyboardButton(TEXT_MT_ROOM_BOOKING))),
-                new KeyboardRow(List.of(new KeyboardButton(TEXT_TV_BOOKING))),
-                new KeyboardRow(List.of(new KeyboardButton(TEXT_LAUNDRY_BOOKING))),
-                new KeyboardRow(List.of(new KeyboardButton(TEXT_MEAL_SIGN_UP))),
-                new KeyboardRow(List.of(new KeyboardButton(TEXT_ADMIN))),
-                new KeyboardRow(List.of(new KeyboardButton(TEXT_RELOAD_MENU)))
-        );
+    public ReplyKeyboardMarkup getUserMenu(User user) {
+        List<KeyboardRow> keyboard = new ArrayList<>() {{
+            add(new KeyboardRow(List.of(new KeyboardButton(TEXT_MT_ROOM_BOOKING))));
+            add(new KeyboardRow(List.of(new KeyboardButton(TEXT_TV_BOOKING))));
+            add(new KeyboardRow(List.of(new KeyboardButton(TEXT_LAUNDRY_BOOKING))));
+            add(new KeyboardRow(List.of(new KeyboardButton(TEXT_MEAL_SIGN_UP))));
+        }};
+
+        if (user.isAdmin()) {
+            keyboard.add(new KeyboardRow(List.of(new KeyboardButton(TEXT_ADMIN))));
+        }
+
+        keyboard.add(new KeyboardRow(List.of(new KeyboardButton(TEXT_RELOAD_MENU))));
 
         return ReplyKeyboardMarkup.builder().keyboard(keyboard).resizeKeyboard(true).build();
     }

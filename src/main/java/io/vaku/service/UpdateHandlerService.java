@@ -58,8 +58,10 @@ public class UpdateHandlerService {
             return laundryBookingHandleService.execute(user, update);
         } else if (!user.getMealSignUpStatus().equals(NO_STATUS)) {
             return mealSignUpHandleService.execute(user, update);
-        } else if (!user.getAdminStatus().equals(NO_STATUS)) {
-            return mealAdminHandleService.execute(user, update);
+        } else if (user.isAdmin()) {
+            if (!user.getAdminStatus().equals(NO_STATUS)) {
+                return mealAdminHandleService.execute(user, update);
+            }
         }
 
         return commandMap.execute(user, update);

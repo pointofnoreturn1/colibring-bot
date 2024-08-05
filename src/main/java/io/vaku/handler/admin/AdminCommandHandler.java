@@ -11,4 +11,9 @@ public class AdminCommandHandler extends AbstractHandler {
     public TelegramType getHandlerType() {
         return TelegramType.TEXT;
     }
+
+    @Override
+    public boolean isAdmin() {
+        return true;
+    }
 }

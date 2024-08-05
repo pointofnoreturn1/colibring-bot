@@ -43,4 +43,9 @@ public abstract class AbstractHandler implements Handler {
     public List<Response> getAnswer(User user, ClassifiedUpdate update) {
         return commandsByName.get(update.getCommandName()).getAnswer(user, update);
     }
+
+    @Override
+    public boolean isAdmin() {
+        return false;
+    }
 }

@@ -38,10 +38,13 @@ public class HandlersMap {
 
         for (Handler handler : hashMap.get(update.getHandlerType())) {
             if (handler.isApplicable(user, update)) {
+                if (handler.isAdmin()) {
+                    return user.isAdmin() ? handler.getAnswer(user, update) : List.of(new Response());
+                }
+
                 return handler.getAnswer(user, update);
             }
         }
-
         return null;
     }
 }

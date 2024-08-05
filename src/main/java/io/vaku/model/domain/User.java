@@ -106,7 +106,7 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<LaundryBooking> laundryBookings;
 
-    @ManyToMany(mappedBy = "users", cascade = CascadeType.ALL)
+    @ManyToMany(mappedBy = "users", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Meal> userMeals;
 
     public User(long id, long chatId, String tgUserName, String tgFirstName, String tgLastName) {

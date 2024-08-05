@@ -39,7 +39,7 @@ public class ReloadMenuCommand implements Command {
                 .builder()
                 .chatId(update.getChatId())
                 .text("Меню бота успешно обновлено")
-                .replyMarkup(menuService.getUserMenu())
+                .replyMarkup(menuService.getUserMenu(user))
                 .build();
 
         return new Response(msg);

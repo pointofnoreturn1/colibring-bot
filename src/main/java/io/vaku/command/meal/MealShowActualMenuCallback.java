@@ -35,16 +35,7 @@ public class MealShowActualMenuCallback implements Command {
 
     @Override
     public List<Response> getAnswer(User user, ClassifiedUpdate update) {
-        Map<DayOfWeek, List<Meal>> dayMeals = new LinkedHashMap<>();
-
-        for (Meal meal : mealService.findAllSorted()) {
-            if (!dayMeals.containsKey(meal.getDayOfWeek())) {
-                dayMeals.put(meal.getDayOfWeek(), new ArrayList<>());
-            }
-
-            dayMeals.get(meal.getDayOfWeek()).add(meal);
-        }
-
+        Map<DayOfWeek, List<Meal>> dayMeals = mealService.getDayMeals();
         List<String> stringDayMeals = new ArrayList<>();
 
         for (Map.Entry<DayOfWeek, List<Meal>> entry : dayMeals.entrySet()) {
@@ -52,6 +43,9 @@ public class MealShowActualMenuCallback implements Command {
             sb.append(entry.getKey().getName());
             for (Meal meal : entry.getValue()) {
                 sb.append("\n• ").append(meal.getName());
+                if (meal.getPrice() != 10) {
+                    sb.append(" (").append(meal.getPrice()).append("₾)");
+                }
             }
             stringDayMeals.add(sb.toString());
         }

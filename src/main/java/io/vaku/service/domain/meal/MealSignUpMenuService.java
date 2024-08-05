@@ -43,6 +43,14 @@ public class MealSignUpMenuService {
                                         .callbackData("callbackMenuSignUp")
                                         .build())
                 )
+                .keyboardRow(
+                        List.of(
+                                InlineKeyboardButton
+                                        .builder()
+                                        .text("Посмотреть мою запись")
+                                        .callbackData("callbackMealShowMyRecords")
+                                        .build())
+                )
                 .build();
     }
 
@@ -89,10 +97,18 @@ public class MealSignUpMenuService {
     }
 
     private String getMealButtonText(long chatId, Meal meal) {
+        StringBuilder sb = new StringBuilder();
+
         if (mealSignUpService.isMealAdded(chatId, meal)) {
-            return EMOJI_MEAL_SELECTED + meal.getName();
-        } else {
-            return meal.getName();
+            sb.append(EMOJI_MEAL_SELECTED);
         }
+
+        sb.append(meal.getName());
+
+        if (meal.getPrice() != 10) {
+            sb.append(" (").append(meal.getPrice()).append("₾)");
+        }
+
+        return sb.toString();
     }
 }

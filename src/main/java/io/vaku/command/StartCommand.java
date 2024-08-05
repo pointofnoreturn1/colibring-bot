@@ -56,7 +56,7 @@ public class StartCommand implements Command {
                         ? TEXT_GREETING_RU + user.getSpecifiedName() + "!"
                         : TEXT_GREETING_EN + user.getSpecifiedName() + "!"
                 )
-                .replyMarkup(menuService.getUserMenu())
+                .replyMarkup(menuService.getUserMenu(user))
                 .build();
 
         return new Response(msg);

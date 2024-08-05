@@ -148,7 +148,7 @@ public class RegistrationService {
                 builder()
                 .chatId(update.getChatId())
                 .text(user.getLang().equals(Lang.RU) ? TEXT_SUCCESSFUL_REGISTRATION_RU : TEXT_SUCCESSFUL_REGISTRATION_EN)
-                .replyMarkup(menuService.getUserMenu())
+                .replyMarkup(menuService.getUserMenu(user))
                 .build();
 
         return List.of(new Response(msg));

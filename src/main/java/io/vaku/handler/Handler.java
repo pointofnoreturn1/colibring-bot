@@ -18,4 +18,6 @@ public interface Handler {
     boolean isApplicable(User user, ClassifiedUpdate update);
 
     List<Response> getAnswer(User user, ClassifiedUpdate update);
+
+    boolean isAdmin();
 }

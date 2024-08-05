@@ -11,4 +11,9 @@ public class MealAdminMenuCallbackHandler extends AbstractHandler {
     public TelegramType getHandlerType() {
         return TelegramType.CALLBACK;
     }
+
+    @Override
+    public boolean isAdmin() {
+        return true;
+    }
 }
