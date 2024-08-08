@@ -60,7 +60,7 @@ public class Bot extends TelegramLongPollingBot {
     
     @Override
     public void onUpdateReceived(Update update) {
-        if (update.hasMessage() || update.hasCallbackQuery()) {
+        if ((update.hasMessage() && update.getMessage().getChat().getType().equals("private")) || update.hasCallbackQuery()) {
             ClassifiedUpdate classifiedUpdate = new ClassifiedUpdate(update);
             User user = userService.findByUpdate(classifiedUpdate);
             List<Response> responses = updateHandlerService.handleUpdate(classifiedUpdate, user);

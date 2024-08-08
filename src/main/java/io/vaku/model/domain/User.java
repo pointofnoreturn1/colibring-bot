@@ -51,8 +51,11 @@ public class User {
     @JoinColumn(name = "room_id", referencedColumnName = "id")
     private Room room;
 
-    @Column(name = "bio")
-    private String bio;
+    @Column(name = "question_bio_1")
+    private String questionBio1;
+
+    @Column(name = "question_bio_2")
+    private String questionBio2;
 
     @Enumerated(EnumType.STRING)
     @JdbcTypeCode(SqlTypes.NAMED_ENUM)

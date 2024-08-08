@@ -2,9 +2,11 @@ package io.vaku.service;
 
 import io.vaku.model.ClassifiedUpdate;
 import io.vaku.model.Response;
+import io.vaku.model.domain.BioQuestion;
 import io.vaku.model.domain.Room;
 import io.vaku.model.domain.User;
 import io.vaku.model.enm.Lang;
+import io.vaku.service.domain.BioQuestionService;
 import io.vaku.service.domain.RoomService;
 import io.vaku.service.domain.UserService;
 import io.vaku.util.DateTimeUtils;
@@ -24,16 +26,15 @@ import static io.vaku.util.StringConstants.*;
 @Service
 public class RegistrationService {
 
-    private static final String TEXT_NAME_REQUEST_RU = "Введи своё имя";
+    private static final String TEXT_NAME_REQUEST_RU = "Для начала расскажи о себе!\nКак тебя зовут? Напиши ту форму имени, которую предпочитаешь в обращении";
     private static final String TEXT_NAME_REQUEST_EN = "Enter your name";
     private static final String TEXT_INCORRECT_PASSWORD_RU = "Неверный пароль \uD83D\uDE1E";
     private static final String TEXT_INCORRECT_PASSWORD_EN = "Incorrect password \uD83D\uDE1E";
-    private static final String TEXT_BIRTHDATE_REQUEST_RU = "Введи дату своего рождения в формате дд.мм.гггг";
+    private static final String TEXT_BIRTHDATE_REQUEST_RU = "Напиши дату рождения в формате дд.мм.гггг. Год рождения можно не указывать, если хочешь";
     private static final String TEXT_BIRTHDATE_REQUEST_EN = "Enter your date of birth in the format dd.mm.yyyy";
-    private static final String TEXT_ROOM_REQUEST_RU = "Укажи свою комнату";
+    private static final String TEXT_ROOM_REQUEST_RU = "В какую комнату заселяешься?";
     private static final String TEXT_ROOM_REQUEST_EN = "Specify your room";
-    private static final String TEXT_BIO_REQUEST_RU = "Расскажи нам о себе";
-    private static final String TEXT_BIO_REQUEST_EN = "Tell us about yourself";
+    private static final String TEXT_BIO_REQUEST_QUESTIONS_RU = "И ещё два рандомных вопроса, чтобы колибрята смогли сразу узнать тебя получше:";
     private static final String TEXT_SUCCESSFUL_REGISTRATION_RU = "\uD83C\uDF89 Поздравляем! \uD83C\uDF89\nРегистрация успешно завершена";
     private static final String TEXT_SUCCESSFUL_REGISTRATION_EN = "\uD83C\uDF89 Congratulations! \uD83C\uDF89\nRegistration successfully completed";
 
@@ -52,13 +53,16 @@ public class RegistrationService {
     @Autowired
     private MessageService messageService;
 
+    @Autowired
+    private BioQuestionService bioQuestionService;
+
     public List<Response> execute(User user, ClassifiedUpdate update) {
         return switch (user.getStatus()) {
             case REQUIRE_PASSWORD -> proceedPassword(user, update);
             case REQUIRE_NAME -> proceedName(user, update);
             case REQUIRE_BIRTHDATE -> proceedBirthdate(user, update);
             case REQUIRE_ROOM -> proceedRoom(user, update);
-            case REQUIRE_BIO -> proceedBio(user, update);
+            case REQUIRE_QUESTION_1 -> proceedBioQuestion1(user, update);
             case BLOCKED -> List.of(new Response()); // empty response is intentionally here
             default -> List.of(new Response());
         };
@@ -126,12 +130,12 @@ public class RegistrationService {
 
         if (room != null) {
             user.setRoom(room);
-            user.setStatus(REQUIRE_BIO);
+            user.setStatus(REQUIRE_QUESTION_1);
             userService.createOrUpdate(user);
             SendMessage msg = SendMessage.
                     builder()
                     .chatId(update.getChatId())
-                    .text(user.getLang().equals(Lang.RU) ? TEXT_BIO_REQUEST_RU : TEXT_BIO_REQUEST_EN)
+                    .text(TEXT_BIO_REQUEST_QUESTIONS_RU)
                     .build();
 
             return List.of(messageService.getDoneMsg(user, update), new Response(msg));
@@ -140,10 +144,13 @@ public class RegistrationService {
         return List.of(new Response());
     }
 
-    private List<Response> proceedBio(User user, ClassifiedUpdate update) {
-        user.setBio(update.getCommandName());
-        user.setStatus(REGISTERED);
+    private List<Response> proceedBioQuestion1(User user, ClassifiedUpdate update) {
+        user.setQuestionBio1(update.getCommandName());
+
+
+        user.setStatus(REQUIRE_QUESTION_2);
         userService.createOrUpdate(user);
+
         SendMessage msg = SendMessage.
                 builder()
                 .chatId(update.getChatId())

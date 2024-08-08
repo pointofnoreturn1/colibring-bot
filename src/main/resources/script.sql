@@ -20,7 +20,10 @@ CREATE TYPE status AS ENUM(
     'REQUIRE_NAME',
     'REQUIRE_BIRTHDATE',
     'REQUIRE_ROOM',
-    'REQUIRE_BIO',
+    'REQUIRE_QUESTION_1',
+    'REQUIRE_QUESTION_2',
+    'REQUIRE_VALUES_CONFIRM',
+    'REQUIRE_RULES_CONFIRM',
     'REGISTERED',
     'BLOCKED'
 );
@@ -54,7 +57,8 @@ CREATE TABLE "user"(
 	specified_name VARCHAR(255),
 	birth_date DATE,
 	room_id UUID,
-	bio TEXT,
+	question_bio_1 TEXT,
+	question_bio_2 TEXT,
 	status STATUS NOT NULL,
 	is_admin BOOL NOT NULL DEFAULT FALSE,
 	mt_room_booking_status BOOKING_STATUS NOT NULL DEFAULT 'NO_STATUS',
@@ -70,6 +74,19 @@ CREATE TABLE room(
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     number VARCHAR(5) NOT NULL,
     is_hostel BOOL NOT NULL
+);
+
+CREATE TABLE bio_question(
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    question TEXT
+);
+
+CREATE TABLE user_bio_question(
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID,
+    question_id UUID,
+    answer TEXT,
+    created_at
 );
 
 CREATE TABLE meeting_room_booking(
@@ -141,3 +158,16 @@ INSERT INTO room (number, is_hostel) VALUES
 ('205', false),
 ('206', true),
 ('301', false);
+
+INSERT INTO bio_question (question) VALUES
+('Голосовые, кружочки или текст? Почему?').
+('Какой твой любимый фильм/сериал/книга? Почему? (Ответь про одно или про всё)').
+('Какого непопулярного мнения ты придерживаешься?').
+('Чьей жизнью тебе бы хотелось пожить один день?').
+('Что больше всего тебя вдохновляет в том, чем ты занимаешься?').
+('Есть ли что-то, что ты уже давно мечтаешь сделать? Почему ты еще не сделал(а) этого?').
+('Кого бы тебе хотелось видеть новым президентом России?').
+('Чем ты гордишься?').
+('Что бы тебе хотелось успеть сделать до конца года?').
+('Кем из известных людей ты восхищаешься и почему?').
+('Если бы тебе дали билборд, который увидит весь мир, что бы ты на нем написал?');
