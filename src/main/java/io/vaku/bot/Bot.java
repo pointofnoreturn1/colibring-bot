@@ -70,9 +70,14 @@ public class Bot extends TelegramLongPollingBot {
                     if (resp != null && resp.getBotApiMethod() != null) {
                         try {
                             Message msg = (Message) execute(resp.getBotApiMethod());
-                            if (user != null) {
-                                userService.updateLastMsgId(user.getId(), msg.getMessageId());
-                            }
+                            if (user != null) userService.updateLastMsgId(user.getId(), msg.getMessageId());
+                        } catch (TelegramApiException e) {
+                            e.printStackTrace();
+                        }
+                    } else if (resp != null && resp.getSendMediaGroup() != null) {
+                        try {
+                            List<Message> messages = execute(resp.getSendMediaGroup());
+                            if (user != null) userService.updateLastMsgId(user.getId(), messages.getLast().getMessageId());
                         } catch (TelegramApiException e) {
                             e.printStackTrace();
                         }

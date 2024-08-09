@@ -14,6 +14,9 @@ import org.springframework.stereotype.Component;
 
 import java.util.*;
 
+import static io.vaku.util.StringConstants.EMOJI_MEAL_SIGN_UP;
+import static io.vaku.util.StringConstants.TEXT_NO_MEAL_SIGN_UP;
+
 @Component
 public class MealShowMyRecordsCallback implements Command {
 
@@ -45,6 +48,10 @@ public class MealShowMyRecordsCallback implements Command {
             }
 
             dayMeals.get(meal.getDayOfWeek()).add(meal);
+        }
+
+        if (dayMeals.isEmpty()) {
+            return List.of(mealSignUpMessageService.getMealScheduleMsg(user, update, EMOJI_MEAL_SIGN_UP + TEXT_NO_MEAL_SIGN_UP ));
         }
 
         List<String> stringDayMeals = new ArrayList<>();

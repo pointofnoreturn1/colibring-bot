@@ -6,13 +6,13 @@ import io.vaku.model.ClassifiedUpdate;
 import io.vaku.model.Response;
 import io.vaku.model.domain.Meal;
 import io.vaku.model.domain.User;
-import io.vaku.model.enm.Lang;
 import io.vaku.service.MessageService;
 import io.vaku.service.domain.UserService;
+import io.vaku.service.domain.meal.MealService;
+import io.vaku.service.domain.meal.MealSignUpMessageService;
 import io.vaku.service.domain.meal.MealSignUpService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -21,8 +21,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import static io.vaku.model.enm.BookingStatus.NO_STATUS;
-import static io.vaku.util.StringConstants.TEXT_DONE_EN;
-import static io.vaku.util.StringConstants.TEXT_DONE_RU;
 
 @Component
 public class MealConfirmCallback implements Command {
@@ -36,6 +34,12 @@ public class MealConfirmCallback implements Command {
     @Autowired
     private MessageService messageService;
 
+    @Autowired
+    private MealSignUpMessageService mealSignUpMessageService;
+
+    @Autowired
+    private MealService mealService;
+
     @Override
     public Class<?> getHandler() {
         return MealConfirmCallbackHandler.class;
@@ -48,19 +52,21 @@ public class MealConfirmCallback implements Command {
 
     @Override
     public List<Response> getAnswer(User user, ClassifiedUpdate update) {
-        List<Meal> meals = mealSignUpService.getMealsByChatId(update.getChatId());
-        if (!isSignUpAllowed(meals)) {
-            // TODO: вынести в MessageService
-            SendMessage msg = SendMessage
-                    .builder()
-                    .chatId(update.getChatId())
-                    .text("Запись запрещена за 24 часа до 09:00 утра дня записи")
-                    .build();
+        List<Meal> userMeals = mealSignUpService.getMealsByChatId(update.getChatId());
 
-            return List.of(new Response(msg));
+        if (!isSignUpAllowed(userMeals)) {
+            mealSignUpService.truncate(user.getChatId());
+            List<Meal> meals = mealService.findAllSorted();
+
+            if (meals.size() != 21) {
+                return List.of(mealSignUpMessageService.getMealScheduleMsg(user, update, ""));
+            }
+
+            return List.of(mealSignUpMessageService.getMealSignUpEditMarkupMsg(user, update, meals));
         }
-        meals.forEach(it -> it.getUsers().add(user));
-        user.setUserMeals(meals);
+
+        userMeals.forEach(it -> it.getUsers().add(user));
+        user.setUserMeals(userMeals);
         user.setMealSignUpStatus(NO_STATUS);
         userService.createOrUpdate(user);
         mealSignUpService.truncate(user.getChatId());
@@ -79,7 +85,7 @@ public class MealConfirmCallback implements Command {
             }
 
             if (meal.getDayOfWeek().ordinal() - dayNow.ordinal() == 1
-                    && ChronoUnit.MINUTES.between(nowDateTime, threshold) < (24 * 60)) {
+                    && ChronoUnit.MINUTES.between(nowDateTime, threshold) < (18 * 60)) {
                 return false;
             }
         }

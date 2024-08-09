@@ -64,7 +64,7 @@ public class MealSignUpMessageService {
                 .builder()
                 .chatId(update.getChatId())
                 .messageId(user.getLastMsgId())
-                .text(TEXT_MEAL_SIGN_UP + "\nВыбери блюда, нажми \"Подтвердить\" или нажми \"Назад\"")
+                .text(TEXT_MEAL_SIGN_UP + "\n\n" + TEXT_MEAL_SIGN_UP_INFO)
                 .replyMarkup(mealSignUpMenuService.getInlineMealsMenu(update, meals))
                 .build();
 

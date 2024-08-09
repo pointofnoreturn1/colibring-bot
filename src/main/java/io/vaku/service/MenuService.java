@@ -52,7 +52,7 @@ public class MenuService {
     }
 
     public ReplyKeyboardMarkup getRoomChoiceMenu() {
-        List<KeyboardRow> keyboard = ((List<Room>) roomService.getAll())
+        List<KeyboardRow> keyboard = roomService.getAll()
                 .stream()
                 .map(Room::getNumber)
                 .sorted()
@@ -69,5 +69,60 @@ public class MenuService {
         );
 
         return new InlineKeyboardMarkup(List.of(buttons));
+    }
+
+    public InlineKeyboardMarkup getInlineConfirmValues() {
+        List<InlineKeyboardButton> buttons = List.of(
+                InlineKeyboardButton.builder().text(TEXT_FAMILIARIZED).callbackData("callbackConfirmValues").build()
+        );
+
+        return new InlineKeyboardMarkup(List.of(buttons));
+    }
+
+    public InlineKeyboardMarkup getInlineConfirmRules() {
+        List<InlineKeyboardButton> buttons = List.of(
+                InlineKeyboardButton.builder().text(TEXT_FAMILIARIZED + ", согласен(на)").callbackData("callbackConfirmRules").build()
+        );
+
+        return new InlineKeyboardMarkup(List.of(buttons));
+    }
+
+    public InlineKeyboardMarkup getInlineTourMenu() {
+        return InlineKeyboardMarkup
+                .builder()
+                .keyboardRow(
+                        List.of(
+                                InlineKeyboardButton
+                                        .builder()
+                                        .text("Посмотреть экскурсию по дому")
+                                        .callbackData("TODO")
+                                        .build()
+                        )
+                )
+                .keyboardRow(
+                        List.of(
+                                InlineKeyboardButton
+                                        .builder()
+                                        .text("Узнать о правилах сортировки отходов")
+                                        .callbackData("TODO")
+                                        .build())
+                )
+                .keyboardRow(
+                        List.of(
+                                InlineKeyboardButton
+                                        .builder()
+                                        .text("Как тут стирать белье?")
+                                        .callbackData("TODO")
+                                        .build())
+                )
+                .keyboardRow(
+                        List.of(
+                                InlineKeyboardButton
+                                        .builder()
+                                        .text("Что есть рядом с домом?")
+                                        .callbackData("TODO")
+                                        .build())
+                )
+                .build();
     }
 }

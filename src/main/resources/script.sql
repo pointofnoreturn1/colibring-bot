@@ -1,3 +1,5 @@
+DROP TABLE IF EXISTS user_bio_question CASCADE;
+DROP TABLE IF EXISTS bio_question CASCADE;
 DROP TABLE IF EXISTS user_meal CASCADE;
 DROP TABLE IF EXISTS meal CASCADE;
 DROP TABLE IF EXISTS laundry_booking CASCADE;
@@ -20,6 +22,7 @@ CREATE TYPE status AS ENUM(
     'REQUIRE_NAME',
     'REQUIRE_BIRTHDATE',
     'REQUIRE_ROOM',
+    'REQUIRE_PHOTO',
     'REQUIRE_QUESTION_1',
     'REQUIRE_QUESTION_2',
     'REQUIRE_VALUES_CONFIRM',
@@ -57,8 +60,7 @@ CREATE TABLE "user"(
 	specified_name VARCHAR(255),
 	birth_date DATE,
 	room_id UUID,
-	question_bio_1 TEXT,
-	question_bio_2 TEXT,
+	photo_file_id VARCHAR(255),
 	status STATUS NOT NULL,
 	is_admin BOOL NOT NULL DEFAULT FALSE,
 	mt_room_booking_status BOOKING_STATUS NOT NULL DEFAULT 'NO_STATUS',
@@ -78,15 +80,15 @@ CREATE TABLE room(
 
 CREATE TABLE bio_question(
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    question TEXT
+    question TEXT NOT NULL
 );
 
 CREATE TABLE user_bio_question(
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id UUID,
-    question_id UUID,
-    answer TEXT,
-    created_at
+    user_id BIGINT NOT NULL,
+    question_id UUID NOT NULL,
+    answer TEXT NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT now()
 );
 
 CREATE TABLE meeting_room_booking(
@@ -141,7 +143,9 @@ ALTER TABLE meeting_room_booking ADD CONSTRAINT meeting_room_booking_user_id_fke
 ALTER TABLE tv_booking ADD CONSTRAINT tv_booking_user_id_fkey FOREIGN KEY (user_id) REFERENCES "user"(id);
 ALTER TABLE laundry_booking ADD CONSTRAINT laundry_booking_user_id_fkey FOREIGN KEY (user_id) REFERENCES "user"(id);
 ALTER TABLE user_meal ADD CONSTRAINT user_meal_user_id_fkey FOREIGN KEY (user_id) REFERENCES "user"(id);
-ALTER TABLE user_meal ADD CONSTRAINT user_meal_meal_id_fkey FOREIGN KEY (meal_id) REFERENCES "meal"(id);
+ALTER TABLE user_meal ADD CONSTRAINT user_meal_meal_id_fkey FOREIGN KEY (meal_id) REFERENCES meal(id);
+ALTER TABLE user_bio_question ADD CONSTRAINT user_bio_question_user_id_fkey FOREIGN KEY (user_id) REFERENCES "user"(id);
+ALTER TABLE user_bio_question ADD CONSTRAINT user_bio_question_question_id_fkey FOREIGN KEY (question_id) REFERENCES bio_question(id);
 
 INSERT INTO room (number, is_hostel) VALUES
 ('01', false),
@@ -160,14 +164,19 @@ INSERT INTO room (number, is_hostel) VALUES
 ('301', false);
 
 INSERT INTO bio_question (question) VALUES
-('Голосовые, кружочки или текст? Почему?').
-('Какой твой любимый фильм/сериал/книга? Почему? (Ответь про одно или про всё)').
-('Какого непопулярного мнения ты придерживаешься?').
-('Чьей жизнью тебе бы хотелось пожить один день?').
-('Что больше всего тебя вдохновляет в том, чем ты занимаешься?').
-('Есть ли что-то, что ты уже давно мечтаешь сделать? Почему ты еще не сделал(а) этого?').
-('Кого бы тебе хотелось видеть новым президентом России?').
-('Чем ты гордишься?').
-('Что бы тебе хотелось успеть сделать до конца года?').
-('Кем из известных людей ты восхищаешься и почему?').
-('Если бы тебе дали билборд, который увидит весь мир, что бы ты на нем написал?');
+('Test q1'),
+('Test q2'),
+('Test q3'),
+('Test q4'),
+('Test q5');
+--('Голосовые, кружочки или текст? Почему?'),
+--('Какой твой любимый фильм/сериал/книга? Почему? (Ответь про одно или про всё)'),
+--('Какого непопулярного мнения ты придерживаешься?'),
+--('Чьей жизнью тебе бы хотелось пожить один день?'),
+--('Что больше всего тебя вдохновляет в том, чем ты занимаешься?'),
+--('Есть ли что-то, что ты уже давно мечтаешь сделать? Почему ты еще не сделал(а) этого?'),
+--('Кого бы тебе хотелось видеть новым президентом России?'),
+--('Чем ты гордишься?'),
+--('Что бы тебе хотелось успеть сделать до конца года?'),
+--('Кем из известных людей ты восхищаешься и почему?'),
+--('Если бы тебе дали билборд, который увидит весь мир, что бы ты на нем написал?');

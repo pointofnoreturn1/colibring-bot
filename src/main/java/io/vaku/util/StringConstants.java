@@ -11,15 +11,24 @@ public final class StringConstants {
     public static final String TEXT_INCORRECT_DATE_RU = "Неверный формат \uD83D\uDE1E";
     public static final String TEXT_INCORRECT_DATE_EN = "Invalid format \uD83D\uDE1E";
     public static final String TIME_FORMAT = "HH:mm";
-    public static final String DATE_FORMAT = "dd.MM.yyyy";
+    public static final String FULL_DATE_FORMAT = "dd.MM.yyyy";
+    public static final String DATE_FORMAT = "dd.MM";
     public static final String DATE_TIME_FORMAT = "dd.MM.yy HH:mm";
     public static final String TEXT_NO_BOOKINGS = "Нет ни одной брони \uD83E\uDD2F";
     public static final String TEXT_NO_LAUNDRY_BOOKINGS = "Нет ни одной стирки \uD83E\uDD2F";
     public static final String TEXT_NO_MEAL_SCHEDULE = "Нет меню \uD83E\uDD2F";
+    public static final String TEXT_NO_MEAL_SIGN_UP = "Ты не записан(а) на питание \uD83E\uDD2F";
+    public static final String TEXT_MEAL_SIGN_UP_INFO =
+    """
+    • Выбери блюда, нажми "Подтвердить" или нажми "Назад"
+    • Кроме воскресенья запись возможна не ближе, чем за 18 часов (например, записаться на завтра можно не позднее 15:00 сегодняшнего дня)
+    • Если после нажатия "Подтвердить" ничего не произошло и сбросился выбор блюд, значит ты нарушил(а) ограничения, указанные выше
+    """;
     public static final String TEXT_CHOOSE_ACTION = "Выберите действие";
     public static final String TEXT_CHOOSE_SECTION = "Выберите раздел";
     public static final String TEXT_GO_BACK = "⏪ Назад";
     public static final String TEXT_CONFIRM = "Подтвердить ✅";
+    public static final String TEXT_FAMILIARIZED = "Ознакомлен(а)";
     public static final String EMOJI_MT_ROOM_BOOKING = "\uD83D\uDCA6 ";
     public static final String TEXT_MT_ROOM_BOOKING = EMOJI_MT_ROOM_BOOKING + "Бронь эрекционной";
     public static final String EMOJI_TV_BOOKING = "\uD83D\uDCFA ";

@@ -33,4 +33,8 @@ public class Response {
     public Response(BotApiMethod<?> botApiMethod) {
         this.botApiMethod = botApiMethod;
     }
+
+    public Response(SendMediaGroup sendMediaGroup) {
+        this.sendMediaGroup = sendMediaGroup;
+    }
 }

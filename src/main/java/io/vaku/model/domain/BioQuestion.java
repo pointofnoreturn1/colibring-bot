@@ -1,11 +1,9 @@
 package io.vaku.model.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -23,4 +21,7 @@ public class BioQuestion {
 
     @Column(name = "question")
     private String question;
+
+    @OneToMany(mappedBy = "question")
+    private List<UserBioQuestion> userBioQuestions;
 }

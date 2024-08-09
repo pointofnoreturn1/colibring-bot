@@ -23,6 +23,8 @@ public class ClassifiedUpdate {
 
     private final String commandName;
 
+    private final String photoFileId;
+
     public ClassifiedUpdate(Update update) {
         this.update = update;
         this.handlerType = handleTelegramType();
@@ -32,9 +34,12 @@ public class ClassifiedUpdate {
         this.firstName = handleFirstName();
         this.lastName = handleLastName();
         this.commandName = handleCommand();
+        this.photoFileId = handlePhoto();
     }
 
-    public String handleCommand() {
+
+
+    private String handleCommand() {
         if (update.hasMessage() && update.getMessage().hasText()) {
             if (update.getMessage().getText().startsWith("/")) {
                 return update.getMessage().getText().split(" ")[0];
@@ -104,5 +109,13 @@ public class ClassifiedUpdate {
         } else {
             return update.getMessage().getFrom().getLastName();
         }
+    }
+
+    private String handlePhoto() {
+        if (update.hasMessage() && update.getMessage().hasPhoto()) {
+            return update.getMessage().getPhoto().getFirst().getFileId();
+        }
+
+        return null;
     }
 }

@@ -51,11 +51,8 @@ public class User {
     @JoinColumn(name = "room_id", referencedColumnName = "id")
     private Room room;
 
-    @Column(name = "question_bio_1")
-    private String questionBio1;
-
-    @Column(name = "question_bio_2")
-    private String questionBio2;
+    @Column(name = "photo_file_id")
+    private String photoFileId;
 
     @Enumerated(EnumType.STRING)
     @JdbcTypeCode(SqlTypes.NAMED_ENUM)
@@ -111,6 +108,9 @@ public class User {
 
     @ManyToMany(mappedBy = "users", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Meal> userMeals;
+
+    @OneToMany(mappedBy = "user")
+    private List<UserBioQuestion> userBioQuestions;
 
     public User(long id, long chatId, String tgUserName, String tgFirstName, String tgLastName) {
         this.id = id;

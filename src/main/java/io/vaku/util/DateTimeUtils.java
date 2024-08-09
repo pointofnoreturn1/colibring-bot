@@ -21,8 +21,25 @@ public final class DateTimeUtils {
     private DateTimeUtils() {
     }
 
+    public static boolean isFullDateValid(String date) {
+        if (date.matches("^\\d{1,2}\\.\\d{1,2}\\.\\d{4}")) { // dd.MM.yyyy format
+            DateFormat sdf = new SimpleDateFormat(FULL_DATE_FORMAT);
+            sdf.setLenient(false);
+
+            try {
+                sdf.parse(date);
+            } catch (ParseException e) {
+                return false;
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+
     public static boolean isDateValid(String date) {
-        if (date.matches("^\\d{1,2}\\.\\d{1,2}\\.\\d{4}")) { // dd.dd.dddd format format
+        if (date.matches("^\\d{1,2}\\.\\d{1,2}")) { // dd.MM format
             DateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
             sdf.setLenient(false);
 
@@ -43,7 +60,7 @@ public final class DateTimeUtils {
         String[] dateTimeAndDescription = trimmed.split("(?<=\\d{2}:\\d{2}-\\d{2}:\\d{2})\\s");
 
         if (trimmed.matches("^\\d{2}:\\d{2}-\\d{2}:\\d{2}.*")) { // 10:00-11:00 [description]
-            DateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
+            DateFormat sdf = new SimpleDateFormat(FULL_DATE_FORMAT);
             sdf.setLenient(false);
             String date = sdf.format(new Date());
             String startTime = dateTimeAndDescription[0].split("-")[0];
@@ -64,7 +81,7 @@ public final class DateTimeUtils {
             return createSchedule(date, startTime, endTime, dateTimeAndDescription.length == 2 ? dateTimeAndDescription[1] : null);
         } else if (trimmed.matches("^\\d{2}:\\d{2}.*")) { // 10:00 [description] (from now till 10:00)
             String[] dateTimeDesc = trimmed.split(" ");
-            DateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
+            DateFormat sdf = new SimpleDateFormat(FULL_DATE_FORMAT);
             sdf.setLenient(false);
             DateFormat sdfTime = new SimpleDateFormat(TIME_FORMAT);
             sdfTime.setLenient(false);
