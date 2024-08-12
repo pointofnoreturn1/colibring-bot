@@ -1,17 +1,14 @@
 package io.vaku.service.domain.meal;
 
 import io.vaku.model.domain.Meal;
-import io.vaku.model.enm.DayOfWeek;
+import io.vaku.model.enm.CustomDayOfWeek;
 import io.vaku.repository.MealMenuRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @Transactional(readOnly = true)
@@ -24,9 +21,8 @@ public class MealService {
         return repository.findAll(Sort.by(Sort.Order.asc("dayOfWeek"), Sort.Order.asc("mealType")));
     }
 
-    @Transactional
-    public void deleteAll() {
-        repository.deleteAll();
+    public int countByStartDateIsAfter(Date date) {
+        return repository.countByStartDateIsAfter(date);
     }
 
     @Transactional
@@ -34,8 +30,8 @@ public class MealService {
         repository.saveAll(menu);
     }
 
-    public Map<DayOfWeek, List<Meal>> getDayMeals() {
-        Map<DayOfWeek, List<Meal>> dayMeals = new LinkedHashMap<>();
+    public Map<CustomDayOfWeek, List<Meal>> getDayMeals() {
+        Map<CustomDayOfWeek, List<Meal>> dayMeals = new LinkedHashMap<>();
 
         for (Meal meal : findAllSorted()) {
             if (!dayMeals.containsKey(meal.getDayOfWeek())) {

@@ -2,8 +2,7 @@ package io.vaku.service.domain.meal;
 
 import io.vaku.model.ClassifiedUpdate;
 import io.vaku.model.domain.Meal;
-import io.vaku.model.domain.User;
-import io.vaku.model.enm.DayOfWeek;
+import io.vaku.model.enm.CustomDayOfWeek;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
@@ -12,13 +11,10 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 import java.util.ArrayList;
 import java.util.List;
 
-import static io.vaku.util.StringConstants.TEXT_CONFIRM;
-import static io.vaku.util.StringConstants.TEXT_GO_BACK;
+import static io.vaku.util.StringConstants.*;
 
 @Service
 public class MealSignUpMenuService {
-
-    public static final String EMOJI_MEAL_SELECTED = "\uD83D\uDCA5 ";
 
     @Autowired
     private MealSignUpService mealSignUpService;
@@ -63,7 +59,7 @@ public class MealSignUpMenuService {
                 keyboard.add(List.of(
                         InlineKeyboardButton
                                 .builder()
-                                .text(DayOfWeek.values()[i / 3].getName().toUpperCase())
+                                .text(CustomDayOfWeek.values()[i / 3].getName().toUpperCase())
                                 .callbackData("dummy")
                                 .build())
                 );

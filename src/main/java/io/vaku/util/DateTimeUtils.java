@@ -10,9 +10,11 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import static io.vaku.util.StringConstants.*;
 
@@ -116,6 +118,8 @@ public final class DateTimeUtils {
                 .append(".")
                 .append(year.substring(2))
                 .append(" ")
+                .append(startDateTime.format(DateTimeFormatter.ofPattern("EE", Locale.of("ru"))))
+                .append(" ")
                 .append(startTimeHours.length() == 1 ? "0" + startTimeHours : startTimeHours)
                 .append(":")
                 .append(startTimeMinutes.length() == 1 ? "0" + startTimeMinutes : startTimeMinutes)
@@ -127,6 +131,8 @@ public final class DateTimeUtils {
                 if (startDateTime.getDayOfMonth() < endDateTime.getDayOfMonth()) {
                     sb.append(" (след. день)");
                 }
+
+                // TODO: сделать отображение списка с разбивкой по дням
 
                 return sb.append(description == null ? "" : " " + description).toString();
     }

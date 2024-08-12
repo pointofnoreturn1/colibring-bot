@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
@@ -78,6 +79,13 @@ public class MealConfirmCallback implements Command {
         LocalDateTime threshold = LocalDate.now().atTime(9, 0).plusHours(24);
         LocalDateTime nowDateTime = LocalDateTime.now();
         DayOfWeek dayNow = nowDateTime.getDayOfWeek();
+
+        boolean isMenuUpdated = LocalDate.ofInstant(meals.getFirst().getCreatedAt().toInstant(), ZoneId.systemDefault()).getDayOfMonth()
+                == LocalDate.now().getDayOfMonth();
+
+        if (dayNow.ordinal() == 6 && isMenuUpdated) {
+            return true;
+        }
 
         for (Meal meal : meals) {
             if (meal.getDayOfWeek().ordinal() <= dayNow.ordinal()) {

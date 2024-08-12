@@ -6,7 +6,7 @@ import io.vaku.model.ClassifiedUpdate;
 import io.vaku.model.Response;
 import io.vaku.model.domain.Meal;
 import io.vaku.model.domain.User;
-import io.vaku.model.enm.DayOfWeek;
+import io.vaku.model.enm.CustomDayOfWeek;
 import io.vaku.service.domain.meal.MealService;
 import io.vaku.service.domain.meal.MealSignUpMessageService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +40,7 @@ public class MealShowMyRecordsCallback implements Command {
     public List<Response> getAnswer(User user, ClassifiedUpdate update) {
         Comparator<Meal> comparator = Comparator.comparing(Meal::getDayOfWeek).thenComparing(Meal::getMealType);
         List<Meal> userMeals = user.getUserMeals().stream().sorted(comparator).toList();
-        Map<DayOfWeek, List<Meal>> dayMeals = new LinkedHashMap<>();
+        Map<CustomDayOfWeek, List<Meal>> dayMeals = new LinkedHashMap<>();
 
         for (Meal meal : userMeals) {
             if (!dayMeals.containsKey(meal.getDayOfWeek())) {
@@ -58,7 +58,7 @@ public class MealShowMyRecordsCallback implements Command {
         stringDayMeals.add("Твоя запись на питание:");
         Map<Meal, Integer> mealsCount = new HashMap<>();
 
-        for (Map.Entry<DayOfWeek, List<Meal>> entry : dayMeals.entrySet()) {
+        for (Map.Entry<CustomDayOfWeek, List<Meal>> entry : dayMeals.entrySet()) {
             StringBuilder sb = new StringBuilder();
             sb.append(entry.getKey().getName());
 

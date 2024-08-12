@@ -6,7 +6,7 @@ import io.vaku.model.ClassifiedUpdate;
 import io.vaku.model.Response;
 import io.vaku.model.domain.Meal;
 import io.vaku.model.domain.User;
-import io.vaku.model.enm.DayOfWeek;
+import io.vaku.model.enm.CustomDayOfWeek;
 import io.vaku.model.enm.MealType;
 import io.vaku.service.MessageService;
 import io.vaku.service.domain.UserService;
@@ -14,6 +14,10 @@ import io.vaku.service.domain.meal.MealService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.temporal.TemporalAdjusters;
 import java.util.*;
 
 import static io.vaku.model.enm.AdminStatus.NO_STATUS;
@@ -38,6 +42,9 @@ public class MealAdminHandleService {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private MealAdminMessageService mealAdminMessageService;
+
     public List<Response> execute(User user, ClassifiedUpdate update) {
         if (user.getAdminStatus().equals(REQUIRE_NEW_MENU_INPUT) &&
                 !update.getCommandName().equals(backToMainMealAdminMenuCallback.getCommandName())) {
@@ -48,6 +55,14 @@ public class MealAdminHandleService {
     }
 
     private List<Response> proceedNewMenu(User user, ClassifiedUpdate update) {
+
+        if (menuExists()) {
+            user.setAdminStatus(NO_STATUS);
+            userService.createOrUpdate(user);
+
+            return List.of(mealAdminMessageService.getMenuAlreadyExistsMsg(user, update));
+        }
+
         List<String> meals = update.getCommandName()
                 .lines()
                 .map(String::trim)
@@ -80,7 +95,6 @@ public class MealAdminHandleService {
         allMeals.addAll(getMealMenuItems(lunches, LUNCH));
         allMeals.addAll(getMealMenuItems(suppers, SUPPER));
 
-        mealService.deleteAll();
         mealService.saveAll(allMeals);
         user.setAdminStatus(NO_STATUS);
         userService.createOrUpdate(user);
@@ -95,16 +109,67 @@ public class MealAdminHandleService {
             String[] arr = meals.get(i).split("\\$");
             String mealName = arr[0].trim();
             int mealPrice = arr.length == 2 ? Integer.parseInt(arr[1].trim()) : 10;
+
+            Date monday;
+            if (getDayOfWeekOrdinal() == 0) {
+                monday = new Date();
+            } else {
+                if (mealService.countByStartDateIsAfter(getPrevMonday()) == 0) {
+                    monday = getPrevMonday();
+                } else {
+                    monday = getNextMonday();
+                }
+            }
+            Date sunday = getNextSunday(monday);
+
             Meal mealItem = new Meal(
                     UUID.randomUUID(),
-                    DayOfWeek.values()[i],
+                    CustomDayOfWeek.values()[i],
                     mealType,
                     mealName,
-                    mealPrice
+                    mealPrice,
+                    monday,
+                    sunday
             );
             mealItems.add(mealItem);
         }
 
         return mealItems;
+    }
+
+    private boolean menuExists() {
+        if (getDayOfWeekOrdinal() == 6) {
+            return mealService.countByStartDateIsAfter(getNextMonday()) > 0;
+        }
+
+        if (getDayOfWeekOrdinal() == 0) {
+            return mealService.countByStartDateIsAfter(new Date()) > 0;
+        }
+
+        return mealService.countByStartDateIsAfter(getPrevMonday()) > 0;
+    }
+
+    private Date getNextMonday() {
+        LocalDate nextMonday = LocalDate.now().with(TemporalAdjusters.next(DayOfWeek.MONDAY));
+
+        return Date.from(nextMonday.atStartOfDay(ZoneId.systemDefault()).toInstant());
+    }
+
+    private Date getPrevMonday() {
+        LocalDate prevMonday = LocalDate.now().with(TemporalAdjusters.previous(DayOfWeek.MONDAY));
+
+        return Date.from(prevMonday.atStartOfDay(ZoneId.systemDefault()).toInstant());
+    }
+
+    private Date getNextSunday(Date monday) {
+        LocalDate nextSunday = LocalDate
+                .ofInstant(monday.toInstant(), ZoneId.systemDefault())
+                .with(TemporalAdjusters.next(DayOfWeek.SUNDAY));
+
+        return Date.from(nextSunday.atStartOfDay(ZoneId.systemDefault()).toInstant());
+    }
+
+    private int getDayOfWeekOrdinal() {
+        return LocalDate.now().getDayOfWeek().ordinal();
     }
 }

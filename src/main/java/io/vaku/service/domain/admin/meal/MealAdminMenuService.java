@@ -21,7 +21,24 @@ public class MealAdminMenuService {
                                         .text("Загрузить меню")
                                         .callbackData("callbackMealAdminAddNewMenu")
                                         .build()
-
+                        )
+                )
+                .keyboardRow(
+                        List.of(
+                                InlineKeyboardButton
+                                        .builder()
+                                        .text("Кто ест (неделя)")
+                                        .callbackData("callbackMealAdminWhoEatsWeek")
+                                        .build()
+                        )
+                )
+                .keyboardRow(
+                        List.of(
+                                InlineKeyboardButton
+                                        .builder()
+                                        .text("Кто ест (сегодня)")
+                                        .callbackData("callbackMealAdminWhoEatsToday")
+                                        .build()
                         )
                 )
                 .keyboardRow(List.of(getBackToMainAdminMenuButton()))

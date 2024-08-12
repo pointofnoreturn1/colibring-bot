@@ -16,6 +16,9 @@ public class MealAdminMessageService {
     @Autowired
     private MealAdminMenuService mealAdminMenuService;
 
+    @Autowired
+    private MealAdminService mealAdminService;
+
     public Response getMealAdminMenuEditedMsg(User user, ClassifiedUpdate update) {
         EditMessageText msg = EditMessageText
                 .builder()
@@ -35,6 +38,26 @@ public class MealAdminMessageService {
                 .messageId(user.getLastMsgId())
                 .text(TEXT_ADD_NEW_MENU_PROMPT)
                 .replyMarkup(mealAdminMenuService.getInlineBackToMainMealAdminMenu())
+                .build();
+
+        return new Response(msg);
+    }
+
+    public Response getMenuAlreadyExistsMsg(User user, ClassifiedUpdate update) {
+        SendMessage msg = SendMessage
+                .builder()
+                .chatId(update.getChatId())
+                .text(TEXT_MENU_ALREADY_EXISTS)
+                .build();
+
+        return new Response(msg);
+    }
+
+    public Response getMealAdminWhoEatsWeekMsg(User user, ClassifiedUpdate update) {
+        SendMessage msg = SendMessage
+                .builder()
+                .chatId(update.getChatId())
+                .text(mealAdminService.getWhoEatsWeek())
                 .build();
 
         return new Response(msg);

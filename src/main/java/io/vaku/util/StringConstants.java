@@ -8,6 +8,7 @@ public final class StringConstants {
     public static final String TEXT_REGISTER_EN = "Register";
     public static final String TEXT_DONE_RU = "Готово ✅";
     public static final String TEXT_DONE_EN = "Done ✅";
+    public static final String EMOJI_MEAL_SELECTED = "✅ ";
     public static final String TEXT_INCORRECT_DATE_RU = "Неверный формат \uD83D\uDE1E";
     public static final String TEXT_INCORRECT_DATE_EN = "Invalid format \uD83D\uDE1E";
     public static final String TIME_FORMAT = "HH:mm";
@@ -18,6 +19,7 @@ public final class StringConstants {
     public static final String TEXT_NO_LAUNDRY_BOOKINGS = "Нет ни одной стирки \uD83E\uDD2F";
     public static final String TEXT_NO_MEAL_SCHEDULE = "Нет меню \uD83E\uDD2F";
     public static final String TEXT_NO_MEAL_SIGN_UP = "Ты не записан(а) на питание \uD83E\uDD2F";
+    public static final String TEXT_MENU_ALREADY_EXISTS = "Меню уже существует \uD83E\uDD2F";
     public static final String TEXT_MEAL_SIGN_UP_INFO =
     """
     • Выбери блюда, нажми "Подтвердить" или нажми "Назад"

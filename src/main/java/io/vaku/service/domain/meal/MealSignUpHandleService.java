@@ -7,7 +7,7 @@ import io.vaku.model.ClassifiedUpdate;
 import io.vaku.model.Response;
 import io.vaku.model.domain.Meal;
 import io.vaku.model.domain.User;
-import io.vaku.model.enm.DayOfWeek;
+import io.vaku.model.enm.CustomDayOfWeek;
 import io.vaku.model.enm.MealType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -52,7 +52,7 @@ public class MealSignUpHandleService {
         String[] arr = update.getCommandName().split("_")[1].split(":");
         List<Meal> meals = mealService.findAllSorted();
         Meal meal = meals.stream()
-                .filter(it -> it.getDayOfWeek().equals(DayOfWeek.valueOf(arr[0])))
+                .filter(it -> it.getDayOfWeek().equals(CustomDayOfWeek.valueOf(arr[0])))
                 .filter(it -> it.getMealType().equals(MealType.valueOf(arr[1])))
                 .toList()
                 .getFirst();

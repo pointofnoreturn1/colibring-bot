@@ -3,7 +3,7 @@ package io.vaku.model.enm;
 import lombok.Getter;
 
 @Getter
-public enum DayOfWeek {
+public enum CustomDayOfWeek {
     MON("\uD83D\uDCA9 Понедельник"),
     TUE("☹ Вторник"),
     WED("\uD83D\uDE10 Среда"),
@@ -14,7 +14,7 @@ public enum DayOfWeek {
 
     private final String name;
 
-    DayOfWeek(String name) {
+    CustomDayOfWeek(String name) {
         this.name = name;
     }
 }

@@ -1,14 +1,22 @@
 package io.vaku.repository;
 
 import io.vaku.model.domain.Meal;
-import io.vaku.model.enm.DayOfWeek;
-import io.vaku.model.enm.MealType;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
+import java.util.Date;
 import java.util.UUID;
 
 @Repository
-public interface MealMenuRepository extends JpaRepository<Meal, UUID> {
+public interface MealMenuRepository extends JpaRepository<Meal, UUID> { // JpaRepository is used here on purpose
+
+    @Query(
+            value = "SELECT COUNT(*) " +
+                    "FROM meal " +
+                    "WHERE start_date = :date OR start_date > :date",
+            nativeQuery = true
+    )
+    int countByStartDateIsAfter(@Param("date") Date date);
 }

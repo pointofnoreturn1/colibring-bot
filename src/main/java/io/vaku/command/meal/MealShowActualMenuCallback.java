@@ -6,7 +6,7 @@ import io.vaku.model.ClassifiedUpdate;
 import io.vaku.model.Response;
 import io.vaku.model.domain.Meal;
 import io.vaku.model.domain.User;
-import io.vaku.model.enm.DayOfWeek;
+import io.vaku.model.enm.CustomDayOfWeek;
 import io.vaku.service.domain.meal.MealService;
 import io.vaku.service.domain.meal.MealSignUpMessageService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,10 +35,10 @@ public class MealShowActualMenuCallback implements Command {
 
     @Override
     public List<Response> getAnswer(User user, ClassifiedUpdate update) {
-        Map<DayOfWeek, List<Meal>> dayMeals = mealService.getDayMeals();
+        Map<CustomDayOfWeek, List<Meal>> dayMeals = mealService.getDayMeals();
         List<String> stringDayMeals = new ArrayList<>();
 
-        for (Map.Entry<DayOfWeek, List<Meal>> entry : dayMeals.entrySet()) {
+        for (Map.Entry<CustomDayOfWeek, List<Meal>> entry : dayMeals.entrySet()) {
             StringBuilder sb = new StringBuilder();
             sb.append(entry.getKey().getName());
             for (Meal meal : entry.getValue()) {

@@ -1,6 +1,6 @@
 package io.vaku.model.domain;
 
-import io.vaku.model.enm.DayOfWeek;
+import io.vaku.model.enm.CustomDayOfWeek;
 import io.vaku.model.enm.MealType;
 import jakarta.persistence.*;
 import lombok.*;
@@ -26,7 +26,7 @@ public class Meal {
     @Enumerated(EnumType.STRING)
     @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     @Column(name = "day_of_week", nullable = false)
-    private DayOfWeek dayOfWeek;
+    private CustomDayOfWeek dayOfWeek;
 
     @Enumerated(EnumType.STRING)
     @JdbcTypeCode(SqlTypes.NAMED_ENUM)
@@ -38,6 +38,14 @@ public class Meal {
 
     @Column(name = "price")
     private int price;
+
+    @Temporal(TemporalType.DATE)
+    @Column(name = "start_date")
+    private Date startDate;
+
+    @Temporal(TemporalType.DATE)
+    @Column(name = "end_date")
+    private Date endDate;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_at")
@@ -64,11 +72,13 @@ public class Meal {
         return Objects.hash(id, dayOfWeek, mealType, name, price, createdAt);
     }
 
-    public Meal(UUID id, DayOfWeek dayOfWeek, MealType mealType, String name, int price) {
+    public Meal(UUID id, CustomDayOfWeek dayOfWeek, MealType mealType, String name, int price, Date startDate, Date endDate) {
         this.id = id;
         this.dayOfWeek = dayOfWeek;
         this.mealType = mealType;
         this.name = name;
         this.price = price;
+        this.startDate = startDate;
+        this.endDate = endDate;
     }
 }

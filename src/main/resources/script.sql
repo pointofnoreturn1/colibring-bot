@@ -128,6 +128,8 @@ CREATE TABLE meal(
     meal_type MEAL_TYPE NOT NULL,
     name VARCHAR(255),
     price INTEGER NOT NULL,
+    start_date DATE,
+    end_date DATE,
     created_at TIMESTAMP NOT NULL DEFAULT now()
 );
 
@@ -169,6 +171,7 @@ INSERT INTO bio_question (question) VALUES
 ('Test q3'),
 ('Test q4'),
 ('Test q5');
+
 --('Голосовые, кружочки или текст? Почему?'),
 --('Какой твой любимый фильм/сериал/книга? Почему? (Ответь про одно или про всё)'),
 --('Какого непопулярного мнения ты придерживаешься?'),
