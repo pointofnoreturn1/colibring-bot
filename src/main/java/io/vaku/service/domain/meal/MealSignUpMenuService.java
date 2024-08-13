@@ -56,11 +56,12 @@ public class MealSignUpMenuService {
 
         for (int i = 0; i < meals.size(); i++) {
             if (i % 3 == 0) {
+                CustomDayOfWeek dayOfWeek = CustomDayOfWeek.values()[i / 3];
                 keyboard.add(List.of(
                         InlineKeyboardButton
                                 .builder()
-                                .text(CustomDayOfWeek.values()[i / 3].getName().toUpperCase())
-                                .callbackData("dummy")
+                                .text(dayOfWeek.getName().toUpperCase())
+                                .callbackData("callbackDayOfWeek_" + dayOfWeek.ordinal())
                                 .build())
                 );
             }
@@ -74,6 +75,7 @@ public class MealSignUpMenuService {
             );
         }
 
+        keyboard.add(List.of(getPickAllMealsButton()));
         keyboard.add(List.of(getBackToMainMealMenuButton(), getConfirmMealButton()));
         markup.setKeyboard(keyboard);
 
@@ -90,6 +92,10 @@ public class MealSignUpMenuService {
 
     private InlineKeyboardButton getConfirmMealButton() {
         return InlineKeyboardButton.builder().text(TEXT_CONFIRM).callbackData("callbackConfirmMeal").build();
+    }
+
+    private InlineKeyboardButton getPickAllMealsButton() {
+        return InlineKeyboardButton.builder().text(TEXT_PICK_ALL).callbackData("callbackPickAllMeals").build();
     }
 
     private String getMealButtonText(long chatId, Meal meal) {

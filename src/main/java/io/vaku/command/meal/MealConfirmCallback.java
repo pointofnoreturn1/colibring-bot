@@ -55,6 +55,10 @@ public class MealConfirmCallback implements Command {
     public List<Response> getAnswer(User user, ClassifiedUpdate update) {
         List<Meal> userMeals = mealSignUpService.getMealsByChatId(update.getChatId());
 
+        if (userMeals.isEmpty()) {
+            return List.of(new Response());
+        }
+
         if (!isSignUpAllowed(userMeals)) {
             mealSignUpService.truncate(user.getChatId());
             List<Meal> meals = mealService.findAllSorted();

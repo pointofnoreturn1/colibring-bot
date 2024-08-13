@@ -1,7 +1,6 @@
 package io.vaku.service.domain.meal;
 
 import io.vaku.command.meal.MealBackToMenuCallback;
-import io.vaku.command.meal.MealConfirmCallback;
 import io.vaku.handler.HandlersMap;
 import io.vaku.model.ClassifiedUpdate;
 import io.vaku.model.Response;
@@ -12,6 +11,7 @@ import io.vaku.model.enm.MealType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 
 import static io.vaku.model.enm.BookingStatus.REQUIRE_INPUT;
@@ -34,21 +34,27 @@ public class MealSignUpHandleService {
     @Autowired
     private MealSignUpMessageService mealSignUpMessageService;
 
-    @Autowired
-    private MealConfirmCallback mealConfirmCallback;
-
     public List<Response> execute(User user, ClassifiedUpdate update) {
         if (user.getMealSignUpStatus().equals(REQUIRE_INPUT) &&
                 !update.getCommandName().equals(mealBackToMenuCallback.getCommandName())) {
+
             if (update.getCommandName().startsWith("meal_")) {
-                return proceedMealSignUp(user, update);
+                return proceedOneMealSignUp(user, update);
+            }
+
+            if (update.getCommandName().startsWith("callbackDayOfWeek_")) {
+                return proceedDayMealSignUp(user, update);
+            }
+
+            if (update.getCommandName().equals("callbackPickAllMeals")) {
+                return proceedPickAllMeals(user, update);
             }
         }
 
         return commandMap.execute(user, update);
     }
 
-    private List<Response> proceedMealSignUp(User user, ClassifiedUpdate update) {
+    private List<Response> proceedOneMealSignUp(User user, ClassifiedUpdate update) {
         String[] arr = update.getCommandName().split("_")[1].split(":");
         List<Meal> meals = mealService.findAllSorted();
         Meal meal = meals.stream()
@@ -62,6 +68,41 @@ public class MealSignUpHandleService {
         } else {
             mealSignUpService.addMeal(user.getChatId(), meal);
         }
+
+        return List.of(mealSignUpMessageService.getMealSignUpEditMarkupMsg(user, update, meals));
+    }
+
+    private List<Response> proceedDayMealSignUp(User user, ClassifiedUpdate update) {
+        int dayOrdinal = Integer.parseInt(update.getCommandName().split("_")[1]);
+        List<Meal> meals = mealService.findAllSorted();
+        List<Meal> dayMeals = meals.stream()
+                .filter(it -> it.getDayOfWeek().ordinal() == dayOrdinal)
+                .toList();
+
+        long chatId = user.getChatId();
+
+        if (new HashSet<>(mealSignUpService.getMealsByChatId(chatId)).containsAll(dayMeals)) {
+            dayMeals.forEach(it -> mealSignUpService.removeMeal(chatId, it));
+
+            return List.of(mealSignUpMessageService.getMealSignUpEditMarkupMsg(user, update, meals));
+        }
+
+        mealSignUpService.addAllMeals(chatId, dayMeals);
+
+        return List.of(mealSignUpMessageService.getMealSignUpEditMarkupMsg(user, update, meals));
+    }
+
+    private List<Response> proceedPickAllMeals(User user, ClassifiedUpdate update) {
+        List<Meal> meals = mealService.findAllSorted();
+        long chatId = user.getChatId();
+
+        if (mealSignUpService.getMealsByChatId(chatId).size() == meals.size()) {
+            mealSignUpService.truncate(chatId);
+
+            return List.of(mealSignUpMessageService.getMealSignUpEditMarkupMsg(user, update, meals));
+        }
+
+        mealSignUpService.addAllMeals(chatId, meals);
 
         return List.of(mealSignUpMessageService.getMealSignUpEditMarkupMsg(user, update, meals));
     }

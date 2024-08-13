@@ -36,7 +36,7 @@ public class MealAdminMenuService {
                         List.of(
                                 InlineKeyboardButton
                                         .builder()
-                                        .text("Кто ест (сегодня)")
+                                        .text("Кто ест сегодня")
                                         .callbackData("callbackMealAdminWhoEatsToday")
                                         .build()
                         )

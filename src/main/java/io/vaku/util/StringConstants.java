@@ -20,6 +20,7 @@ public final class StringConstants {
     public static final String TEXT_NO_MEAL_SCHEDULE = "Нет меню \uD83E\uDD2F";
     public static final String TEXT_NO_MEAL_SIGN_UP = "Ты не записан(а) на питание \uD83E\uDD2F";
     public static final String TEXT_MENU_ALREADY_EXISTS = "Меню уже существует \uD83E\uDD2F";
+    public static final String TEXT_PICK_ALL = "\uD83D\uDCB5 Выбрать все \uD83D\uDCB5";
     public static final String TEXT_MEAL_SIGN_UP_INFO =
     """
     • Выбери блюда, нажми "Подтвердить" или нажми "Назад"
@@ -92,10 +93,10 @@ public final class StringConstants {
                     Понедельник
                     # Завтрак
                     # Первое
-                    # Второе $ цена
+                    # Второе $ 15
                     
                     • Не нарушай порядок дней недели и порядок блюд
-                    • Цена опциональна. Если не указана, будет установлено по умолчанию значение 10₾
-                    • Символы '#' и '$' удалять/заменять нельзя, по ним распознаются данные
+                    • Цена опциональна и указывается после символа '$'. Если не указана, будет установлено значение по умолчанию 10₾
+                    • Символы '#' и '$' заменять на другие нельзя, по ним распознаются данные
                     """;
 }

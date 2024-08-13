@@ -62,4 +62,14 @@ public class MealAdminMessageService {
 
         return new Response(msg);
     }
+
+    public Response getMealAdminWhoEatsTodayMsg(User user, ClassifiedUpdate update) {
+        SendMessage msg = SendMessage
+                .builder()
+                .chatId(update.getChatId())
+                .text(mealAdminService.getWhoEatsToday())
+                .build();
+
+        return new Response(msg);
+    }
 }

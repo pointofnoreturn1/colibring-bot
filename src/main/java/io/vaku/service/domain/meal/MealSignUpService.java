@@ -23,6 +23,18 @@ public class MealSignUpService {
         userMeals.put(chatId, meals);
     }
 
+    public void addAllMeals(long chatId, List<Meal> mealList) {
+        if (userMeals.containsKey(chatId)) {
+            if (userMeals.get(chatId) != null) {
+                userMeals.get(chatId).addAll(mealList);
+                return;
+            }
+        }
+
+        Set<Meal> meals = new HashSet<>(mealList);
+        userMeals.put(chatId, meals);
+    }
+
     public void removeMeal(long chatId, Meal meal) {
         if (userMeals.containsKey(chatId) && userMeals.get(chatId) != null) {
             userMeals.get(chatId).remove(meal);
