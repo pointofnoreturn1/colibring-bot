@@ -95,8 +95,10 @@ public class MealAdminHandleService {
         allMeals.addAll(getMealMenuItems(lunches, LUNCH));
         allMeals.addAll(getMealMenuItems(suppers, SUPPER));
 
+        mealService.deleteAll();
         mealService.saveAll(allMeals);
         user.setAdminStatus(NO_STATUS);
+        user.setUserMeals(Collections.emptyList());
         userService.createOrUpdate(user);
 
         return List.of(messageService.getDoneMsg(user, update));

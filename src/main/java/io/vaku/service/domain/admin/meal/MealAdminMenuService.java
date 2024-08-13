@@ -18,7 +18,7 @@ public class MealAdminMenuService {
                         List.of(
                                 InlineKeyboardButton
                                         .builder()
-                                        .text("Загрузить меню")
+                                        .text("Загрузить новое меню")
                                         .callbackData("callbackMealAdminAddNewMenu")
                                         .build()
                         )

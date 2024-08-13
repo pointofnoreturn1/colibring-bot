@@ -6,6 +6,7 @@ import io.vaku.model.ClassifiedUpdate;
 import io.vaku.model.Response;
 import io.vaku.model.domain.Meal;
 import io.vaku.model.domain.User;
+import io.vaku.model.domain.UserMeal;
 import io.vaku.model.enm.CustomDayOfWeek;
 import io.vaku.service.domain.meal.MealService;
 import io.vaku.service.domain.meal.MealSignUpMessageService;
@@ -39,7 +40,7 @@ public class MealShowMyRecordsCallback implements Command {
     @Override
     public List<Response> getAnswer(User user, ClassifiedUpdate update) {
         Comparator<Meal> comparator = Comparator.comparing(Meal::getDayOfWeek).thenComparing(Meal::getMealType);
-        List<Meal> userMeals = user.getUserMeals().stream().sorted(comparator).toList();
+        List<Meal> userMeals = user.getUserMeals().stream().map(UserMeal::getMeal).sorted(comparator).toList();
         Map<CustomDayOfWeek, List<Meal>> dayMeals = new LinkedHashMap<>();
 
         for (Meal meal : userMeals) {

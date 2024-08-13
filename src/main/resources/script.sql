@@ -140,12 +140,14 @@ CREATE TABLE user_meal(
     created_at TIMESTAMP NOT NULL DEFAULT now()
 );
 
+CREATE TABLE
+
 ALTER TABLE "user" ADD CONSTRAINT user_room_id_fkey FOREIGN KEY (room_id) REFERENCES room(id);
 ALTER TABLE meeting_room_booking ADD CONSTRAINT meeting_room_booking_user_id_fkey FOREIGN KEY (user_id) REFERENCES "user"(id);
 ALTER TABLE tv_booking ADD CONSTRAINT tv_booking_user_id_fkey FOREIGN KEY (user_id) REFERENCES "user"(id);
 ALTER TABLE laundry_booking ADD CONSTRAINT laundry_booking_user_id_fkey FOREIGN KEY (user_id) REFERENCES "user"(id);
 ALTER TABLE user_meal ADD CONSTRAINT user_meal_user_id_fkey FOREIGN KEY (user_id) REFERENCES "user"(id);
-ALTER TABLE user_meal ADD CONSTRAINT user_meal_meal_id_fkey FOREIGN KEY (meal_id) REFERENCES meal(id);
+ALTER TABLE user_meal ADD CONSTRAINT user_meal_meal_id_fkey FOREIGN KEY (meal_id) REFERENCES meal(id) ON DELETE CASCADE;
 ALTER TABLE user_bio_question ADD CONSTRAINT user_bio_question_user_id_fkey FOREIGN KEY (user_id) REFERENCES "user"(id);
 ALTER TABLE user_bio_question ADD CONSTRAINT user_bio_question_question_id_fkey FOREIGN KEY (question_id) REFERENCES bio_question(id);
 
@@ -166,11 +168,17 @@ INSERT INTO room (number, is_hostel) VALUES
 ('301', false);
 
 INSERT INTO bio_question (question) VALUES
-('Test q1'),
-('Test q2'),
-('Test q3'),
-('Test q4'),
-('Test q5');
+('Голосовые, кружочки или текст? Почему?'),
+('Какой твой любимый фильм/сериал/книга? Почему? (Ответь про одно или про всё)'),
+('Какого непопулярного мнения ты придерживаешься?'),
+('Чьей жизнью тебе бы хотелось пожить один день?'),
+('Что больше всего тебя вдохновляет в том, чем ты занимаешься?'),
+('Есть ли что-то, что ты уже давно мечтаешь сделать? Почему ты еще не сделал(а) этого?'),
+('Кого бы тебе хотелось видеть новым президентом России?'),
+('Чем ты гордишься?'),
+('Что бы тебе хотелось успеть сделать до конца года?'),
+('Кем из известных людей ты восхищаешься и почему?'),
+('Если бы тебе дали билборд, который увидит весь мир, что бы ты на нем написал?');
 
 --('Голосовые, кружочки или текст? Почему?'),
 --('Какой твой любимый фильм/сериал/книга? Почему? (Ответь про одно или про всё)'),

@@ -21,6 +21,10 @@ public class MealService {
         return repository.findAll(Sort.by(Sort.Order.asc("dayOfWeek"), Sort.Order.asc("mealType")));
     }
 
+    public List<Meal> findAll() {
+        return repository.findAll();
+    }
+
     public int countByStartDateIsAfter(Date date) {
         return repository.countByStartDateIsAfter(date);
     }
@@ -28,6 +32,11 @@ public class MealService {
     @Transactional
     public void saveAll(List<Meal> menu) {
         repository.saveAll(menu);
+    }
+
+    @Transactional
+    public void deleteAll() {
+        repository.deleteAll();
     }
 
     public Map<CustomDayOfWeek, List<Meal>> getDayMeals() {

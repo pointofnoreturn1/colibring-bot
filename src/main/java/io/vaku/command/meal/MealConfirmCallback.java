@@ -6,7 +6,9 @@ import io.vaku.model.ClassifiedUpdate;
 import io.vaku.model.Response;
 import io.vaku.model.domain.Meal;
 import io.vaku.model.domain.User;
+import io.vaku.model.domain.UserMeal;
 import io.vaku.service.MessageService;
+import io.vaku.service.domain.UserMealService;
 import io.vaku.service.domain.UserService;
 import io.vaku.service.domain.meal.MealService;
 import io.vaku.service.domain.meal.MealSignUpMessageService;
@@ -41,6 +43,9 @@ public class MealConfirmCallback implements Command {
     @Autowired
     private MealService mealService;
 
+    @Autowired
+    private UserMealService userMealService;
+
     @Override
     public Class<?> getHandler() {
         return MealConfirmCallbackHandler.class;
@@ -70,8 +75,7 @@ public class MealConfirmCallback implements Command {
             return List.of(mealSignUpMessageService.getMealSignUpEditMarkupMsg(user, update, meals));
         }
 
-        userMeals.forEach(it -> it.getUsers().add(user));
-        user.setUserMeals(userMeals);
+        userMeals.forEach(it -> userMealService.createOrUpdate(new UserMeal(user, it)));
         user.setMealSignUpStatus(NO_STATUS);
         userService.createOrUpdate(user);
         mealSignUpService.truncate(user.getChatId());

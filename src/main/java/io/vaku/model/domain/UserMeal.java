@@ -14,8 +14,8 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "user_bio_question")
-public class UserBioQuestion {
+@Table(name = "user_meal")
+public class UserMeal {
 
     @Id
     @Column(name = "id")
@@ -26,19 +26,15 @@ public class UserBioQuestion {
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "question_id", referencedColumnName = "id")
-    private BioQuestion question;
-
-    @Column(name = "answer")
-    private String answer;
+    @JoinColumn(name = "meal_id", referencedColumnName = "id")
+    private Meal meal;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_at")
     private Date createdAt = new Date();
 
-    public UserBioQuestion(User user, BioQuestion question, String answer) {
+    public UserMeal(User user, Meal meal) {
         this.user = user;
-        this.question = question;
-        this.answer = answer;
+        this.meal = meal;
     }
 }

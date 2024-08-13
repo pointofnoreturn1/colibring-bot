@@ -2,6 +2,7 @@ package io.vaku.service.domain.admin.meal;
 
 import io.vaku.model.domain.Meal;
 import io.vaku.model.domain.User;
+import io.vaku.model.domain.UserMeal;
 import io.vaku.model.enm.CustomDayOfWeek;
 import io.vaku.service.domain.UserService;
 import io.vaku.service.domain.meal.MealService;
@@ -78,6 +79,7 @@ public class MealAdminService {
                                 it -> it,
                                 it -> it.getUserMeals()
                                         .stream()
+                                        .map(UserMeal::getMeal)
                                         .map(Meal::getPrice)
                                         .reduce(0, Integer::sum)
                         )
@@ -89,9 +91,9 @@ public class MealAdminService {
 
         // TODO
         StringBuilder sb = new StringBuilder();
-        User randomUser = userDebts.keySet().stream().findAny().get();
-        Date startDate = randomUser.getUserMeals().getFirst().getStartDate();
-        Date endDate = randomUser.getUserMeals().getFirst().getEndDate();
+//        User randomUser = userDebts.keySet().stream().findAny().get();
+//        Date startDate = randomUser.getUserMeals().getFirst().getStartDate();
+//        Date endDate = randomUser.getUserMeals().getFirst().getEndDate();
 
         for (Map.Entry<User, Integer> entry : userDebts.entrySet()) {
             sb.append(getStringUser(entry.getKey())).append(" ").append(entry.getValue()).append("₾").append("\n");
@@ -105,8 +107,9 @@ public class MealAdminService {
         StringBuilder sb = new StringBuilder();
         sb.append("\n• ").append(meal.getName());
 
-        List<User> users = meal.getUsers()
+        List<User> users = meal.getUserMeals()
                 .stream()
+                .map(UserMeal::getUser)
                 .sorted(Comparator.comparingLong(User::getId))
                 .toList();
 

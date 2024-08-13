@@ -108,8 +108,8 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<LaundryBooking> laundryBookings;
 
-    @ManyToMany(mappedBy = "users", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<Meal> userMeals;
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+    private List<UserMeal> userMeals;
 
     @OneToMany(mappedBy = "user")
     private List<UserBioQuestion> userBioQuestions;

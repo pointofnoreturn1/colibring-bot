@@ -7,10 +7,7 @@ import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 @Getter
 @Setter
@@ -51,13 +48,8 @@ public class Meal {
     @Column(name = "created_at")
     private Date createdAt = new Date();
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "user_meal",
-            joinColumns = @JoinColumn(name = "meal_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id")
-    )
-    private List<User> users;
+    @OneToMany(mappedBy = "meal", fetch = FetchType.EAGER)
+    private List<UserMeal> userMeals;
 
     @Override
     public boolean equals(Object o) {
