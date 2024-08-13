@@ -3,15 +3,14 @@ package io.vaku.service.domain.admin.meal;
 import io.vaku.model.domain.Meal;
 import io.vaku.model.domain.User;
 import io.vaku.model.enm.CustomDayOfWeek;
+import io.vaku.service.domain.UserService;
 import io.vaku.service.domain.meal.MealService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static io.vaku.util.StringConstants.TEXT_NO_MEAL_SCHEDULE;
 
@@ -20,6 +19,9 @@ public class MealAdminService {
 
     @Autowired
     private MealService mealService;
+
+    @Autowired
+    private UserService userService;
 
     public String getWhoEatsWeek() {
         Map<CustomDayOfWeek, List<Meal>> dayMeals = mealService.getDayMeals();
@@ -66,6 +68,39 @@ public class MealAdminService {
         return TEXT_NO_MEAL_SCHEDULE;
     }
 
+    // TODO
+    public String getMealsDebts() {
+        Map<User, Integer> userDebts = userService.findAll()
+                .stream()
+                .filter(it -> !it.getUserMeals().isEmpty())
+                .collect(
+                        Collectors.toMap(
+                                it -> it,
+                                it -> it.getUserMeals()
+                                        .stream()
+                                        .map(Meal::getPrice)
+                                        .reduce(0, Integer::sum)
+                        )
+                );
+
+        if (userDebts.isEmpty()) {
+            return "Долгов за питание на текущей неделе нет \uD83E\uDD2F";
+        }
+
+        // TODO
+        StringBuilder sb = new StringBuilder();
+        User randomUser = userDebts.keySet().stream().findAny().get();
+        Date startDate = randomUser.getUserMeals().getFirst().getStartDate();
+        Date endDate = randomUser.getUserMeals().getFirst().getEndDate();
+
+        for (Map.Entry<User, Integer> entry : userDebts.entrySet()) {
+            sb.append(getStringUser(entry.getKey())).append(" ").append(entry.getValue()).append("₾").append("\n");
+        }
+
+        return sb.toString();
+
+    }
+
     private String getStringDayMeals(Meal meal) {
         StringBuilder sb = new StringBuilder();
         sb.append("\n• ").append(meal.getName());
@@ -77,20 +112,27 @@ public class MealAdminService {
 
         if (!users.isEmpty()) {
             sb.append(" [").append(users.size()).append("] ");
-
             for (User user : users) {
-                sb.append("\n   ").append(user.getSpecifiedName()).append(" (");
-
-                if (user.getTgUserName() == null) {
-                    sb
-                            .append(user.getTgFirstName() == null ? "" : user.getTgFirstName())
-                            .append(user.getTgLastName() == null ? "" : " " + user.getTgLastName());
-                } else {
-                    sb.append("@").append(user.getTgUserName());
-                }
-                sb.append(")");
+                sb.append("\n   ").append(getStringUser(user));
             }
         }
+
+        return sb.toString();
+    }
+
+    // TODO: перенести эту логику в toString() сущности User
+    private String getStringUser(User user) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(user.getSpecifiedName()).append(" (");
+
+        if (user.getTgUserName() == null) {
+            sb
+                    .append(user.getTgFirstName() == null ? "" : user.getTgFirstName())
+                    .append(user.getTgLastName() == null ? "" : " " + user.getTgLastName());
+        } else {
+            sb.append("@").append(user.getTgUserName());
+        }
+        sb.append(")");
 
         return sb.toString();
     }

@@ -3,13 +3,15 @@ package io.vaku.service.domain;
 import io.vaku.model.ClassifiedUpdate;
 import io.vaku.model.domain.User;
 import io.vaku.model.enm.AdminStatus;
-import io.vaku.model.enm.BookingStatus;
 import io.vaku.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 import static io.vaku.model.enm.BookingStatus.NO_STATUS;
+import static io.vaku.model.enm.UserStatus.REGISTERED;
 
 @Service
 @Transactional(readOnly = true)
@@ -20,6 +22,13 @@ public class UserService {
 
     public User findByUpdate(ClassifiedUpdate update) {
         return repository.findByChatId(update.getChatId()).orElse(null);
+    }
+
+    public List<User> findAll() {
+        return ((List<User>) repository.findAll())
+                .stream()
+                .filter(it -> it.getStatus().equals(REGISTERED))
+                .toList();
     }
 
     @Transactional
