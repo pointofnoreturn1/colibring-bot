@@ -14,8 +14,8 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "user_meal")
-public class UserMeal {
+@Table(name = "user_meal_debt")
+public class UserMealDebt {
 
     @Id
     @Column(name = "id")
@@ -25,9 +25,11 @@ public class UserMeal {
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 
-    @ManyToOne
-    @JoinColumn(name = "meal_id", referencedColumnName = "id")
-    private Meal meal;
+    @Column(name = "amount")
+    private int amount;
+
+    @Column(name = "is_notified")
+    private boolean isNotified = false;
 
     @Temporal(TemporalType.DATE)
     @Column(name = "start_date")
@@ -41,9 +43,10 @@ public class UserMeal {
     @Column(name = "created_at")
     private Date createdAt = new Date();
 
-    public UserMeal(User user, Meal meal, Date startDate, Date endDate) {
+    public UserMealDebt(User user, int amount, boolean isNotified, Date startDate, Date endDate) {
         this.user = user;
-        this.meal = meal;
+        this.amount = amount;
+        this.isNotified = isNotified;
         this.startDate = startDate;
         this.endDate = endDate;
     }

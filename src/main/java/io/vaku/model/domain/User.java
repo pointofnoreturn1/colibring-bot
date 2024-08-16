@@ -108,11 +108,14 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<LaundryBooking> laundryBookings;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "user")
     private List<UserMeal> userMeals;
 
     @OneToMany(mappedBy = "user")
     private List<UserBioQuestion> userBioQuestions;
+
+    @OneToMany(mappedBy = "user")
+    private List<UserMealDebt> userMealDebts;
 
     public User(long id, long chatId, String tgUserName, String tgFirstName, String tgLastName) {
         this.id = id;

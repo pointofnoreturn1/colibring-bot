@@ -24,7 +24,8 @@ public class UserService {
         return repository.findByChatId(update.getChatId()).orElse(null);
     }
 
-    public List<User> findAll() {
+    // TODO: реализовать с помощью динамических фильтров
+    public List<User> findAllActive() {
         return ((List<User>) repository.findAll())
                 .stream()
                 .filter(it -> it.getStatus().equals(REGISTERED))

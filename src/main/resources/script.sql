@@ -128,8 +128,8 @@ CREATE TABLE meal(
     meal_type MEAL_TYPE NOT NULL,
     name VARCHAR(255),
     price INTEGER NOT NULL,
-    start_date DATE,
-    end_date DATE,
+    start_date DATE NOT NULL,
+    end_date DATE NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT now()
 );
 
@@ -137,10 +137,20 @@ CREATE TABLE user_meal(
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id BIGINT NOT NULL,
     meal_id UUID NOT NULL,
+    start_date DATE NOT NULL,
+    end_date DATE NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT now()
 );
 
-CREATE TABLE
+CREATE TABLE user_meal_debt(
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id BIGINT NOT NULL,
+    amount INTEGER NOT NULL,
+    is_notified BOOL NOT NULL DEFAULT FALSE,
+    start_date DATE NOT NULL,
+    end_date DATE NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT now()
+);
 
 ALTER TABLE "user" ADD CONSTRAINT user_room_id_fkey FOREIGN KEY (room_id) REFERENCES room(id);
 ALTER TABLE meeting_room_booking ADD CONSTRAINT meeting_room_booking_user_id_fkey FOREIGN KEY (user_id) REFERENCES "user"(id);
@@ -150,6 +160,7 @@ ALTER TABLE user_meal ADD CONSTRAINT user_meal_user_id_fkey FOREIGN KEY (user_id
 ALTER TABLE user_meal ADD CONSTRAINT user_meal_meal_id_fkey FOREIGN KEY (meal_id) REFERENCES meal(id) ON DELETE CASCADE;
 ALTER TABLE user_bio_question ADD CONSTRAINT user_bio_question_user_id_fkey FOREIGN KEY (user_id) REFERENCES "user"(id);
 ALTER TABLE user_bio_question ADD CONSTRAINT user_bio_question_question_id_fkey FOREIGN KEY (question_id) REFERENCES bio_question(id);
+ALTER TABLE user_meal_debt ADD CONSTRAINT user_meal_debt_user_id_fkey FOREIGN KEY (user_id) REFERENCES "user"(id);
 
 INSERT INTO room (number, is_hostel) VALUES
 ('01', false),

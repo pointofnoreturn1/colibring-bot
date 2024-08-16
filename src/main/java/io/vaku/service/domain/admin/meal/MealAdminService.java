@@ -71,7 +71,7 @@ public class MealAdminService {
 
     // TODO
     public String getMealsDebts() {
-        Map<User, Integer> userDebts = userService.findAll()
+        Map<User, Integer> userDebts = userService.findAllActive()
                 .stream()
                 .filter(it -> !it.getUserMeals().isEmpty())
                 .collect(

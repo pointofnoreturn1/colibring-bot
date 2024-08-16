@@ -75,7 +75,7 @@ public class MealConfirmCallback implements Command {
             return List.of(mealSignUpMessageService.getMealSignUpEditMarkupMsg(user, update, meals));
         }
 
-        userMeals.forEach(it -> userMealService.createOrUpdate(new UserMeal(user, it)));
+        userMeals.forEach(it -> userMealService.createOrUpdate(new UserMeal(user, it, it.getStartDate(), it.getEndDate())));
         user.setMealSignUpStatus(NO_STATUS);
         userService.createOrUpdate(user);
         mealSignUpService.truncate(user.getChatId());

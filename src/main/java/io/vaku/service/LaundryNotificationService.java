@@ -39,10 +39,9 @@ public class LaundryNotificationService {
     @Autowired
     private LaundryBookingService laundryBookingService;
 
-    @Scheduled(fixedRate = 60000)
+    @Scheduled(fixedRate = 60000) // 1 minute
     public void checkUpcomingWashes() {
-        Map<LaundryBooking, User> laundryBookingToUser = laundryBookingService
-                .findAllActiveNotNotified()
+        Map<LaundryBooking, User> laundryBookingToUser = laundryBookingService.findAllActiveNotNotified()
                 .stream()
                 .collect(Collectors.toMap(it -> it, LaundryBooking::getUser));
 

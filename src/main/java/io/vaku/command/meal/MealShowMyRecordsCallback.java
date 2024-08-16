@@ -10,8 +10,11 @@ import io.vaku.model.domain.UserMeal;
 import io.vaku.model.enm.CustomDayOfWeek;
 import io.vaku.service.domain.meal.MealService;
 import io.vaku.service.domain.meal.MealSignUpMessageService;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -21,11 +24,15 @@ import static io.vaku.util.StringConstants.TEXT_NO_MEAL_SIGN_UP;
 @Component
 public class MealShowMyRecordsCallback implements Command {
 
+    @PersistenceContext
+    private EntityManager entityManager;
+
     @Autowired
     private MealService mealService;
 
     @Autowired
     private MealSignUpMessageService mealSignUpMessageService;
+
 
     @Override
     public Class<?> getHandler() {
@@ -38,8 +45,10 @@ public class MealShowMyRecordsCallback implements Command {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Response> getAnswer(User user, ClassifiedUpdate update) {
         Comparator<Meal> comparator = Comparator.comparing(Meal::getDayOfWeek).thenComparing(Meal::getMealType);
+        user = entityManager.merge(user);
         List<Meal> userMeals = user.getUserMeals().stream().map(UserMeal::getMeal).sorted(comparator).toList();
         Map<CustomDayOfWeek, List<Meal>> dayMeals = new LinkedHashMap<>();
 
