@@ -10,6 +10,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
+import static io.vaku.util.DateTimeUtils.getCurrentMonday;
+import static io.vaku.util.DateTimeUtils.getCurrentSunday;
+
 @Service
 @Transactional(readOnly = true)
 public class MealService {
@@ -17,12 +20,14 @@ public class MealService {
     @Autowired
     private MealMenuRepository repository;
 
-    public List<Meal> findAllSorted() {
-        return repository.findAll(Sort.by(Sort.Order.asc("dayOfWeek"), Sort.Order.asc("mealType")));
-    }
-
-    public List<Meal> findAll() {
-        return repository.findAll();
+    public List<Meal> findAllSortedBetween(Date startDate, Date endDate) {
+        return repository.findByStartDateGreaterThanEqualAndEndDateLessThanEqual(
+                startDate,
+                endDate,
+                Sort.by(
+                        Sort.Order.asc("dayOfWeek"),
+                        Sort.Order.asc("mealType"))
+        );
     }
 
     public int countByStartDateIsAfter(Date date) {
@@ -42,7 +47,7 @@ public class MealService {
     public Map<CustomDayOfWeek, List<Meal>> getDayMeals() {
         Map<CustomDayOfWeek, List<Meal>> dayMeals = new LinkedHashMap<>();
 
-        for (Meal meal : findAllSorted()) {
+        for (Meal meal : findAllSortedBetween(getCurrentMonday(), getCurrentSunday())) {
             if (!dayMeals.containsKey(meal.getDayOfWeek())) {
                 dayMeals.put(meal.getDayOfWeek(), new ArrayList<>());
             }

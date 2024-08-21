@@ -6,11 +6,9 @@ import io.vaku.model.domain.Schedule;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -149,6 +147,36 @@ public final class DateTimeUtils {
         }
 
         return intersections;
+    }
+
+    public static int getDayOfWeekOrdinal() {
+        return LocalDate.now().getDayOfWeek().ordinal();
+    }
+
+    public static Date getCurrentMonday() {
+        if (getDayOfWeekOrdinal() == 0) {
+            return Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant());
+        }
+
+        return Date.from(
+                LocalDate.now()
+                        .with(TemporalAdjusters.previous(DayOfWeek.MONDAY))
+                        .atStartOfDay(ZoneId.systemDefault())
+                        .toInstant()
+        );
+    }
+
+    public static Date getCurrentSunday() {
+        if (getDayOfWeekOrdinal() == 6) {
+            return Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant());
+        }
+
+        return Date.from(
+                LocalDate.now()
+                        .with(TemporalAdjusters.next(DayOfWeek.SUNDAY))
+                        .atStartOfDay(ZoneId.systemDefault())
+                        .toInstant()
+        );
     }
 
     private static boolean isIntersected(Schedule schedule, Booking booking) {

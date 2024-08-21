@@ -15,6 +15,9 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+import static io.vaku.util.DateTimeUtils.getCurrentMonday;
+import static io.vaku.util.DateTimeUtils.getCurrentSunday;
+
 @Component
 public class MealSignUpCallback implements Command {
 
@@ -39,7 +42,7 @@ public class MealSignUpCallback implements Command {
 
     @Override
     public List<Response> getAnswer(User user, ClassifiedUpdate update) {
-        List<Meal> meals = mealService.findAllSorted();
+        List<Meal> meals = mealService.findAllSortedBetween(getCurrentMonday(), getCurrentSunday());
         if (meals.size() != 21) {
             return List.of(mealSignUpMessageService.getMealScheduleMsg(user, update, ""));
         }

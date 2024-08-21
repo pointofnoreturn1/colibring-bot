@@ -24,6 +24,8 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import static io.vaku.model.enm.BookingStatus.NO_STATUS;
+import static io.vaku.util.DateTimeUtils.getCurrentMonday;
+import static io.vaku.util.DateTimeUtils.getCurrentSunday;
 
 @Component
 public class MealConfirmCallback implements Command {
@@ -66,7 +68,7 @@ public class MealConfirmCallback implements Command {
 
         if (!isSignUpAllowed(userMeals)) {
             mealSignUpService.truncate(user.getChatId());
-            List<Meal> meals = mealService.findAllSorted();
+            List<Meal> meals = mealService.findAllSortedBetween(getCurrentMonday(), getCurrentSunday());
 
             if (meals.size() != 21) {
                 return List.of(mealSignUpMessageService.getMealScheduleMsg(user, update, ""));

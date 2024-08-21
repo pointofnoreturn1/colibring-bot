@@ -23,6 +23,7 @@ import java.util.*;
 import static io.vaku.model.enm.AdminStatus.NO_STATUS;
 import static io.vaku.model.enm.AdminStatus.REQUIRE_NEW_MENU_INPUT;
 import static io.vaku.model.enm.MealType.*;
+import static io.vaku.util.DateTimeUtils.getDayOfWeekOrdinal;
 
 @Service
 public class MealAdminHandleService {
@@ -95,7 +96,6 @@ public class MealAdminHandleService {
         allMeals.addAll(getMealMenuItems(lunches, LUNCH));
         allMeals.addAll(getMealMenuItems(suppers, SUPPER));
 
-        mealService.deleteAll();
         mealService.saveAll(allMeals);
         user.setAdminStatus(NO_STATUS);
         user.setUserMeals(Collections.emptyList());
@@ -169,9 +169,5 @@ public class MealAdminHandleService {
                 .with(TemporalAdjusters.next(DayOfWeek.SUNDAY));
 
         return Date.from(nextSunday.atStartOfDay(ZoneId.systemDefault()).toInstant());
-    }
-
-    private int getDayOfWeekOrdinal() {
-        return LocalDate.now().getDayOfWeek().ordinal();
     }
 }
