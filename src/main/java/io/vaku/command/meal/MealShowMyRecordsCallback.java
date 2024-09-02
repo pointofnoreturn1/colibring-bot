@@ -12,14 +12,16 @@ import io.vaku.service.domain.meal.MealService;
 import io.vaku.service.domain.meal.MealSignUpMessageService;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
-import static io.vaku.util.StringConstants.EMOJI_MEAL_SIGN_UP;
-import static io.vaku.util.StringConstants.TEXT_NO_MEAL_SIGN_UP;
+import static io.vaku.util.DateTimeUtils.getCurrentMonday;
+import static io.vaku.util.DateTimeUtils.getCurrentSunday;
+import static io.vaku.util.StringConstants.*;
 
 @Component
 public class MealShowMyRecordsCallback implements Command {
@@ -32,7 +34,6 @@ public class MealShowMyRecordsCallback implements Command {
 
     @Autowired
     private MealSignUpMessageService mealSignUpMessageService;
-
 
     @Override
     public Class<?> getHandler() {
@@ -48,24 +49,34 @@ public class MealShowMyRecordsCallback implements Command {
     @Transactional(readOnly = true)
     public List<Response> getAnswer(User user, ClassifiedUpdate update) {
         Comparator<Meal> comparator = Comparator.comparing(Meal::getDayOfWeek).thenComparing(Meal::getMealType);
-        user = entityManager.merge(user);
-        List<Meal> userMeals = user.getUserMeals().stream().map(UserMeal::getMeal).sorted(comparator).toList();
+        entityManager
+                .unwrap(Session.class)
+                .enableFilter("userMealsFilter")
+                .setParameter("from", getCurrentMonday())
+                .setParameter("to", getCurrentSunday());
+
+        List<Meal> userMeals = entityManager
+                .find(User.class, user.getId())
+                .getUserMeals()
+                .stream()
+                .map(UserMeal::getMeal)
+                .sorted(comparator)
+                .toList();
         Map<CustomDayOfWeek, List<Meal>> dayMeals = new LinkedHashMap<>();
 
         for (Meal meal : userMeals) {
             if (!dayMeals.containsKey(meal.getDayOfWeek())) {
                 dayMeals.put(meal.getDayOfWeek(), new ArrayList<>());
             }
-
             dayMeals.get(meal.getDayOfWeek()).add(meal);
         }
 
         if (dayMeals.isEmpty()) {
-            return List.of(mealSignUpMessageService.getMealScheduleMsg(user, update, EMOJI_MEAL_SIGN_UP + TEXT_NO_MEAL_SIGN_UP ));
+            return List.of(mealSignUpMessageService.getMealScheduleMsg(user, update, EMOJI_MEAL_SIGN_UP + TEXT_NO_MEAL_SIGN_UP));
         }
 
         List<String> stringDayMeals = new ArrayList<>();
-        stringDayMeals.add("Твоя запись на питание:");
+        stringDayMeals.add(TEXT_YOUR_MEALS);
         Map<Meal, Integer> mealsCount = new HashMap<>();
 
         for (Map.Entry<CustomDayOfWeek, List<Meal>> entry : dayMeals.entrySet()) {

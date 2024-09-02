@@ -72,15 +72,4 @@ public class MealAdminMessageService {
 
         return new Response(msg);
     }
-
-
-    public Response getMealAdminShowDebtsMsg(User user, ClassifiedUpdate update) {
-        SendMessage msg = SendMessage
-                .builder()
-                .chatId(update.getChatId())
-                .text(mealAdminService.getMealsDebts())
-                .build();
-
-        return new Response(msg);
-    }
 }

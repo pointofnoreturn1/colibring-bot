@@ -10,11 +10,10 @@ import org.hibernate.type.SqlTypes;
 import java.util.*;
 
 @Getter
-@Setter
 @NoArgsConstructor
 @Entity
 @Table(name = "meal")
-public class Meal {
+public final class Meal {
 
     @Id
     @Column(name = "id")

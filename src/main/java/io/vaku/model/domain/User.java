@@ -5,14 +5,19 @@ import io.vaku.model.enm.Lang;
 import io.vaku.model.enm.BookingStatus;
 import io.vaku.model.enm.UserStatus;
 import jakarta.persistence.*;
+import jakarta.persistence.Table;
 import lombok.*;
-import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.annotations.*;
 import org.hibernate.type.SqlTypes;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 import java.util.List;
 
+@FilterDef(
+        name = "userMealsFilter",
+        parameters = { @ParamDef(name = "from", type = Date.class), @ParamDef(name = "to", type = Date.class) }
+)
 @Getter
 @Setter
 @EqualsAndHashCode
@@ -108,6 +113,7 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<LaundryBooking> laundryBookings;
 
+    @Filter(name = "userMealsFilter", condition = "start_date >= :from AND end_date <= :to")
     @OneToMany(mappedBy = "user")
     private List<UserMeal> userMeals;
 

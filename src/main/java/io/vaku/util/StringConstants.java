@@ -4,6 +4,8 @@ public final class StringConstants {
 
     public static final String TEXT_REGISTER_REQUEST_RU = "Для продолжения зарегистрируйся";
     public static final String TEXT_REGISTER_REQUEST_EN = "Register to continue";
+    public static final String TEXT_PASSWORD_REQUEST_RU = "Введи пароль";
+    public static final String TEXT_PASSWORD_REQUEST_EN = "Enter password";
     public static final String TEXT_REGISTER_RU = "Зарегистрироваться";
     public static final String TEXT_REGISTER_EN = "Register";
     public static final String TEXT_DONE_RU = "Готово ✅";
@@ -21,12 +23,13 @@ public final class StringConstants {
     public static final String TEXT_NO_MEAL_SIGN_UP = "Ты не записан(а) на питание \uD83E\uDD2F";
     public static final String TEXT_MENU_ALREADY_EXISTS = "Меню уже существует \uD83E\uDD2F";
     public static final String TEXT_PICK_ALL = "\uD83D\uDCB5 Выбрать все \uD83D\uDCB5";
+    public static final String TEXT_YOUR_MEALS = "Твоя запись на питание:";
     public static final String TEXT_MEAL_SIGN_UP_INFO =
-    """
-    • Выбери блюда, нажми "Подтвердить" или нажми "Назад"
-    • Кроме воскресенья запись возможна не ближе, чем за 18 часов (например, записаться на завтра можно не позднее 15:00 сегодняшнего дня)
-    • Если после нажатия "Подтвердить" ничего не произошло и сбросился выбор блюд, значит ты нарушил(а) ограничения, указанные выше
-    """;
+            """
+                    • Выбери блюда, нажми "Подтвердить" или нажми "Назад"
+                    • Кроме воскресенья запись возможна не ближе, чем за 18 часов (например, записаться на завтра можно не позднее 15:00 сегодняшнего дня)
+                    • Если после нажатия "Подтвердить" ничего не произошло и сбросился выбор блюд, значит ты нарушил(а) ограничения, указанные выше
+                    """;
     public static final String TEXT_CHOOSE_ACTION = "Выберите действие";
     public static final String TEXT_CHOOSE_SECTION = "Выберите раздел";
     public static final String TEXT_GO_BACK = "⏪ Назад";
@@ -49,13 +52,13 @@ public final class StringConstants {
     public static final String DATE_TIME_SUPPORTED_FORMATS =
             """
                     Введи дату и время
-
+                    
                     Поддерживаемые форматы:
                     • 10:00 описание*
                     • 10:00-11:00 описание**
                     • 30.01 10:00-11:00 описание***
                     • 30.01.24 10:00-11:00 описание
-
+                    
                     • *При указании только одного времени (например, 15:00) будет произведена запись с текущей минуты до указанного времени на текущий день
                     • **При отсутствии даты запись будет сделана на текущий день
                     • ***При отсутствии года запись будет сделана на текущий год
@@ -66,13 +69,13 @@ public final class StringConstants {
     public static final String DATE_TIME_LAUNDRY_SUPPORTED_FORMATS =
             """
                     Введи дату и время
-
+                    
                     Поддерживаемые форматы:
                     • 10:00*
                     • 10:00-11:00**
                     • 30.01 10:00-11:00***
                     • 30.01.24 10:00-11:00
-
+                    
                     • *При указании только одного времени (например, 15:00) будет произведена запись с текущей минуты до указанного времени на текущий день
                     • **При отсутствии даты запись будет сделана на текущий день
                     • ***При отсутствии года запись будет сделана на текущий год

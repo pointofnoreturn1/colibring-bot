@@ -71,12 +71,14 @@ public class MealAdminService {
 
     // TODO
     public String getMealsDebts() {
-        Map<User, Integer> userDebts = userService.findAllActive()
+        List<User> users = userService.findAllActive();
+
+        Map<Long, Integer> userDebts = users
                 .stream()
                 .filter(it -> !it.getUserMeals().isEmpty())
                 .collect(
                         Collectors.toMap(
-                                it -> it,
+                                User::getId,
                                 it -> it.getUserMeals()
                                         .stream()
                                         .map(UserMeal::getMeal)
@@ -95,12 +97,11 @@ public class MealAdminService {
 //        Date startDate = randomUser.getUserMeals().getFirst().getStartDate();
 //        Date endDate = randomUser.getUserMeals().getFirst().getEndDate();
 
-        for (Map.Entry<User, Integer> entry : userDebts.entrySet()) {
+        for (Map.Entry<Long, Integer> entry : userDebts.entrySet()) {
             sb.append(getStringUser(entry.getKey())).append(" ").append(entry.getValue()).append("₾").append("\n");
         }
 
         return sb.toString();
-
     }
 
     private String getStringDayMeals(Meal meal) {

@@ -16,12 +16,16 @@ public class UserMealDebtService {
     @Autowired
     private UserMealDebtRepository repository;
 
+    public void saveAll(Iterable<UserMealDebt> userMealDebts) {
+        repository.saveAll(userMealDebts);
+    }
+
     @Transactional
     public void createOrUpdate(UserMealDebt userMealDebt) {
         repository.save(userMealDebt);
     }
 
-    public List<UserMealDebt> findAllActive(Date date) {
-        return repository.findAllActive(date);
+    public List<UserMealDebt> findAllBetween(Date from, Date to) {
+        return repository.findAllBetween(from, to);
     }
 }
