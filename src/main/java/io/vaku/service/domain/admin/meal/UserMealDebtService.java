@@ -25,7 +25,7 @@ public class UserMealDebtService {
         repository.save(userMealDebt);
     }
 
-    public List<UserMealDebt> findAllBetween(Date from, Date to) {
-        return repository.findAllBetween(from, to);
+    public List<UserMealDebt> findAllNotNotifiedBetween(Date from, Date to) {
+        return repository.findAllNotNotifiedBetween(from, to);
     }
 }

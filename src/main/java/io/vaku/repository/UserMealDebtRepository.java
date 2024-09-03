@@ -16,8 +16,8 @@ public interface UserMealDebtRepository extends CrudRepository<UserMealDebt, UUI
     @Query(
             value = "SELECT * " +
                     "FROM user_meal_debt " +
-                    "WHERE start_date >= :from AND end_date <= :to",
+                    "WHERE start_date >= :from AND end_date <= :to AND is_notified = FALSE",
             nativeQuery = true
     )
-    List<UserMealDebt> findAllBetween(@Param("from") Date from, @Param("to") Date to);
+    List<UserMealDebt> findAllNotNotifiedBetween(@Param("from") Date from, @Param("to") Date to);
 }

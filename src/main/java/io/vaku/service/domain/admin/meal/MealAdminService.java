@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static io.vaku.util.StringConstants.TEXT_NO_MEAL_SCHEDULE;
 
@@ -67,41 +66,6 @@ public class MealAdminService {
         }
 
         return TEXT_NO_MEAL_SCHEDULE;
-    }
-
-    // TODO
-    public String getMealsDebts() {
-        List<User> users = userService.findAllActive();
-
-        Map<Long, Integer> userDebts = users
-                .stream()
-                .filter(it -> !it.getUserMeals().isEmpty())
-                .collect(
-                        Collectors.toMap(
-                                User::getId,
-                                it -> it.getUserMeals()
-                                        .stream()
-                                        .map(UserMeal::getMeal)
-                                        .map(Meal::getPrice)
-                                        .reduce(0, Integer::sum)
-                        )
-                );
-
-        if (userDebts.isEmpty()) {
-            return "Долгов за питание на текущей неделе нет \uD83E\uDD2F";
-        }
-
-        // TODO
-        StringBuilder sb = new StringBuilder();
-//        User randomUser = userDebts.keySet().stream().findAny().get();
-//        Date startDate = randomUser.getUserMeals().getFirst().getStartDate();
-//        Date endDate = randomUser.getUserMeals().getFirst().getEndDate();
-
-        for (Map.Entry<Long, Integer> entry : userDebts.entrySet()) {
-            sb.append(getStringUser(entry.getKey())).append(" ").append(entry.getValue()).append("₾").append("\n");
-        }
-
-        return sb.toString();
     }
 
     private String getStringDayMeals(Meal meal) {

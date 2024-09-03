@@ -41,15 +41,6 @@ public class MealAdminMenuService {
                                         .build()
                         )
                 )
-                .keyboardRow(
-                        List.of(
-                                InlineKeyboardButton
-                                        .builder()
-                                        .text("Кто сколько должен за еду")
-                                        .callbackData("callbackMealAdminShowDebts")
-                                        .build()
-                        )
-                )
                 .keyboardRow(List.of(getBackToMainAdminMenuButton()))
                 .build();
     }

@@ -39,13 +39,6 @@ public class UserMealService {
     public void saveMealDebts() {
         if (LocalDate.now().getDayOfWeek().ordinal() == 6) {
             List<UserMeal> userMeals = repository.findAllBetween(getCurrentMonday(), getCurrentSunday());
-            Map<Long, User> users = userMeals
-                    .stream()
-                    .collect(
-                            Collectors.toMap(
-                                    it -> it.getUser().getId(),
-                                    UserMeal::getUser)
-                    );
 
             Map<Long, Integer> userDebtsMap = new HashMap<>();
             for (UserMeal userMeal : userMeals) {
@@ -54,26 +47,34 @@ public class UserMealService {
                 userDebtsMap.put(userId, userDebtsMap.get(userId) + userMeal.getMeal().getPrice());
             }
 
-            List<UserMealDebt> userMealDebts = userDebtsMap
-                    .entrySet()
-                    .stream()
-                    .map(
-                            it -> new UserMealDebt(
-                                    // TODO
-                                    users.get(it),
-                                    it.getValue(),
-                                    false,
-                                    userMeals.getFirst().getStartDate(),
-                                    userMeals.getFirst().getEndDate()
-                            )
-                    ).toList();
+            if (!userDebtsMap.isEmpty()) {
+                Map<Long, User> users = userMeals.stream()
+                        .map(UserMeal::getUser)
+                        .distinct()
+                        .collect(Collectors.toMap(User::getId, it -> it));
 
+                List<UserMealDebt> userMealDebts = userDebtsMap.entrySet().stream()
+                        .map(
+                                it -> new UserMealDebt(
+                                        users.get(it.getKey()),
+                                        it.getValue(),
+                                        false,
+                                        userMeals.getFirst().getStartDate(),
+                                        userMeals.getFirst().getEndDate()
+                                )
+                        )
+                        .toList();
+
+                // TODO: add proper logging
+                System.out.println("Meal debts were saved");
+                userMealDebtService.saveAll(userMealDebts);
+            } else {
+                // TODO: add proper logging
+                System.out.println("There were no debts");
+            }
+        } else {
             // TODO: add proper logging
-            System.out.println("Meal debts were saved");
-            userMealDebtService.saveAll(userMealDebts);
+            System.out.println("No meal debts were saved because it's not Sunday");
         }
-
-        // TODO: add proper logging
-        System.out.println("No meal debts were saved because it's not a Sunday");
     }
 }
