@@ -13,6 +13,7 @@ import java.time.LocalDate;
 import java.util.*;
 
 import static io.vaku.util.StringConstants.TEXT_NO_MEAL_SCHEDULE;
+import static java.util.function.Predicate.not;
 
 @Service
 public class MealAdminService {
@@ -28,13 +29,8 @@ public class MealAdminService {
         List<String> stringDayMeals = new ArrayList<>();
 
         for (Map.Entry<CustomDayOfWeek, List<Meal>> entry : dayMeals.entrySet()) {
-            StringBuilder sb = new StringBuilder();
-            sb.append(entry.getKey().getPlainName());
-
-            for (Meal meal : entry.getValue()) {
-                sb.append(getStringDayMeals(meal));
-            }
-
+            StringBuilder sb = new StringBuilder(entry.getKey().getPlainName().toUpperCase());
+            entry.getValue().forEach(it -> sb.append(getStringWeekMeals(it)));
             stringDayMeals.add(sb.toString());
         }
 
@@ -56,11 +52,8 @@ public class MealAdminService {
         StringBuilder sb = new StringBuilder();
 
         if (todayMeals != null) {
-            sb.append(todayMeals.getKey().getPlainName());
-
-            for (Meal meal : todayMeals.getValue()) {
-                sb.append(getStringDayMeals(meal));
-            }
+            sb.append(todayMeals.getKey().getPlainName().toUpperCase());
+            todayMeals.getValue().forEach(it -> sb.append(getStringDayMeals(it)));
 
             return sb.toString();
         }
@@ -68,7 +61,7 @@ public class MealAdminService {
         return TEXT_NO_MEAL_SCHEDULE;
     }
 
-    private String getStringDayMeals(Meal meal) {
+    private String getStringWeekMeals(Meal meal) {
         StringBuilder sb = new StringBuilder();
         sb.append("\n• ").append(meal.getName());
 
@@ -80,15 +73,42 @@ public class MealAdminService {
 
         if (!users.isEmpty()) {
             sb.append(" [").append(users.size()).append("] ");
-            for (User user : users) {
-                sb.append("\n   ").append(getStringUser(user));
-            }
+            users.forEach(it -> sb.append("\n   ").append(getStringUser(it)));
         }
 
         return sb.toString();
     }
 
-    // TODO: перенести эту логику в toString() сущности User
+    private String getStringDayMeals(Meal meal) {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("\n\n• ").append(meal.getName());
+
+        List<User> users = meal.getUserMeals()
+                .stream()
+                .map(UserMeal::getUser)
+                .sorted(Comparator.comparingLong(User::getId))
+                .toList();
+
+        if (!users.isEmpty()) {
+            int vegMealsCount = (int) users.stream().filter(User::isVegan).count();
+            int nonVegMealsCount = (int) users.stream().filter(not(User::isVegan)).count();
+
+            sb.append(" (Всего: ")
+                    .append(users.size())
+                    .append(", вег: ")
+                    .append(vegMealsCount)
+                    .append(", не вег: ")
+                    .append(nonVegMealsCount)
+                    .append(")");
+
+            users.forEach(it -> sb.append("\n   ").append(getStringUser(it)));
+        }
+
+        return sb.toString();
+    }
+
+    // TODO: перенести эту логику в toString() сущности User?
     private String getStringUser(User user) {
         StringBuilder sb = new StringBuilder();
         sb.append(user.getSpecifiedName()).append(" (");
