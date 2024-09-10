@@ -69,6 +69,9 @@ public class User {
     @Column(name = "is_admin")
     private boolean isAdmin = false;
 
+    @Column(name = "is_vegan")
+    private boolean isVegan = false;
+
     @Enumerated(EnumType.STRING)
     @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     @Column(name = "mt_room_booking_status", nullable = false)

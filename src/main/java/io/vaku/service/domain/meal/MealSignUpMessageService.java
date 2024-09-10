@@ -29,7 +29,7 @@ public class MealSignUpMessageService {
                 .builder()
                 .chatId(update.getChatId())
                 .text(TEXT_MEAL_SIGN_UP + "\n" + TEXT_CHOOSE_ACTION)
-                .replyMarkup(mealSignUpMenuService.getInlineMealSignUpMenu())
+                .replyMarkup(mealSignUpMenuService.getInlineMealSignUpMenu(user))
                 .build();
 
         return new Response(msg);
@@ -41,13 +41,13 @@ public class MealSignUpMessageService {
                 .chatId(update.getChatId())
                 .messageId(user.getLastMsgId())
                 .text(TEXT_MEAL_SIGN_UP + "\n" + TEXT_CHOOSE_ACTION)
-                .replyMarkup(mealSignUpMenuService.getInlineMealSignUpMenu())
+                .replyMarkup(mealSignUpMenuService.getInlineMealSignUpMenu(user))
                 .build();
 
         return new Response(msg);
     }
 
-    public Response getMealScheduleMsg(User user, ClassifiedUpdate update, String text) {
+    public Response getMealScheduleEditedMsg(User user, ClassifiedUpdate update, String text) {
         EditMessageText msg = EditMessageText
                 .builder()
                 .chatId(update.getChatId())
@@ -59,7 +59,7 @@ public class MealSignUpMessageService {
         return new Response(msg);
     }
 
-    public Response getMealSignUpMsg(User user, ClassifiedUpdate update, List<Meal> meals) {
+    public Response getMealSignUpEditedMsg(User user, ClassifiedUpdate update, List<Meal> meals) {
         EditMessageText msg = EditMessageText
                 .builder()
                 .chatId(update.getChatId())
@@ -77,6 +77,16 @@ public class MealSignUpMessageService {
                 .chatId(update.getChatId())
                 .messageId(user.getLastMsgId())
                 .replyMarkup(mealSignUpMenuService.getInlineMealsMenu(update, meals))
+                .build();
+
+        return new Response(msg);
+    }
+
+    public Response getMealChangeVeganStatusMsg(User user, ClassifiedUpdate update) {
+        SendMessage msg = SendMessage
+                .builder()
+                .chatId(update.getChatId())
+                .text(user.isVegan() ? TEXT_YOU_ARE_VEGAN_NOW : TEXT_YOU_ARE_MEAT_EATER_NOW)
                 .build();
 
         return new Response(msg);

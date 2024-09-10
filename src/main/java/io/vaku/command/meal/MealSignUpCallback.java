@@ -44,12 +44,12 @@ public class MealSignUpCallback implements Command {
     public List<Response> getAnswer(User user, ClassifiedUpdate update) {
         List<Meal> meals = mealService.findAllSortedBetween(getCurrentMonday(), getCurrentSunday());
         if (meals.size() != 21) {
-            return List.of(mealSignUpMessageService.getMealScheduleMsg(user, update, ""));
+            return List.of(mealSignUpMessageService.getMealScheduleEditedMsg(user, update, ""));
         }
 
         user.setMealSignUpStatus(BookingStatus.REQUIRE_INPUT);
         userService.createOrUpdate(user);
 
-       return List.of(mealSignUpMessageService.getMealSignUpMsg(user, update, meals));
+       return List.of(mealSignUpMessageService.getMealSignUpEditedMsg(user, update, meals));
     }
 }

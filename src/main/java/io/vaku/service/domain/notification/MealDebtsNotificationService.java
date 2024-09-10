@@ -30,7 +30,7 @@ public class MealDebtsNotificationService {
 
         List<UserMealDebt> userMealDebts = userMealDebtService.findAllNotNotifiedBetween(getCurrentMonday(), getCurrentSunday());
         for (UserMealDebt userMealDebt : userMealDebts) {
-            notificationService.notify(userMealDebt.getUser().getChatId(), "You should pay " + userMealDebt.getAmount() + "₾");
+            notificationService.notify(userMealDebt.getUser().getChatId(), "You should pay " + userMealDebt.getAmount() + "₾"); // TODO: proper text
             userMealDebt.setNotified(true);
             userMealDebtService.createOrUpdate(userMealDebt);
         }

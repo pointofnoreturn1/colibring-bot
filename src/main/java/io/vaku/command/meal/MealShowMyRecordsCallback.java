@@ -72,7 +72,7 @@ public class MealShowMyRecordsCallback implements Command {
         }
 
         if (dayMeals.isEmpty()) {
-            return List.of(mealSignUpMessageService.getMealScheduleMsg(user, update, EMOJI_MEAL_SIGN_UP + TEXT_NO_MEAL_SIGN_UP));
+            return List.of(mealSignUpMessageService.getMealScheduleEditedMsg(user, update, EMOJI_MEAL_SIGN_UP + TEXT_NO_MEAL_SIGN_UP));
         }
 
         List<String> stringDayMeals = new ArrayList<>();
@@ -112,6 +112,6 @@ public class MealShowMyRecordsCallback implements Command {
 
         String text = String.join("\n\n", stringDayMeals);
 
-        return List.of(mealSignUpMessageService.getMealScheduleMsg(user, update, text));
+        return List.of(mealSignUpMessageService.getMealScheduleEditedMsg(user, update, text));
     }
 }

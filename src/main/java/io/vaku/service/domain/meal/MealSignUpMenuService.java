@@ -2,6 +2,7 @@ package io.vaku.service.domain.meal;
 
 import io.vaku.model.ClassifiedUpdate;
 import io.vaku.model.domain.Meal;
+import io.vaku.model.domain.User;
 import io.vaku.model.enm.CustomDayOfWeek;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,7 +20,7 @@ public class MealSignUpMenuService {
     @Autowired
     private MealSignUpService mealSignUpService;
 
-    public InlineKeyboardMarkup getInlineMealSignUpMenu() {
+    public InlineKeyboardMarkup getInlineMealSignUpMenu(User user) {
         return InlineKeyboardMarkup
                 .builder()
                 .keyboardRow(
@@ -37,7 +38,8 @@ public class MealSignUpMenuService {
                                         .builder()
                                         .text("Записаться на питание")
                                         .callbackData("callbackMenuSignUp")
-                                        .build())
+                                        .build()
+                        )
                 )
                 .keyboardRow(
                         List.of(
@@ -45,7 +47,17 @@ public class MealSignUpMenuService {
                                         .builder()
                                         .text("Посмотреть мою запись")
                                         .callbackData("callbackMealShowMyRecords")
-                                        .build())
+                                        .build()
+                        )
+                )
+                .keyboardRow(
+                        List.of(
+                                InlineKeyboardButton
+                                        .builder()
+                                        .text(user.isVegan() ? "Начать есть мясо" : "Перестать есть мясо")
+                                        .callbackData("callbackChangeVeganStatus")
+                                        .build()
+                        )
                 )
                 .build();
     }

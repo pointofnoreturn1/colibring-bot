@@ -11,5 +11,6 @@ app:
   feature:
     register:
       password: ${BOT_REGISTER_PASSWORD}
+    cook-days-off: WED, SUN
   connection:
     timeout: ${BOT_CONNECTION_TIMEOUT}

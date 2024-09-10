@@ -52,6 +52,6 @@ public class MealShowActualMenuCallback implements Command {
 
         String text = String.join("\n\n", stringDayMeals);
 
-        return List.of(mealSignUpMessageService.getMealScheduleMsg(user, update, text));
+        return List.of(mealSignUpMessageService.getMealScheduleEditedMsg(user, update, text));
     }
 }
