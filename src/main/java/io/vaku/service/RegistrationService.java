@@ -38,11 +38,9 @@ public class RegistrationService {
     private static final String TEXT_INCORRECT_PASSWORD_EN = "Incorrect password \uD83D\uDE1E";
     private static final String TEXT_BIRTHDATE_REQUEST_RU =
     """
-    Напиши дату рождения в одном из форматов:
+    Напиши дату рождения в одном из форматов ниже (год рождения можно не указывать)
     • дд.мм
     • дд.мм.гггг
-    
-    Год рождения можно не указывать, если хочешь
     """;
     private static final String TEXT_BIRTHDATE_REQUEST_EN = "Enter your date of birth in the format dd.mm.yyyy";
     private static final String TEXT_ROOM_REQUEST_RU = "В какую комнату заселяешься?";
@@ -167,7 +165,7 @@ public class RegistrationService {
             SendMessage msg = SendMessage
                     .builder()
                     .chatId(update.getChatId())
-                    .text("Теперь пришли свое фото (без трусов)")
+                    .text("Теперь пришли свое фото")
                     .build();
 
             return List.of(messageService.getDoneMsg(user, update), new Response(msg));
@@ -301,7 +299,7 @@ public class RegistrationService {
             SendMessage tourMsg = SendMessage
                     .builder()
                     .chatId(update.getChatId())
-                    .text("Что бы тебе хотелось узнать ещё?-")
+                    .text("Чего бы тебе хотелось узнать ещё?")
                     .replyMarkup(menuService.getInlineTourMenu())
                     .build();
 

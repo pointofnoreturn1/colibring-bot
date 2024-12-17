@@ -54,7 +54,7 @@ public class MealSignUpMenuService {
                         List.of(
                                 InlineKeyboardButton
                                         .builder()
-                                        .text(user.isVegan() ? "Начать есть мясо" : "Перестать есть мясо")
+                                        .text(user.isVegan() ? "Нажми, если ешь мясо" : "Нажми, если не ешь мясо")
                                         .callbackData("callbackChangeVeganStatus")
                                         .build()
                         )

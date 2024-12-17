@@ -6,7 +6,8 @@ import io.vaku.model.domain.User;
 import io.vaku.service.UpdateHandlerService;
 import io.vaku.service.domain.UserService;
 import jakarta.annotation.PostConstruct;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -21,12 +22,11 @@ import java.util.List;
 
 @Component
 public class Bot extends TelegramLongPollingBot {
+    private static final Logger log = LoggerFactory.getLogger(Bot.class);
 
-    @Autowired
-    private UpdateHandlerService updateHandlerService;
+    private final UpdateHandlerService updateHandlerService;
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
     @Value("${bot.name}")
     private String botName;
@@ -34,30 +34,36 @@ public class Bot extends TelegramLongPollingBot {
     @Value("${app.connection.timeout}")
     private int timeout;
 
+    public Bot(@Value("${bot.token}") String botToken, UpdateHandlerService updateHandlerService, UserService userService) {
+        super(botToken);
+        this.updateHandlerService = updateHandlerService;
+        this.userService = userService;
+    }
+
     @PostConstruct
     private void init() {
         try {
-            TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
-            telegramBotsApi.registerBot(this);
-            System.out.println("TelegramAPI started. Looking for messages");
+            new TelegramBotsApi(DefaultBotSession.class).registerBot(this);
+            log.info("TelegramAPI started. Looking for messages");
         } catch (TelegramApiRequestException e) {
-            System.out.println(("Unable to connect. Pause " + timeout / 1000 + " seconds and try again. Error: " + e.getMessage()));
+            log.info("Unable to connect. Pause {} seconds and try again. Error: {}", timeout / 1000, e.getMessage());
             try {
                 Thread.sleep(timeout);
             } catch (InterruptedException e1) {
-                e1.printStackTrace();
+                log.info(e1.toString());
                 return;
             }
             init();
         } catch (TelegramApiException e) {
-            e.printStackTrace();
+            log.info(e.toString());
         }
     }
-    
-    public Bot(@Value("${bot.token}") String botToken) {
-        super(botToken);
+
+    @Override
+    public String getBotUsername() {
+        return botName;
     }
-    
+
     @Override
     public void onUpdateReceived(Update update) {
         if ((update.hasMessage() && update.getMessage().getChat().getType().equals("private")) || update.hasCallbackQuery()) {
@@ -72,23 +78,19 @@ public class Bot extends TelegramLongPollingBot {
                             Message msg = (Message) execute(resp.getBotApiMethod());
                             if (user != null) userService.updateLastMsgId(user.getId(), msg.getMessageId());
                         } catch (TelegramApiException e) {
-                            e.printStackTrace();
+                            log.info(e.toString());
                         }
                     } else if (resp != null && resp.getSendMediaGroup() != null) {
                         try {
                             List<Message> messages = execute(resp.getSendMediaGroup());
-                            if (user != null) userService.updateLastMsgId(user.getId(), messages.getLast().getMessageId());
+                            if (user != null)
+                                userService.updateLastMsgId(user.getId(), messages.getLast().getMessageId());
                         } catch (TelegramApiException e) {
-                            e.printStackTrace();
+                            log.info(e.toString());
                         }
                     }
                 }
             }
         }
-    }
-
-    @Override
-    public String getBotUsername() {
-        return botName;
     }
 }

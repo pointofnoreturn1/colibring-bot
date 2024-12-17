@@ -37,8 +37,8 @@ public final class StringConstants {
     public static final String TEXT_GO_BACK = "⏪ Назад";
     public static final String TEXT_CONFIRM = "Подтвердить ✅";
     public static final String TEXT_FAMILIARIZED = "Ознакомлен(а)";
-    public static final String EMOJI_MT_ROOM_BOOKING = "\uD83D\uDCA6 ";
-    public static final String TEXT_MT_ROOM_BOOKING = EMOJI_MT_ROOM_BOOKING + "Бронь эрекционной";
+    public static final String EMOJI_MT_ROOM_BOOKING = "\uD83C\uDF93 ";
+    public static final String TEXT_MT_ROOM_BOOKING = EMOJI_MT_ROOM_BOOKING + "Бронь лекционной";
     public static final String EMOJI_TV_BOOKING = "\uD83D\uDCFA ";
     public static final String TEXT_TV_BOOKING = EMOJI_TV_BOOKING + "Бронь телевизора";
     public static final String EMOJI_LAUNDRY_BOOKING = "\uD83E\uDDFA ";
@@ -96,12 +96,12 @@ public final class StringConstants {
                     
                     Формат меню:
                     Понедельник
-                    # Завтрак
-                    # Первое
-                    # Второе $ 15
+                    # Блюдо №1
+                    # Блюдо №2
+                    # Блюдо №3
                     
                     • Не нарушай порядок дней недели и порядок блюд
-                    • Цена опциональна и указывается после символа '$'. Если не указана, будет установлено значение по умолчанию 10₾
+                    • Цена опциональна и указывается после символа '$', например: 'Блюдо №3 $ 15'. Если не указана, будет установлено значение по умолчанию 10₾
                     • Символы '#' и '$' заменять на другие нельзя, по ним распознаются данные
                     """;
 }
