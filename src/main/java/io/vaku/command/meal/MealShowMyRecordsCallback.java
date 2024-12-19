@@ -65,29 +65,32 @@ public class MealShowMyRecordsCallback implements Command {
         Map<CustomDayOfWeek, List<Meal>> dayMeals = new LinkedHashMap<>();
 
         for (Meal meal : userMeals) {
-            if (!dayMeals.containsKey(meal.getDayOfWeek())) {
-                dayMeals.put(meal.getDayOfWeek(), new ArrayList<>());
-            }
-            dayMeals.get(meal.getDayOfWeek()).add(meal);
+            var mealDay = meal.getDayOfWeek();
+            dayMeals.computeIfAbsent(mealDay, _ -> new ArrayList<>());
+            dayMeals.get(mealDay).add(meal);
         }
 
         if (dayMeals.isEmpty()) {
             return List.of(mealSignUpMessageService.getMealScheduleEditedMsg(user, update, EMOJI_MEAL_SIGN_UP + TEXT_NO_MEAL_SIGN_UP));
         }
 
-        List<String> stringDayMeals = new ArrayList<>();
-        stringDayMeals.add(TEXT_YOUR_MEALS);
-        Map<Meal, Integer> mealsCount = new HashMap<>();
+        String text = getResponseText(dayMeals);
 
-        for (Map.Entry<CustomDayOfWeek, List<Meal>> entry : dayMeals.entrySet()) {
-            StringBuilder sb = new StringBuilder();
-            sb.append(entry.getKey().getName());
+        return List.of(mealSignUpMessageService.getMealScheduleEditedMsg(user, update, text));
+    }
 
-            for (Meal meal : entry.getValue()) {
+    private String getResponseText(Map<CustomDayOfWeek, List<Meal>> dayMeals) {
+        var mealsCount = new HashMap<Meal, Integer>();
+        var sb = new StringBuilder(TEXT_YOUR_MEALS);
+
+        for (var entry : dayMeals.entrySet()) {
+            sb.append("\n\n").append(entry.getKey().getName());
+            var meals = entry.getValue();
+            for (Meal meal : meals) {
                 mealsCount.put(meal, mealsCount.containsKey(meal) ? mealsCount.get(meal) + 1 : 1);
             }
 
-            for (Meal meal : entry.getValue()) {
+            for (Meal meal : meals) {
                 if (mealsCount.get(meal) == -1) {
                     continue;
                 }
@@ -106,12 +109,8 @@ public class MealShowMyRecordsCallback implements Command {
                     }
                 }
             }
-
-            stringDayMeals.add(sb.toString());
         }
 
-        String text = String.join("\n\n", stringDayMeals);
-
-        return List.of(mealSignUpMessageService.getMealScheduleEditedMsg(user, update, text));
+        return sb.toString();
     }
 }
