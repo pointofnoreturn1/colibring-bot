@@ -14,6 +14,8 @@ import org.springframework.stereotype.Component;
 
 import java.util.*;
 
+import static io.vaku.util.DateTimeUtils.*;
+
 @Component
 public class MealShowActualMenuCallback implements Command {
 
@@ -35,11 +37,12 @@ public class MealShowActualMenuCallback implements Command {
 
     @Override
     public List<Response> getAnswer(User user, ClassifiedUpdate update) {
-        Map<CustomDayOfWeek, List<Meal>> dayMeals = mealService.getDayMeals();
-        List<String> stringDayMeals = new ArrayList<>();
+        var dayMeals = mealService.getDayMeals();
+        var stringDayMeals = new ArrayList<String>();
+        stringDayMeals.add(getHumanPeriod(getCurrentMonday(), getCurrentSunday()));
 
-        for (Map.Entry<CustomDayOfWeek, List<Meal>> entry : dayMeals.entrySet()) {
-            StringBuilder sb = new StringBuilder();
+        for (var entry : dayMeals.entrySet()) {
+            var sb = new StringBuilder();
             sb.append(entry.getKey().getName());
             for (Meal meal : entry.getValue()) {
                 sb.append("\n• ").append(meal.getName());

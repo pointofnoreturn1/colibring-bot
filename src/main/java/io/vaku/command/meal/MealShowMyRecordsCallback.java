@@ -17,10 +17,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-import static io.vaku.util.DateTimeUtils.getCurrentMonday;
-import static io.vaku.util.DateTimeUtils.getCurrentSunday;
+import static io.vaku.util.DateTimeUtils.*;
 import static io.vaku.util.StringConstants.*;
 
 @Component
@@ -48,21 +50,21 @@ public class MealShowMyRecordsCallback implements Command {
     @Override
     @Transactional(readOnly = true)
     public List<Response> getAnswer(User user, ClassifiedUpdate update) {
-        Comparator<Meal> comparator = Comparator.comparing(Meal::getDayOfWeek).thenComparing(Meal::getMealType);
         entityManager
                 .unwrap(Session.class)
                 .enableFilter("userMealsFilter")
                 .setParameter("from", getCurrentMonday())
                 .setParameter("to", getCurrentSunday());
 
-        List<Meal> userMeals = entityManager
+        var dayMeals = new LinkedHashMap<CustomDayOfWeek, List<Meal>>();
+        var comparator = Comparator.comparing(Meal::getDayOfWeek).thenComparing(Meal::getMealType);
+        var userMeals = entityManager
                 .find(User.class, user.getId())
                 .getUserMeals()
                 .stream()
                 .map(UserMeal::getMeal)
                 .sorted(comparator)
                 .toList();
-        Map<CustomDayOfWeek, List<Meal>> dayMeals = new LinkedHashMap<>();
 
         for (Meal meal : userMeals) {
             var mealDay = meal.getDayOfWeek();
@@ -74,14 +76,15 @@ public class MealShowMyRecordsCallback implements Command {
             return List.of(mealSignUpMessageService.getMealScheduleEditedMsg(user, update, EMOJI_MEAL_SIGN_UP + TEXT_NO_MEAL_SIGN_UP));
         }
 
-        String text = getResponseText(dayMeals);
+        var text = getResponseText(dayMeals, getCurrentMonday(), getCurrentSunday());
 
         return List.of(mealSignUpMessageService.getMealScheduleEditedMsg(user, update, text));
     }
 
-    private String getResponseText(Map<CustomDayOfWeek, List<Meal>> dayMeals) {
+    private String getResponseText(Map<CustomDayOfWeek, List<Meal>> dayMeals, Date startDate, Date endDate) {
         var mealsCount = new HashMap<Meal, Integer>();
         var sb = new StringBuilder(TEXT_YOUR_MEALS);
+        sb.append(" (").append(getHumanPeriod(startDate, endDate)).append("):");
 
         for (var entry : dayMeals.entrySet()) {
             sb.append("\n\n").append(entry.getKey().getName());

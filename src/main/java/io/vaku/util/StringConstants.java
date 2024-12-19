@@ -23,7 +23,7 @@ public final class StringConstants {
     public static final String TEXT_NO_MEAL_SIGN_UP = "Ты не записан(а) на питание \uD83E\uDD2F";
     public static final String TEXT_MENU_ALREADY_EXISTS = "Меню уже существует \uD83E\uDD2F";
     public static final String TEXT_PICK_ALL = "\uD83D\uDCB5 Выбрать все \uD83D\uDCB5";
-    public static final String TEXT_YOUR_MEALS = "Твоя запись на питание:";
+    public static final String TEXT_YOUR_MEALS = "Твоя запись на питание";
     public static final String TEXT_YOU_ARE_VEGAN_NOW = "Отметили у себя, что ты не ешь мясо";
     public static final String TEXT_YOU_ARE_MEAT_EATER_NOW = "Отметили у себя, что ты ешь мясо";
     public static final String TEXT_MEAL_SIGN_UP_INFO =

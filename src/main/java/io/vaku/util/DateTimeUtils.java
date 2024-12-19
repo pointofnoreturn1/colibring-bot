@@ -187,6 +187,15 @@ public final class DateTimeUtils {
         
         return LocalDate.now().with(TemporalAdjusters.next(day)).atStartOfDay(ZoneId.systemDefault());
     }
+
+    public static String getHumanPeriod(Date d1, Date d2) {
+        return getHumanDate(d1) + " - " + getHumanDate(d2);
+    }
+
+    private static String getHumanDate(Date date) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yy");
+        return LocalDate.ofInstant(date.toInstant(), ZoneId.systemDefault()).format(formatter);
+    }
     
     private static Date getTodayDate() {
         return Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant());
