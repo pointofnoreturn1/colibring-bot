@@ -18,17 +18,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.time.*;
 import java.time.temporal.ChronoUnit;
+import java.time.temporal.Temporal;
 import java.util.Arrays;
 import java.util.List;
 
 import static io.vaku.model.enm.BookingStatus.NO_STATUS;
-import static io.vaku.util.DateTimeUtils.getCurrentMonday;
-import static io.vaku.util.DateTimeUtils.getCurrentSunday;
+import static io.vaku.util.DateTimeUtils.*;
 
 @Component
 public class MealConfirmCallback implements Command {
@@ -93,7 +90,7 @@ public class MealConfirmCallback implements Command {
     }
 
     private boolean isSignUpAllowed(List<Meal> meals, List<CustomDayOfWeek> daysOff) {
-        LocalDateTime threshold = LocalDate.now().atTime(9, 0).plusHours(24);
+        LocalDateTime threshold = LocalDate.now().atTime(8, 0);
         LocalDateTime dateTimeNow = LocalDateTime.now();
         DayOfWeek dayNow = dateTimeNow.getDayOfWeek();
 
@@ -105,24 +102,29 @@ public class MealConfirmCallback implements Command {
         }
 
         for (Meal meal : meals) {
-            if (meal.getDayOfWeek().ordinal() <= dayNow.ordinal()) {
+            int mealDay = meal.getDayOfWeek().ordinal();
+            int today = dayNow.ordinal();
+
+            if (mealDay < today) {
                 return false;
             }
 
-            if (meal.getDayOfWeek().ordinal() - dayNow.ordinal() == 1
-                    && ChronoUnit.MINUTES.between(dateTimeNow, threshold) < (18 * 60)) { // 18 hours restriction for ordinary days
+            if (mealDay == today && dateTimeNow.isAfter(threshold)) {
                 return false;
             }
 
             for (CustomDayOfWeek dayOff : daysOff) {
-                if (meal.getDayOfWeek().ordinal() == dayOff.ordinal()
-                        && dayOff.ordinal() - dayNow.ordinal() == 2
-                        && ChronoUnit.MINUTES.between(dateTimeNow, threshold) < (36 * 60)) { // 36 hours restriction before cook's days off
+                ZonedDateTime dayOffThreshold = getDay(DayOfWeek.of(dayOff.ordinal())).withHour(8).withMinute(0);
+                if (mealDay == dayOff.ordinal() && violatesDayOffThreshold(dateTimeNow, dayOffThreshold)) {
                     return false;
                 }
             }
         }
 
         return true;
+    }
+
+    private boolean violatesDayOffThreshold(Temporal t1, Temporal t2) {
+        return ChronoUnit.MINUTES.between(t1, t2) < (24 * 60); // 24 hours restriction before cook's days off
     }
 }

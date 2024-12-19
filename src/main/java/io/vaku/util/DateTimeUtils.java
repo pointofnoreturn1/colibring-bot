@@ -149,13 +149,13 @@ public final class DateTimeUtils {
         return intersections;
     }
 
-    public static int getDayOfWeekOrdinal() {
+    public static int todayOrdinal() {
         return LocalDate.now().getDayOfWeek().ordinal();
     }
 
     public static Date getCurrentMonday() {
-        if (getDayOfWeekOrdinal() == 0) {
-            return Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant());
+        if (todayOrdinal() == 0) {
+            return getTodayDate();
         }
 
         return Date.from(
@@ -167,8 +167,8 @@ public final class DateTimeUtils {
     }
 
     public static Date getCurrentSunday() {
-        if (getDayOfWeekOrdinal() == 6) {
-            return Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant());
+        if (todayOrdinal() == 6) {
+            return getTodayDate();
         }
 
         return Date.from(
@@ -177,6 +177,19 @@ public final class DateTimeUtils {
                         .atStartOfDay(ZoneId.systemDefault())
                         .toInstant()
         );
+    }
+
+    // TODO: refactor into one method getCurrentMonday(), getCurrentSunday() and this method, consider using LocalDateTime instead of old Date class in the whole project
+    public static ZonedDateTime getDay(DayOfWeek day) {
+        if (todayOrdinal() == day.ordinal()) {
+            return LocalDate.now().atStartOfDay(ZoneId.systemDefault());
+        }
+        
+        return LocalDate.now().with(TemporalAdjusters.next(day)).atStartOfDay(ZoneId.systemDefault());
+    }
+    
+    private static Date getTodayDate() {
+        return Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant());
     }
 
     private static boolean isIntersected(Schedule schedule, Booking booking) {

@@ -45,7 +45,7 @@ public final class Meal {
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_at")
-    private Date createdAt = new Date();
+    private final Date createdAt = new Date();
 
     @OneToMany(mappedBy = "meal", fetch = FetchType.EAGER)
     private List<UserMeal> userMeals;

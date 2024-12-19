@@ -23,7 +23,7 @@ import java.util.*;
 import static io.vaku.model.enm.AdminStatus.NO_STATUS;
 import static io.vaku.model.enm.AdminStatus.REQUIRE_NEW_MENU_INPUT;
 import static io.vaku.model.enm.MealType.*;
-import static io.vaku.util.DateTimeUtils.getDayOfWeekOrdinal;
+import static io.vaku.util.DateTimeUtils.todayOrdinal;
 
 @Service
 public class MealAdminHandleService {
@@ -113,7 +113,7 @@ public class MealAdminHandleService {
             int mealPrice = arr.length == 2 ? Integer.parseInt(arr[1].trim()) : 10;
 
             Date monday;
-            if (getDayOfWeekOrdinal() == 0) {
+            if (todayOrdinal() == 0) {
                 monday = new Date();
             } else {
                 if (mealService.countByStartDateIsAfter(getPrevMonday()) == 0) {
@@ -140,11 +140,11 @@ public class MealAdminHandleService {
     }
 
     private boolean menuExists() {
-        if (getDayOfWeekOrdinal() == 6) {
+        if (todayOrdinal() == 6) {
             return mealService.countByStartDateIsAfter(getNextMonday()) > 0;
         }
 
-        if (getDayOfWeekOrdinal() == 0) {
+        if (todayOrdinal() == 0) {
             return mealService.countByStartDateIsAfter(new Date()) > 0;
         }
 
