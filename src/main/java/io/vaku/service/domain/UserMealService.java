@@ -5,6 +5,8 @@ import io.vaku.model.domain.UserMeal;
 import io.vaku.model.domain.UserMealDebt;
 import io.vaku.repository.UserMealRepository;
 import io.vaku.service.domain.admin.meal.UserMealDebtService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -22,6 +24,7 @@ import static io.vaku.util.DateTimeUtils.getCurrentSunday;
 @Service
 @Transactional(readOnly = true)
 public class UserMealService {
+    private static final Logger log = LoggerFactory.getLogger(UserMealService.class);
 
     @Autowired
     private UserMealRepository repository;
@@ -65,16 +68,13 @@ public class UserMealService {
                         )
                         .toList();
 
-                // TODO: add proper logging
-                System.out.println("Meal debts were saved");
                 userMealDebtService.saveAll(userMealDebts);
+                log.info("Meal debts were saved");
             } else {
-                // TODO: add proper logging
-                System.out.println("There were no debts");
+                log.info("There were no meal debts");
             }
         } else {
-            // TODO: add proper logging
-            System.out.println("No meal debts were saved because it's not Sunday");
+            log.info("No meal debts were saved because it's not Sunday");
         }
     }
 }

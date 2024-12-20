@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.*;
 
+import static io.vaku.util.StringUtils.getStringUser;
 import static io.vaku.util.StringConstants.EMOJI_IS_VEGAN;
 import static io.vaku.util.StringConstants.TEXT_NO_MEAL_SCHEDULE;
 import static java.util.function.Predicate.not;
@@ -116,23 +117,6 @@ public class MealAdminService {
                 }
             }
         }
-
-        return sb.toString();
-    }
-
-    // TODO: перенести эту логику в toString() сущности User?
-    private String getStringUser(User user) {
-        var sb = new StringBuilder();
-        sb.append(user.getSpecifiedName()).append(" (");
-
-        if (user.getTgUserName() == null) {
-            sb
-                    .append(user.getTgFirstName() == null ? "" : user.getTgFirstName())
-                    .append(user.getTgLastName() == null ? "" : " " + user.getTgLastName());
-        } else {
-            sb.append("@").append(user.getTgUserName());
-        }
-        sb.append(")");
 
         return sb.toString();
     }

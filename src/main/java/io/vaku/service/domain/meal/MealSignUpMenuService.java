@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static io.vaku.util.StringConstants.*;
+import static io.vaku.util.StringUtils.getStringPrice;
 
 @Service
 public class MealSignUpMenuService {
@@ -114,13 +115,14 @@ public class MealSignUpMenuService {
         StringBuilder sb = new StringBuilder();
 
         if (mealSignUpService.isMealAdded(chatId, meal)) {
-            sb.append(EMOJI_MEAL_SELECTED);
+            sb.append(EMOJI_OK).append(" ");
         }
 
         sb.append(meal.getName());
 
-        if (meal.getPrice() != 10) {
-            sb.append(" (").append(meal.getPrice()).append("₾)");
+        int price = meal.getPrice();
+        if (price != 10) {
+            sb.append(" ").append(getStringPrice(price));
         }
 
         return sb.toString();

@@ -29,27 +29,33 @@ import static io.vaku.util.DateTimeUtils.*;
 
 @Component
 public class MealConfirmCallback implements Command {
+    private final UserService userService;
+    private final MealSignUpService mealSignUpService;
+    private final MessageService messageService;
+    private final MealSignUpMessageService mealSignUpMessageService;
+    private final MealService mealService;
+    private final UserMealService userMealService;
+    private final String[] cookDaysOff;
 
     @Autowired
-    private UserService userService;
-
-    @Autowired
-    private MealSignUpService mealSignUpService;
-
-    @Autowired
-    private MessageService messageService;
-
-    @Autowired
-    private MealSignUpMessageService mealSignUpMessageService;
-
-    @Autowired
-    private MealService mealService;
-
-    @Autowired
-    private UserMealService userMealService;
-
-    @Value("${app.feature.cook-days-off}")
-    private String[] cookDaysOff;
+    public MealConfirmCallback(
+            UserService userService,
+            MealSignUpService mealSignUpService,
+            MessageService messageService,
+            MealSignUpMessageService mealSignUpMessageService,
+            MealService mealService,
+            UserMealService userMealService,
+            @Value("${app.feature.cook-days-off}")
+            String[] cookDaysOff
+    ) {
+        this.userService = userService;
+        this.mealSignUpService = mealSignUpService;
+        this.messageService = messageService;
+        this.mealSignUpMessageService = mealSignUpMessageService;
+        this.mealService = mealService;
+        this.userMealService = userMealService;
+        this.cookDaysOff = cookDaysOff;
+    }
 
     @Override
     public Class<?> getHandler() {

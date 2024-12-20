@@ -1,7 +1,6 @@
 package io.vaku.service.domain.notification;
 
 import io.vaku.model.domain.LaundryBooking;
-import io.vaku.model.domain.User;
 import io.vaku.service.domain.laundry.LaundryBookingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -10,7 +9,6 @@ import org.springframework.stereotype.Service;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import static io.vaku.util.StringConstants.EMOJI_NOTIFICATION;
@@ -27,12 +25,12 @@ public class LaundryNotificationService {
 
     @Scheduled(fixedRate = 60000) // 1 minute
     public void checkUpcomingWashes() {
-        Map<LaundryBooking, User> laundryBookingToUser = laundryBookingService.findAllActiveNotNotified()
+        var laundryBookingToUser = laundryBookingService.findAllActiveNotNotified()
                 .stream()
                 .collect(Collectors.toMap(it -> it, LaundryBooking::getUser));
 
-        for (Map.Entry<LaundryBooking, User> entry : laundryBookingToUser.entrySet()) {
-            LaundryBooking booking = entry.getKey();
+        for (var entry : laundryBookingToUser.entrySet()) {
+            var booking = entry.getKey();
             if (isInFifteenMinutes(booking)) {
                 notificationService.notify(entry.getValue().getChatId(), EMOJI_NOTIFICATION + TEXT_LAUNDRY_NOTIFICATION);
                 booking.setNotified(true);
@@ -42,9 +40,9 @@ public class LaundryNotificationService {
     }
 
     private boolean isInFifteenMinutes(LaundryBooking booking) {
-        LocalDateTime now = LocalDateTime.now(ZoneId.systemDefault());
-        LocalDateTime startTime = LocalDateTime.ofInstant(booking.getStartTime().toInstant(), ZoneId.systemDefault());
-        LocalDateTime createdAt = LocalDateTime.ofInstant(booking.getCreatedAt().toInstant(), ZoneId.systemDefault());
+        var now = LocalDateTime.now(ZoneId.systemDefault());
+        var startTime = LocalDateTime.ofInstant(booking.getStartTime().toInstant(), ZoneId.systemDefault());
+        var createdAt = LocalDateTime.ofInstant(booking.getCreatedAt().toInstant(), ZoneId.systemDefault());
 
         if (Duration.between(createdAt, startTime).toMinutes() < 15) {
             return false;

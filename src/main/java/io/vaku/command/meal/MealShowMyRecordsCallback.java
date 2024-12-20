@@ -24,6 +24,7 @@ import java.util.*;
 
 import static io.vaku.util.DateTimeUtils.*;
 import static io.vaku.util.StringConstants.*;
+import static io.vaku.util.StringUtils.getStringPrice;
 
 @Component
 public class MealShowMyRecordsCallback implements Command {
@@ -97,18 +98,20 @@ public class MealShowMyRecordsCallback implements Command {
                 if (mealsCount.get(meal) == -1) {
                     continue;
                 }
+                int price = meal.getPrice();
+                var mealName = meal.getName();
 
                 if (mealsCount.get(meal) > 1) {
-                    sb.append("\n• ").append(meal.getName());
+                    sb.append("\n• ").append(mealName);
                     sb.append(" [").append(mealsCount.get(meal)).append("]");
-                    if (meal.getPrice() != 10) {
-                        sb.append(" (").append(meal.getPrice()).append("₾)");
+                    if (price != 10) {
+                        sb.append(" ").append(getStringPrice(price));
                     }
                     mealsCount.put(meal, -1);
                 } else {
-                    sb.append("\n• ").append(meal.getName());
-                    if (meal.getPrice() != 10) {
-                        sb.append(" (").append(meal.getPrice()).append("₾)");
+                    sb.append("\n• ").append(mealName);
+                    if (price != 10) {
+                        sb.append(" ").append(getStringPrice(price));
                     }
                 }
             }

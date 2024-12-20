@@ -15,6 +15,8 @@ import org.springframework.stereotype.Component;
 import java.util.*;
 
 import static io.vaku.util.DateTimeUtils.*;
+import static io.vaku.util.StringConstants.LARI;
+import static io.vaku.util.StringUtils.getStringPrice;
 
 @Component
 public class MealShowActualMenuCallback implements Command {
@@ -46,8 +48,9 @@ public class MealShowActualMenuCallback implements Command {
             sb.append(entry.getKey().getName());
             for (Meal meal : entry.getValue()) {
                 sb.append("\n• ").append(meal.getName());
-                if (meal.getPrice() != 10) {
-                    sb.append(" (").append(meal.getPrice()).append("₾)");
+                int price = meal.getPrice();
+                if (price != 10) {
+                    sb.append(" ").append(getStringPrice(price));
                 }
             }
             stringDayMeals.add(sb.toString());

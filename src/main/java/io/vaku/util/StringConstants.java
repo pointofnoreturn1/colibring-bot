@@ -2,31 +2,60 @@ package io.vaku.util;
 
 public final class StringConstants {
 
+    public static final String EMOJI_OK = "✅";
+    public static final String EMOJI_GO_BACK = "⏪";
+    public static final String EMOJI_WOW = "\uD83E\uDD2F";
+    public static final String EMOJI_IS_VEGAN = " \uD83E\uDD66";
+    public static final String EMOJI_MT_ROOM_BOOKING = "\uD83C\uDF93 ";
+    public static final String EMOJI_TV_BOOKING = "\uD83D\uDCFA ";
+    public static final String EMOJI_LAUNDRY_BOOKING = "\uD83E\uDDFA ";
+    public static final String EMOJI_NOTIFICATION = "\uD83D\uDD14 ";
+    public static final String EMOJI_MEAL_SIGN_UP = "\uD83C\uDF7D ";
+    public static final String EMOJI_RELOAD_MENU = "\uD83D\uDD04 ";
+    public static final String EMOJI_ADMIN = "\uD83D\uDD10 ";
+    public static final String EMOJI_MONEY = "\uD83D\uDCB5";
+
+    public static final String LARI = "₾";
+
+    public static final String TIME_FORMAT = "HH:mm";
+    public static final String DATE_FORMAT = "dd.MM";
+    public static final String FULL_DATE_FORMAT = "dd.MM.yyyy";
+    public static final String DATE_TIME_FORMAT = "dd.MM.yy HH:mm";
+
     public static final String TEXT_REGISTER_REQUEST_RU = "Для продолжения зарегистрируйся";
     public static final String TEXT_REGISTER_REQUEST_EN = "Register to continue";
     public static final String TEXT_PASSWORD_REQUEST_RU = "Введи пароль";
     public static final String TEXT_PASSWORD_REQUEST_EN = "Enter password";
     public static final String TEXT_REGISTER_RU = "Зарегистрироваться";
     public static final String TEXT_REGISTER_EN = "Register";
-    public static final String TEXT_DONE_RU = "Готово ✅";
-    public static final String TEXT_DONE_EN = "Done ✅";
-    public static final String EMOJI_MEAL_SELECTED = "✅ ";
-    public static final String TEXT_INCORRECT_DATE_RU = "Неверный формат \uD83D\uDE1E";
-    public static final String TEXT_INCORRECT_DATE_EN = "Invalid format \uD83D\uDE1E";
-    public static final String TIME_FORMAT = "HH:mm";
-    public static final String FULL_DATE_FORMAT = "dd.MM.yyyy";
-    public static final String DATE_FORMAT = "dd.MM";
-    public static final String DATE_TIME_FORMAT = "dd.MM.yy HH:mm";
-    public static final String TEXT_NO_BOOKINGS = "Нет ни одной брони \uD83E\uDD2F";
-    public static final String TEXT_NO_LAUNDRY_BOOKINGS = "Нет ни одной стирки \uD83E\uDD2F";
-    public static final String TEXT_NO_MEAL_SCHEDULE = "Нет меню \uD83E\uDD2F";
-    public static final String TEXT_NO_MEAL_SIGN_UP = "Ты не записан(а) на питание \uD83E\uDD2F";
-    public static final String TEXT_MENU_ALREADY_EXISTS = "Меню уже существует \uD83E\uDD2F";
-    public static final String TEXT_PICK_ALL = "\uD83D\uDCB5 Выбрать все \uD83D\uDCB5";
+    public static final String TEXT_DONE_RU = "Готово " + EMOJI_OK;
+    public static final String TEXT_DONE_EN = "Done " + EMOJI_OK;
+    public static final String TEXT_INCORRECT_DATE_RU = "Неверный формат " + EMOJI_WOW;
+    public static final String TEXT_INCORRECT_DATE_EN = "Invalid format " + EMOJI_WOW;
+    public static final String TEXT_NO_BOOKINGS = "Нет ни одной брони " + EMOJI_WOW;
+    public static final String TEXT_NO_LAUNDRY_BOOKINGS = "Нет ни одной стирки " + EMOJI_WOW;
+    public static final String TEXT_NO_MEAL_SCHEDULE = "Нет меню " + EMOJI_WOW;
+    public static final String TEXT_NO_MEAL_SIGN_UP = "Ты не записан(а) на питание " + EMOJI_WOW;
+    public static final String TEXT_MENU_ALREADY_EXISTS = "Меню уже существует " + EMOJI_WOW;
+    public static final String TEXT_PICK_ALL = EMOJI_MONEY + " Выбрать всё " + EMOJI_MONEY;
     public static final String TEXT_YOUR_MEALS = "Твоя запись на питание";
     public static final String TEXT_YOU_ARE_VEGAN_NOW = "Отметили у себя, что ты не ешь мясо";
     public static final String TEXT_YOU_ARE_MEAT_EATER_NOW = "Отметили у себя, что ты ешь мясо";
-    public static final String EMOJI_IS_VEGAN = " \uD83E\uDD66";
+    public static final String TEXT_NO_DEBTS = "На этой неделе никто не должен денег за питание " + EMOJI_WOW;
+    public static final String TEXT_YOU_HAVE_DEBTS = "Время платить за еду\\! С тебя ";
+    public static final String TEXT_BANK_DETAILS =
+            """
+                    
+                    Реквизиты для оплаты \\(нажми на них, чтобы скопировать\\):
+                    
+                    Bank of Georgia
+                    `GE40BG0000000537661778`
+                    `Daria Marshalkina`
+                    
+                    TBC
+                    `GE19TB7674945064400007`
+                    `Nikita Vasilev`
+                    """;
     public static final String TEXT_MEAL_SIGN_UP_INFO =
             """
                     • Выбери блюда, нажми "Подтвердить" или нажми "Назад"
@@ -35,22 +64,15 @@ public final class StringConstants {
                     """;
     public static final String TEXT_CHOOSE_ACTION = "Выберите действие";
     public static final String TEXT_CHOOSE_SECTION = "Выберите раздел";
-    public static final String TEXT_GO_BACK = "⏪ Назад";
-    public static final String TEXT_CONFIRM = "Подтвердить ✅";
+    public static final String TEXT_GO_BACK = EMOJI_GO_BACK + " Назад";
+    public static final String TEXT_CONFIRM = "Подтвердить " + EMOJI_OK;
     public static final String TEXT_FAMILIARIZED = "Ознакомлен(а)";
-    public static final String EMOJI_MT_ROOM_BOOKING = "\uD83C\uDF93 ";
     public static final String TEXT_MT_ROOM_BOOKING = EMOJI_MT_ROOM_BOOKING + "Бронь лекционной";
-    public static final String EMOJI_TV_BOOKING = "\uD83D\uDCFA ";
     public static final String TEXT_TV_BOOKING = EMOJI_TV_BOOKING + "Бронь телевизора";
-    public static final String EMOJI_LAUNDRY_BOOKING = "\uD83E\uDDFA ";
     public static final String TEXT_LAUNDRY_BOOKING = EMOJI_LAUNDRY_BOOKING + "Записаться на стирку";
-    public static final String EMOJI_NOTIFICATION = "\uD83D\uDD14 ";
     public static final String TEXT_LAUNDRY_NOTIFICATION = "Напоминаю, что у тебя через 15 минут стирка";
-    public static final String EMOJI_MEAL_SIGN_UP = "\uD83C\uDF7D ";
     public static final String TEXT_MEAL_SIGN_UP = EMOJI_MEAL_SIGN_UP + "Питание";
-    public static final String EMOJI_RELOAD_MENU = "\uD83D\uDD04 ";
     public static final String TEXT_RELOAD_MENU = EMOJI_RELOAD_MENU + "Обновить меню бота";
-    public static final String EMOJI_ADMIN = "\uD83D\uDD10 ";
     public static final String TEXT_ADMIN = EMOJI_ADMIN + "Администрирование";
     public static final String DATE_TIME_SUPPORTED_FORMATS =
             """
@@ -87,7 +109,7 @@ public final class StringConstants {
                     """;
     public static final String TEXT_INTERSECTION =
             """
-                    Есть пересечения с другими записями \uD83D\uDE1E
+                    Есть пересечения с другими записями \uD83E\uDD2F
                     Введи дату и время еще раз или нажми "Назад"
                     
                     """;
