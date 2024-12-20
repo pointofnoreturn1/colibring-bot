@@ -26,6 +26,7 @@ public final class StringConstants {
     public static final String TEXT_YOUR_MEALS = "Твоя запись на питание";
     public static final String TEXT_YOU_ARE_VEGAN_NOW = "Отметили у себя, что ты не ешь мясо";
     public static final String TEXT_YOU_ARE_MEAT_EATER_NOW = "Отметили у себя, что ты ешь мясо";
+    public static final String EMOJI_IS_VEGAN = " \uD83E\uDD66";
     public static final String TEXT_MEAL_SIGN_UP_INFO =
             """
                     • Выбери блюда, нажми "Подтвердить" или нажми "Назад"

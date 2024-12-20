@@ -3,7 +3,6 @@ package io.vaku.service.domain.admin.meal;
 import io.vaku.model.domain.Meal;
 import io.vaku.model.domain.User;
 import io.vaku.model.domain.UserMeal;
-import io.vaku.model.enm.CustomDayOfWeek;
 import io.vaku.service.domain.UserService;
 import io.vaku.service.domain.meal.MealService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.*;
 
+import static io.vaku.util.StringConstants.EMOJI_IS_VEGAN;
 import static io.vaku.util.StringConstants.TEXT_NO_MEAL_SCHEDULE;
 import static java.util.function.Predicate.not;
 
@@ -25,12 +25,14 @@ public class MealAdminService {
     private UserService userService;
 
     public String getWhoEatsWeek() {
-        Map<CustomDayOfWeek, List<Meal>> dayMeals = mealService.getDayMeals();
-        List<String> stringDayMeals = new ArrayList<>();
+        var dayMeals = mealService.getDayMeals();
+        var stringDayMeals = new ArrayList<String>();
 
-        for (Map.Entry<CustomDayOfWeek, List<Meal>> entry : dayMeals.entrySet()) {
-            StringBuilder sb = new StringBuilder(entry.getKey().getPlainName().toUpperCase());
-            entry.getValue().forEach(it -> sb.append(getStringWeekMeals(it)));
+        for (var entry : dayMeals.entrySet()) {
+            var sb = new StringBuilder(entry.getKey().getPlainName().toUpperCase());
+            for (Meal meal : entry.getValue()) {
+                sb.append(getStringWeekMeals(meal));
+            }
             stringDayMeals.add(sb.toString());
         }
 
@@ -42,14 +44,14 @@ public class MealAdminService {
     }
 
     public String getWhoEatsToday() {
-        Map.Entry<CustomDayOfWeek, List<Meal>> todayMeals = mealService.getDayMeals()
+        var todayMeals = mealService.getDayMeals()
                 .entrySet()
                 .stream()
                 .filter(it -> it.getKey().ordinal() == LocalDate.now().getDayOfWeek().ordinal())
                 .findFirst()
                 .orElse(null);
 
-        StringBuilder sb = new StringBuilder();
+        var sb = new StringBuilder();
 
         if (todayMeals != null) {
             sb.append(todayMeals.getKey().getPlainName().toUpperCase());
@@ -62,10 +64,10 @@ public class MealAdminService {
     }
 
     private String getStringWeekMeals(Meal meal) {
-        StringBuilder sb = new StringBuilder();
+        var sb = new StringBuilder();
         sb.append("\n• ").append(meal.getName());
 
-        List<User> users = meal.getUserMeals()
+        var users = meal.getUserMeals()
                 .stream()
                 .map(UserMeal::getUser)
                 .sorted(Comparator.comparingLong(User::getId))
@@ -73,18 +75,23 @@ public class MealAdminService {
 
         if (!users.isEmpty()) {
             sb.append(" [").append(users.size()).append("] ");
-            users.forEach(it -> sb.append("\n   ").append(getStringUser(it)));
+            for (User user : users) {
+                sb.append("\n   ").append(getStringUser(user));
+                if (user.isVegan()) {
+                    sb.append(EMOJI_IS_VEGAN);
+                }
+            }
         }
 
         return sb.toString();
     }
 
     private String getStringDayMeals(Meal meal) {
-        StringBuilder sb = new StringBuilder();
+        var sb = new StringBuilder();
 
         sb.append("\n\n• ").append(meal.getName());
 
-        List<User> users = meal.getUserMeals()
+        var users = meal.getUserMeals()
                 .stream()
                 .map(UserMeal::getUser)
                 .sorted(Comparator.comparingLong(User::getId))
@@ -102,7 +109,12 @@ public class MealAdminService {
                     .append(nonVegMealsCount)
                     .append(")");
 
-            users.forEach(it -> sb.append("\n   ").append(getStringUser(it)));
+            for (User user : users) {
+                sb.append("\n   ").append(getStringUser(user));
+                if (user.isVegan()) {
+                    sb.append(EMOJI_IS_VEGAN);
+                }
+            }
         }
 
         return sb.toString();
@@ -110,7 +122,7 @@ public class MealAdminService {
 
     // TODO: перенести эту логику в toString() сущности User?
     private String getStringUser(User user) {
-        StringBuilder sb = new StringBuilder();
+        var sb = new StringBuilder();
         sb.append(user.getSpecifiedName()).append(" (");
 
         if (user.getTgUserName() == null) {
