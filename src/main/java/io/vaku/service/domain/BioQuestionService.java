@@ -6,14 +6,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Transactional(readOnly = true)
 public class BioQuestionService {
+    private final BioQuestionRepository bioQuestionRepository;
 
     @Autowired
-    private BioQuestionRepository bioQuestionRepository;
+    public BioQuestionService(BioQuestionRepository bioQuestionRepository) {
+        this.bioQuestionRepository = bioQuestionRepository;
+    }
 
-    public BioQuestion getRandomQuestion() {
-        return bioQuestionRepository.getRandomQuestion();
+    public List<BioQuestion> getTwoRandomQuestions() {
+        return bioQuestionRepository.getTwoRandomQuestions();
     }
 }

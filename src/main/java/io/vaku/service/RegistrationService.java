@@ -3,7 +3,6 @@ package io.vaku.service;
 import io.vaku.model.ClassifiedUpdate;
 import io.vaku.model.Response;
 import io.vaku.model.domain.BioQuestion;
-import io.vaku.model.domain.Room;
 import io.vaku.model.domain.User;
 import io.vaku.model.domain.UserBioQuestion;
 import io.vaku.model.enm.Lang;
@@ -31,46 +30,49 @@ import static io.vaku.util.StringConstants.*;
 
 @Service
 public class RegistrationService {
-
     private static final String TEXT_NAME_REQUEST_RU = "Для начала расскажи о себе!\nКак тебя зовут?\nНапиши ту форму имени, которую предпочитаешь в обращении";
     private static final String TEXT_NAME_REQUEST_EN = "Enter your name";
     private static final String TEXT_INCORRECT_PASSWORD_RU = "Неверный пароль \uD83D\uDE1E";
     private static final String TEXT_INCORRECT_PASSWORD_EN = "Incorrect password \uD83D\uDE1E";
     private static final String TEXT_BIRTHDATE_REQUEST_RU =
-    """
-    Напиши дату рождения в одном из форматов ниже (год рождения можно не указывать)
-    • дд.мм
-    • дд.мм.гггг
-    """;
+            """
+                    Напиши дату рождения в одном из форматов ниже (год рождения можно не указывать)
+                    • дд.мм
+                    • дд.мм.гггг
+                    """;
     private static final String TEXT_BIRTHDATE_REQUEST_EN = "Enter your date of birth in the format dd.mm.yyyy";
     private static final String TEXT_ROOM_REQUEST_RU = "В какую комнату заселяешься?";
     private static final String TEXT_ROOM_REQUEST_EN = "Specify your room";
     private static final String TEXT_BIO_REQUEST_QUESTIONS_RU = "И ещё два рандомных вопроса, чтобы колибрята смогли сразу узнать тебя получше\n\n";
-    private static final String TEXT_SUCCESSFUL_REGISTRATION_RU = "\uD83C\uDF89 Поздравляем! \uD83C\uDF89\nРегистрация успешно завершена";
-    private static final String TEXT_SUCCESSFUL_REGISTRATION_EN = "\uD83C\uDF89 Congratulations! \uD83C\uDF89\nRegistration successfully completed";
-
     private static final Map<Long, List<BioQuestion>> userQuestions = new HashMap<>();
 
-    @Value("${app.feature.register.password}")
-    private String password;
+    private final String password;
+    private final UserService userService;
+    private final RoomService roomService;
+    private final MenuService menuService;
+    private final MessageService messageService;
+    private final BioQuestionService bioQuestionService;
+    private final UserBioQuestionService userBioQuestionService;
 
     @Autowired
-    private UserService userService;
-
-    @Autowired
-    private RoomService roomService;
-
-    @Autowired
-    private MenuService menuService;
-
-    @Autowired
-    private MessageService messageService;
-
-    @Autowired
-    private BioQuestionService bioQuestionService;
-
-    @Autowired
-    private UserBioQuestionService userBioQuestionService;
+    public RegistrationService(
+            @Value("${app.feature.register.password}")
+            String password,
+            UserService userService,
+            RoomService roomService,
+            MenuService menuService,
+            MessageService messageService,
+            BioQuestionService bioQuestionService,
+            UserBioQuestionService userBioQuestionService
+    ) {
+        this.password = password;
+        this.userService = userService;
+        this.roomService = roomService;
+        this.menuService = menuService;
+        this.messageService = messageService;
+        this.bioQuestionService = bioQuestionService;
+        this.userBioQuestionService = userBioQuestionService;
+    }
 
     public List<Response> execute(User user, ClassifiedUpdate update) {
         return switch (user.getStatus()) {
@@ -111,10 +113,22 @@ public class RegistrationService {
     }
 
     private List<Response> proceedName(User user, ClassifiedUpdate update) {
+        // TODO: move to a separate method
+        var input = update.getCommandName();
+        if (input == null || input.isBlank() || input.isEmpty()) {
+            var msg = SendMessage
+                    .builder()
+                    .chatId(update.getChatId())
+                    .text("Это не текст " + EMOJI_WOW + "\nПожалуйста, пришли ту форму имени, которую предпочитаешь в обращении")
+                    .build();
+
+            return List.of(new Response(msg));
+        }
+
         user.setSpecifiedName(update.getCommandName());
         user.setStatus(REQUIRE_BIRTHDATE);
         userService.createOrUpdate(user);
-        SendMessage msg = SendMessage
+        var msg = SendMessage
                 .builder()
                 .chatId(update.getChatId())
                 .text(user.getLang().equals(Lang.RU) ? TEXT_BIRTHDATE_REQUEST_RU : TEXT_BIRTHDATE_REQUEST_EN)
@@ -153,94 +167,85 @@ public class RegistrationService {
     }
 
     private List<Response> proceedRoom(User user, ClassifiedUpdate update) {
-        Room room = roomService.findByNumber(update.getCommandName());
-        if (room != null) {
-            user.setRoom(room);
-            user.setStatus(REQUIRE_PHOTO);
-            userService.createOrUpdate(user);
-
-            BioQuestion question = bioQuestionService.getRandomQuestion();
-            userQuestions.put(user.getId(), List.of(question));
-
-            SendMessage msg = SendMessage
-                    .builder()
-                    .chatId(update.getChatId())
-                    .text("Теперь пришли свое фото")
-                    .build();
-
-            return List.of(messageService.getDoneMsg(user, update), new Response(msg));
+        var room = roomService.findByNumber(update.getCommandName());
+        if (room == null) {
+            return List.of(new Response());
         }
 
-        return List.of(new Response());
+        user.setRoom(room);
+        user.setStatus(REQUIRE_PHOTO);
+        userService.createOrUpdate(user);
+        var msg = SendMessage
+                .builder()
+                .chatId(update.getChatId())
+                .text("Теперь пришли своё фото")
+                .build();
+
+        return List.of(messageService.getDoneMsg(user, update), new Response(msg));
     }
 
     private List<Response> proceedPhoto(User user, ClassifiedUpdate update) {
-        if (update.getPhotoFileId() != null) {
-            user.setPhotoFileId(update.getPhotoFileId());
-            user.setStatus(REQUIRE_QUESTION_1);
-            userService.createOrUpdate(user);
-
-            BioQuestion question = bioQuestionService.getRandomQuestion();
-            userQuestions.put(user.getId(), List.of(question));
-
-            SendMessage msg = SendMessage
+        if (update.getPhotoFileId() == null) {
+            var msg = SendMessage
                     .builder()
                     .chatId(update.getChatId())
-                    .text(TEXT_BIO_REQUEST_QUESTIONS_RU + "Вопрос 1:\n" + question.getQuestion())
+                    .text("Это не фото " + EMOJI_WOW + "\nПожалуйста, пришли своё фото")
                     .build();
 
-            return List.of(messageService.getDoneMsg(user, update), new Response(msg));
+            return List.of(new Response(msg));
         }
 
-        SendMessage msg = SendMessage.builder().chatId(update.getChatId()).text("Это не фото ((").build();
+        user.setPhotoFileId(update.getPhotoFileId());
+        user.setStatus(REQUIRE_QUESTION_1);
+        userService.createOrUpdate(user);
+        userQuestions.put(user.getId(), bioQuestionService.getTwoRandomQuestions());
+        var question = userQuestions.get(user.getId()).getFirst().getQuestion();
+        var msg = SendMessage
+                .builder()
+                .chatId(update.getChatId())
+                .text(TEXT_BIO_REQUEST_QUESTIONS_RU + "Вопрос 1:\n" + question)
+                .build();
 
-        return List.of(new Response(msg));
+        return List.of(messageService.getDoneMsg(user, update), new Response(msg));
     }
 
+
     private List<Response> proceedBioQuestion1(User user, ClassifiedUpdate update) {
-        UserBioQuestion userBioQuestion = new UserBioQuestion(
+        var userBioQuestion = new UserBioQuestion(
                 user,
                 userQuestions.get(user.getId()).getFirst(),
                 update.getCommandName()
         );
-
         userBioQuestionService.createOrUpdate(userBioQuestion);
         user.setStatus(REQUIRE_QUESTION_2);
         userService.createOrUpdate(user);
-
-        BioQuestion question = bioQuestionService.getRandomQuestion();
-        while (question.equals(userQuestions.get(user.getId()).getFirst())) {
-            question = bioQuestionService.getRandomQuestion();
-        }
-
-        SendMessage msg = SendMessage
+        var question = userQuestions.get(user.getId()).getLast().getQuestion();
+        var msg = SendMessage
                 .builder()
                 .chatId(update.getChatId())
-                .text("Вопрос 2:\n" + question.getQuestion())
+                .text("Вопрос 2:\n" + question)
                 .build();
 
         return List.of(messageService.getDoneMsg(user, update), new Response(msg));
     }
 
     private List<Response> proceedBioQuestion2(User user, ClassifiedUpdate update) {
-        UserBioQuestion userBioQuestion = new UserBioQuestion(
+        var userBioQuestion = new UserBioQuestion(
                 user,
                 userQuestions.get(user.getId()).getLast(),
                 update.getCommandName()
         );
-
         userBioQuestionService.createOrUpdate(userBioQuestion);
         user.setStatus(REQUIRE_VALUES_CONFIRM);
         userService.createOrUpdate(user);
 
-
-        SendMessage introMsg = SendMessage
+        var introMsg = SendMessage
                 .builder()
                 .chatId(update.getChatId())
                 .text("А теперь расскажем о главных ценностях этого дома")
                 .build();
 
-        SendMediaGroup mediaGroupMsg = SendMediaGroup
+        var mediaGroupMsg = SendMediaGroup
                 .builder()
                 .chatId(update.getChatId())
                 .medias(
@@ -251,7 +256,7 @@ public class RegistrationService {
                 )
                 .build();
 
-        SendMessage confirmMsg = SendMessage
+        var confirmMsg = SendMessage
                 .builder()
                 .chatId(update.getChatId())
                 .text("Нажми " + TEXT_FAMILIARIZED + " для продолжения")
