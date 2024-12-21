@@ -16,7 +16,7 @@ import java.util.List;
 
 @FilterDef(
         name = "userMealsFilter",
-        parameters = { @ParamDef(name = "from", type = Date.class), @ParamDef(name = "to", type = Date.class) }
+        parameters = {@ParamDef(name = "from", type = Date.class), @ParamDef(name = "to", type = Date.class)}
 )
 @Getter
 @Setter
@@ -49,10 +49,14 @@ public class User {
     @Column(name = "specified_name")
     private String specifiedName;
 
-    @Temporal(TemporalType.DATE)
-    @DateTimeFormat(pattern = "yyyy.MM.dd")
-    @Column(name = "birth_date")
-    private Date birthDate;
+    @Column(name = "birth_day")
+    private int birthDay;
+
+    @Column(name = "birth_month")
+    private int birthMonth;
+
+    @Column(name = "birth_year")
+    private int birthYear;
 
     @ManyToOne
     @JoinColumn(name = "room_id", referencedColumnName = "id")
