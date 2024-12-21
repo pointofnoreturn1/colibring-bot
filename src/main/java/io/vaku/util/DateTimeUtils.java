@@ -22,37 +22,39 @@ public final class DateTimeUtils {
     }
 
     public static boolean isFullDateValid(String date) {
-        if (date.matches("^\\d{1,2}\\.\\d{1,2}\\.\\d{4}")) { // dd.MM.yyyy format
-            DateFormat sdf = new SimpleDateFormat(FULL_DATE_FORMAT);
-            sdf.setLenient(false);
-
-            try {
-                sdf.parse(date);
-            } catch (ParseException e) {
-                return false;
-            }
-
-            return true;
+        if (!date.matches("^\\d{1,2}\\.\\d{1,2}\\.\\d{4}")) {
+            return false;
         }
 
-        return false;
+        var sdf = new SimpleDateFormat(FULL_DATE_FORMAT);
+        sdf.setLenient(false);
+        try {
+            sdf.parse(date);
+        } catch (ParseException e) {
+            return false;
+        }
+
+        return true;
     }
 
     public static boolean isDateValid(String date) {
-        if (date.matches("^\\d{1,2}\\.\\d{1,2}")) { // dd.MM format
-            DateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
-            sdf.setLenient(false);
-
-            try {
-                sdf.parse(date);
-            } catch (ParseException e) {
-                return false;
-            }
-
+        if (date.equals("29.02")) {
             return true;
         }
 
-        return false;
+        if (!date.matches("^\\d{1,2}\\.\\d{1,2}")) {
+            return false;
+        }
+
+        var sdf = new SimpleDateFormat(DATE_FORMAT);
+        sdf.setLenient(false);
+        try {
+            sdf.parse(date);
+        } catch (ParseException e) {
+            return false;
+        }
+
+        return true;
     }
 
     public static Schedule getSchedule(String input) {

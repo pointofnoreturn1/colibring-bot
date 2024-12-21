@@ -19,10 +19,6 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMediaGroup;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.media.InputMediaPhoto;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.*;
 
 import static io.vaku.model.enm.UserStatus.*;
@@ -139,31 +135,31 @@ public class RegistrationService {
 
     @SneakyThrows
     private List<Response> proceedBirthdate(User user, ClassifiedUpdate update) {
-        String input = update.getCommandName();
+        var input = update.getCommandName();
 
-        if (DateTimeUtils.isFullDateValid(input) || DateTimeUtils.isDateValid(input)) {
-            if (DateTimeUtils.isFullDateValid(input)) {
-                DateFormat formatter = new SimpleDateFormat(FULL_DATE_FORMAT);
-                user.setBirthDate(formatter.parse(input));
-            } else {
-                // TODO: криво сохраняет дату без указания года
-                DateFormat formatter = new SimpleDateFormat(DATE_FORMAT);
-                LocalDate localDate = formatter.parse(input).toInstant().atZone(ZoneId.systemDefault()).toLocalDate().withYear(1000);
-                user.setBirthDate(Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant()));
-            }
-            user.setStatus(REQUIRE_ROOM);
-            userService.createOrUpdate(user);
-            SendMessage msg = SendMessage
-                    .builder()
-                    .chatId(update.getChatId())
-                    .text(user.getLang().equals(Lang.RU) ? TEXT_ROOM_REQUEST_RU : TEXT_ROOM_REQUEST_EN)
-                    .replyMarkup(menuService.getRoomChoiceMenu())
-                    .build();
-
-            return List.of(messageService.getDoneMsg(user, update), new Response(msg));
+        if (DateTimeUtils.isDateValid(input)) {
+            var date = input.split("\\.");
+            user.setBirthDay(Integer.parseInt(date[0]));
+            user.setBirthMonth(Integer.parseInt(date[1]));
+        } else if (DateTimeUtils.isFullDateValid(input)) {
+            var date = input.split("\\.");
+            user.setBirthDay(Integer.parseInt(date[0]));
+            user.setBirthMonth(Integer.parseInt(date[1]));
+            user.setBirthYear(Integer.parseInt(date[2]));
         } else {
             return List.of(messageService.getInvalidFormatMsg(user, update));
         }
+
+        user.setStatus(REQUIRE_ROOM);
+        userService.createOrUpdate(user);
+        var msg = SendMessage
+                .builder()
+                .chatId(update.getChatId())
+                .text(user.getLang().equals(Lang.RU) ? TEXT_ROOM_REQUEST_RU : TEXT_ROOM_REQUEST_EN)
+                .replyMarkup(menuService.getRoomChoiceMenu())
+                .build();
+
+        return List.of(messageService.getDoneMsg(user, update), new Response(msg));
     }
 
     private List<Response> proceedRoom(User user, ClassifiedUpdate update) {
