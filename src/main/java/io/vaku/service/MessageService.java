@@ -13,6 +13,7 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import java.util.List;
 
 import static io.vaku.util.StringConstants.*;
+import static io.vaku.util.StringUtils.getStringUser;
 
 @Service
 public class MessageService {
@@ -59,28 +60,17 @@ public class MessageService {
     }
 
     public String getBookingsFormattedMessage(List<? extends Booking> bookings) {
-        StringBuilder sb = new StringBuilder();
-
-        for (Booking booking : bookings) {
-            sb.append(DateTimeUtils.getHumanSchedule(
+        var sb = new StringBuilder();
+        for (var booking : bookings) {
+            sb.append(
+                    DateTimeUtils.getHumanSchedule(
                             booking.getStartTime(),
                             booking.getEndTime(),
-                            booking.getDescription()))
-                    .append("\n");
-
-            User user = booking.getUser();
-
-            sb.append(user.getSpecifiedName()).append(" (");
-
-            if (user.getTgUserName() == null) {
-                sb
-                        .append(user.getTgFirstName() == null ? "" : user.getTgFirstName())
-                        .append(user.getTgLastName() == null ? "" : " " + user.getTgLastName());
-            } else {
-                sb.append("@").append(user.getTgUserName());
-            }
-
-            sb.append(")\n\n");
+                            booking.getDescription())
+                    );
+            sb.append("\n");
+            sb.append(getStringUser(booking.getUser()));
+            sb.append("\n\n");
         }
 
         return sb.toString();

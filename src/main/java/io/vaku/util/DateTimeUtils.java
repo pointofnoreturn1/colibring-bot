@@ -96,6 +96,7 @@ public final class DateTimeUtils {
         return null;
     }
 
+    // TODO: оставить старый формат для просмотра моих бронирований, сделать новый формат для просмотра всех записей
     public static String getHumanSchedule(Date startTime, Date endTime, String description) {
         LocalDateTime startDateTime = LocalDateTime.ofInstant(startTime.toInstant(), ZoneId.systemDefault());
         LocalDateTime endDateTime = LocalDateTime.ofInstant(endTime.toInstant(), ZoneId.systemDefault());
@@ -130,9 +131,45 @@ public final class DateTimeUtils {
                     sb.append(" (след. день)");
                 }
 
-                // TODO: сделать отображение списка с разбивкой по дням
-
                 return sb.append(description == null ? "" : " " + description).toString();
+    }
+
+    // TODO: rename
+    public static String getHumanScheduleAll(Date startTime, Date endTime, String description) {
+        LocalDateTime startDateTime = LocalDateTime.ofInstant(startTime.toInstant(), ZoneId.systemDefault());
+        LocalDateTime endDateTime = LocalDateTime.ofInstant(endTime.toInstant(), ZoneId.systemDefault());
+
+        String day = String.valueOf(startDateTime.getDayOfMonth());
+        String month = String.valueOf(startDateTime.getMonthValue());
+        String year = String.valueOf(startDateTime.getYear());
+        String startTimeHours = String.valueOf(startDateTime.getHour());
+        String startTimeMinutes = String.valueOf(startDateTime.getMinute());
+        String endTimeHours = String.valueOf(endDateTime.getHour());
+        String endTimeMinutes = String.valueOf(endDateTime.getMinute());
+
+        StringBuilder sb = new StringBuilder();
+        sb
+                .append(day.length() == 1 ? "0" + day : day)
+                .append(".")
+                .append(month.length() == 1 ? "0" + month : month)
+                .append(".")
+                .append(year.substring(2))
+                .append(" ")
+                .append(startDateTime.format(DateTimeFormatter.ofPattern("EE", Locale.of("ru"))))
+                .append(" ")
+                .append(startTimeHours.length() == 1 ? "0" + startTimeHours : startTimeHours)
+                .append(":")
+                .append(startTimeMinutes.length() == 1 ? "0" + startTimeMinutes : startTimeMinutes)
+                .append("-")
+                .append(endTimeHours.length() == 1 ? "0" + endTimeHours : endTimeHours)
+                .append(":")
+                .append(endTimeMinutes.length() == 1 ? "0" + endTimeMinutes : endTimeMinutes);
+
+        if (startDateTime.getDayOfMonth() < endDateTime.getDayOfMonth()) {
+            sb.append(" (след. день)");
+        }
+
+        return sb.append(description == null ? "" : " " + description).toString();
     }
 
     public static List<? extends Booking> checkTimeIntersections(List<? extends Booking> allBookings, List<Schedule> schedules) {
