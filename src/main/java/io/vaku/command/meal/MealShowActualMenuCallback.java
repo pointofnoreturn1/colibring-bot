@@ -6,7 +6,6 @@ import io.vaku.model.ClassifiedUpdate;
 import io.vaku.model.Response;
 import io.vaku.model.domain.Meal;
 import io.vaku.model.domain.User;
-import io.vaku.model.enm.CustomDayOfWeek;
 import io.vaku.service.domain.meal.MealService;
 import io.vaku.service.domain.meal.MealSignUpMessageService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +14,6 @@ import org.springframework.stereotype.Component;
 import java.util.*;
 
 import static io.vaku.util.DateTimeUtils.*;
-import static io.vaku.util.StringConstants.LARI;
 import static io.vaku.util.StringUtils.getStringPrice;
 
 @Component
@@ -41,7 +39,7 @@ public class MealShowActualMenuCallback implements Command {
     public List<Response> getAnswer(User user, ClassifiedUpdate update) {
         var dayMeals = mealService.getDayMeals();
         var stringDayMeals = new ArrayList<String>();
-        stringDayMeals.add(getHumanPeriod(getCurrentMonday(), getCurrentSunday()));
+        stringDayMeals.add(getHumanDatesPeriod(getCurrentMonday(), getCurrentSunday()));
 
         for (var entry : dayMeals.entrySet()) {
             var sb = new StringBuilder();

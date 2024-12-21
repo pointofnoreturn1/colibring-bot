@@ -1,7 +1,6 @@
 package io.vaku.service.domain.laundry;
 
 import io.vaku.model.domain.LaundryBooking;
-import io.vaku.model.domain.TvBooking;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
@@ -12,6 +11,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import static io.vaku.util.StringConstants.TEXT_GO_BACK;
+import static io.vaku.util.StringConstants.TEXT_REMOVE;
 
 @Service
 public class LaundryMenuService {
@@ -77,7 +77,7 @@ public class LaundryMenuService {
                         List.of(
                                 InlineKeyboardButton
                                         .builder()
-                                        .text("Удалить")
+                                        .text(TEXT_REMOVE)
                                         .callbackData("callbackRemoveLndBooking_" + booking.getId())
                                         .build()
                         )

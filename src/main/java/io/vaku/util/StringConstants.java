@@ -14,6 +14,7 @@ public final class StringConstants {
     public static final String EMOJI_RELOAD_MENU = "\uD83D\uDD04 ";
     public static final String EMOJI_ADMIN = "\uD83D\uDD10 ";
     public static final String EMOJI_MONEY = "\uD83D\uDCB5";
+    public static final String EMOJI_REMOVE = "❌";
 
     public static final String LARI = "₾";
 
@@ -30,6 +31,7 @@ public final class StringConstants {
     public static final String TEXT_REGISTER_EN = "Register";
     public static final String TEXT_DONE_RU = "Готово " + EMOJI_OK;
     public static final String TEXT_DONE_EN = "Done " + EMOJI_OK;
+    public static final String TEXT_REMOVE = EMOJI_REMOVE + " Удалить";
     public static final String TEXT_INCORRECT_DATE_RU = "Неверный формат " + EMOJI_WOW;
     public static final String TEXT_INCORRECT_DATE_EN = "Invalid format " + EMOJI_WOW;
     public static final String TEXT_NO_BOOKINGS = "Нет ни одной брони " + EMOJI_WOW;

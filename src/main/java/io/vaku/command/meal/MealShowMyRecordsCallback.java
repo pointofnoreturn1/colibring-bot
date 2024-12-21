@@ -17,9 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 import static io.vaku.util.DateTimeUtils.*;
@@ -85,7 +82,7 @@ public class MealShowMyRecordsCallback implements Command {
     private String getResponseText(Map<CustomDayOfWeek, List<Meal>> dayMeals, Date startDate, Date endDate) {
         var mealsCount = new HashMap<Meal, Integer>();
         var sb = new StringBuilder(TEXT_YOUR_MEALS);
-        sb.append(" (").append(getHumanPeriod(startDate, endDate)).append("):");
+        sb.append(" (").append(getHumanDatesPeriod(startDate, endDate)).append("):");
 
         for (var entry : dayMeals.entrySet()) {
             sb.append("\n\n").append(entry.getKey().getName());

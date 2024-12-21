@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import static io.vaku.util.StringConstants.TEXT_GO_BACK;
+import static io.vaku.util.StringConstants.TEXT_REMOVE;
 
 @Service
 public class TvMenuService {
@@ -76,7 +77,7 @@ public class TvMenuService {
                         List.of(
                                 InlineKeyboardButton
                                         .builder()
-                                        .text("Удалить")
+                                        .text(TEXT_REMOVE)
                                         .callbackData("callbackRemoveTvBooking_" + booking.getId())
                                         .build()
                         )
