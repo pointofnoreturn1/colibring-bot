@@ -236,6 +236,7 @@ public class RegistrationService {
                 update.getCommandName()
         );
         userBioQuestionService.createOrUpdate(userBioQuestion);
+        userQuestions.remove(user.getId());
         user.setStatus(REQUIRE_VALUES_CONFIRM);
         userService.createOrUpdate(user);
 
