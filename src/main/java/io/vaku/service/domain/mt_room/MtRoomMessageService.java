@@ -88,7 +88,13 @@ public class MtRoomMessageService {
         SendMessage msg = SendMessage
                 .builder()
                 .chatId(update.getChatId())
-                .text(EMOJI_MT_ROOM_BOOKING + TEXT_INTERSECTION + messageService.getBookingsFormattedMessage(bookings))
+                .text(
+                        EMOJI_MT_ROOM_BOOKING +
+                                TEXT_INTERSECTION +
+                                "\n\n" +
+                                messageService.getBookingsFormattedMessage(bookings) +
+                                TEXT_REPEAT_BOOKING
+                )
                 .replyMarkup(menuService.getInlineBackToMtRoomBookingMenu())
                 .build();
 

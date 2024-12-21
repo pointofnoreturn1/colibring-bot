@@ -55,7 +55,7 @@ public class TvShowMyRecordsCallback implements Command {
             myBookings.forEach(
                     it -> bookingsMap.put(
                             it.getId(),
-                            DateTimeUtils.getHumanSchedule(it.getStartTime(), it.getEndTime(), it.getDescription())
+                            DateTimeUtils.getHumanScheduleDetailed(it.getStartTime(), it.getEndTime(), it.getDescription())
                     )
             );
 

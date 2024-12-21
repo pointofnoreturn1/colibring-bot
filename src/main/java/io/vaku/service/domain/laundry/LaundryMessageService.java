@@ -88,7 +88,13 @@ public class LaundryMessageService {
         SendMessage msg = SendMessage
                 .builder()
                 .chatId(update.getChatId())
-                .text(EMOJI_LAUNDRY_BOOKING + TEXT_INTERSECTION + messageService.getBookingsFormattedMessage(bookings))
+                .text(
+                        EMOJI_LAUNDRY_BOOKING +
+                                TEXT_INTERSECTION +
+                                "\n\n" +
+                                messageService.getBookingsFormattedMessage(bookings) +
+                                TEXT_REPEAT_BOOKING
+                )
                 .replyMarkup(laundryMenuService.getInlineBackToLaundryBookingMenu())
                 .build();
 
