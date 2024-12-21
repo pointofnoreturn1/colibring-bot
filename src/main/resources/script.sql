@@ -52,106 +52,107 @@ CREATE TYPE admin_status AS ENUM(
 );
 
 CREATE TABLE "user"(
-	id BIGINT PRIMARY KEY,
-	chat_id BIGINT UNIQUE NOT NULL,
-	last_msg_id INTEGER,
-	tg_user_name VARCHAR(255),
-	tg_first_name VARCHAR(255),
-	tg_last_name VARCHAR(255),
-	specified_name VARCHAR(255),
-	birth_date DATE,
-	room_id UUID,
-	photo_file_id VARCHAR(255),
-	status STATUS NOT NULL,
-	is_admin BOOL NOT NULL DEFAULT FALSE,
-	is_vegan BOOL NOT NULL DEFAULT FALSE,
+	id                     BIGINT PRIMARY KEY,
+	chat_id                BIGINT UNIQUE NOT NULL,
+	last_msg_id            INTEGER,
+	tg_user_name           VARCHAR(255),
+	tg_first_name          VARCHAR(255),
+	tg_last_name           VARCHAR(255),
+	specified_name         VARCHAR(255),
+	birth_date             DATE,
+	room_id                UUID,
+	photo_file_id          VARCHAR(255),
+	status                 STATUS NOT NULL,
+	is_admin               BOOL NOT NULL DEFAULT FALSE,
+	is_vegan               BOOL NOT NULL DEFAULT FALSE,
 	mt_room_booking_status BOOKING_STATUS NOT NULL DEFAULT 'NO_STATUS',
-	tv_booking_status BOOKING_STATUS NOT NULL DEFAULT 'NO_STATUS',
-	lnd_booking_status BOOKING_STATUS NOT NULL DEFAULT 'NO_STATUS',
-	meal_sign_up_status BOOKING_STATUS NOT NULL DEFAULT 'NO_STATUS',
-	admin_status ADMIN_STATUS NOT NULL DEFAULT 'NO_STATUS',
-	lang LANG NOT NULL DEFAULT 'RU',
-	created_at TIMESTAMP NOT NULL DEFAULT now()
+	tv_booking_status      BOOKING_STATUS NOT NULL DEFAULT 'NO_STATUS',
+	lnd_booking_status     BOOKING_STATUS NOT NULL DEFAULT 'NO_STATUS',
+	meal_sign_up_status    BOOKING_STATUS NOT NULL DEFAULT 'NO_STATUS',
+	admin_status           ADMIN_STATUS NOT NULL DEFAULT 'NO_STATUS',
+	lang                   LANG NOT NULL DEFAULT 'RU',
+	created_at             TIMESTAMP NOT NULL DEFAULT now()
 );
 
 CREATE TABLE room(
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    number VARCHAR(5) NOT NULL,
+    id        UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    number    VARCHAR(5) NOT NULL,
     is_hostel BOOL NOT NULL
 );
 
 CREATE TABLE bio_question(
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    id       UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     question TEXT NOT NULL
 );
 
 CREATE TABLE user_bio_question(
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id BIGINT NOT NULL,
+    id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id     BIGINT NOT NULL,
     question_id UUID NOT NULL,
-    answer TEXT NOT NULL,
-    created_at TIMESTAMP NOT NULL DEFAULT now()
+    answer      TEXT NOT NULL,
+    created_at  TIMESTAMP NOT NULL DEFAULT now()
 );
 
 CREATE TABLE meeting_room_booking(
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    start_time TIMESTAMP NOT NULL,
-    end_time TIMESTAMP NOT NULL,
-    is_active BOOL NOT NULL DEFAULT TRUE,
+    id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    start_time  TIMESTAMP NOT NULL,
+    end_time    TIMESTAMP NOT NULL,
+    is_active   BOOL NOT NULL DEFAULT TRUE,
     description VARCHAR(255),
-    user_id BIGINT NOT NULL,
-    created_at TIMESTAMP NOT NULL DEFAULT now()
+    user_id     BIGINT NOT NULL,
+    created_at  TIMESTAMP NOT NULL DEFAULT now()
 );
 
 CREATE TABLE tv_booking(
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    start_time TIMESTAMP NOT NULL,
-    end_time TIMESTAMP NOT NULL,
-    is_active BOOL NOT NULL DEFAULT TRUE,
+    id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    start_time  TIMESTAMP NOT NULL,
+    end_time    TIMESTAMP NOT NULL,
+    is_active   BOOL NOT NULL DEFAULT TRUE,
     description VARCHAR(255),
-    user_id BIGINT NOT NULL,
-    created_at TIMESTAMP NOT NULL DEFAULT now()
+    user_id     BIGINT NOT NULL,
+    created_at  TIMESTAMP NOT NULL DEFAULT now()
 );
 
 CREATE TABLE laundry_booking(
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    start_time TIMESTAMP NOT NULL,
-    end_time TIMESTAMP NOT NULL,
-    is_active BOOL NOT NULL DEFAULT TRUE,
-    is_notified BOOL NOT NULL DEFAULT FALSE,
-    description VARCHAR(255),
-    user_id BIGINT NOT NULL,
-    created_at TIMESTAMP NOT NULL DEFAULT now()
+    id                       UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    start_time               TIMESTAMP NOT NULL,
+    end_time                 TIMESTAMP NOT NULL,
+    is_active BOOL           NOT NULL DEFAULT TRUE,
+    is_notified_before_start BOOL NOT NULL DEFAULT FALSE,
+    is_notified_before_end   BOOL NOT NULL DEFAULT FALSE,
+    description              VARCHAR(255),
+    user_id BIGINT           NOT NULL,
+    created_at               TIMESTAMP NOT NULL DEFAULT now()
 );
 
 CREATE TABLE meal(
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     day_of_week DAY_OF_WEEK NOT NULL,
-    meal_type MEAL_TYPE NOT NULL,
-    name VARCHAR(255),
-    price INTEGER NOT NULL,
-    start_date DATE NOT NULL,
-    end_date DATE NOT NULL,
-    created_at TIMESTAMP NOT NULL DEFAULT now()
+    meal_type   MEAL_TYPE NOT NULL,
+    name        VARCHAR(255),
+    price       INTEGER NOT NULL,
+    start_date  DATE NOT NULL,
+    end_date    DATE NOT NULL,
+    created_at  TIMESTAMP NOT NULL DEFAULT now()
 );
 
 CREATE TABLE user_meal(
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id BIGINT NOT NULL,
-    meal_id UUID NOT NULL,
+    id UUID    PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id    BIGINT NOT NULL,
+    meal_id    UUID NOT NULL,
     start_date DATE NOT NULL,
-    end_date DATE NOT NULL,
+    end_date   DATE NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT now()
 );
 
 CREATE TABLE user_meal_debt(
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id BIGINT NOT NULL,
-    amount INTEGER NOT NULL,
+    id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id     BIGINT NOT NULL,
+    amount      INTEGER NOT NULL,
     is_notified BOOL NOT NULL DEFAULT FALSE,
-    start_date DATE NOT NULL,
-    end_date DATE NOT NULL,
-    created_at TIMESTAMP NOT NULL DEFAULT now()
+    start_date  DATE NOT NULL,
+    end_date    DATE NOT NULL,
+    created_at  TIMESTAMP NOT NULL DEFAULT now()
 );
 
 ALTER TABLE "user" ADD CONSTRAINT user_room_id_fkey FOREIGN KEY (room_id) REFERENCES room(id);
@@ -165,7 +166,7 @@ ALTER TABLE user_bio_question ADD CONSTRAINT user_bio_question_question_id_fkey 
 ALTER TABLE user_meal_debt ADD CONSTRAINT user_meal_debt_user_id_fkey FOREIGN KEY (user_id) REFERENCES "user"(id);
 
 INSERT INTO room (number, is_hostel) VALUES
-('01', false),
+('01',  false),
 ('101', false),
 ('102', false),
 ('103', false),

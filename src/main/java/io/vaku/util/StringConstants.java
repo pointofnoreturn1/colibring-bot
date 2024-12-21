@@ -70,7 +70,8 @@ public final class StringConstants {
     public static final String TEXT_MT_ROOM_BOOKING = EMOJI_MT_ROOM_BOOKING + "Бронь лекционной";
     public static final String TEXT_TV_BOOKING = EMOJI_TV_BOOKING + "Бронь телевизора";
     public static final String TEXT_LAUNDRY_BOOKING = EMOJI_LAUNDRY_BOOKING + "Записаться на стирку";
-    public static final String TEXT_LAUNDRY_NOTIFICATION = "Напоминаю, что у тебя через 15 минут стирка";
+    public static final String TEXT_LAUNDRY_NOTIFICATION_START = "Напоминаю, что у тебя через 15 минут стирка";
+    public static final String TEXT_LAUNDRY_NOTIFICATION_END = "Напоминаю, что у тебя через 5 закончится стирка";
     public static final String TEXT_MEAL_SIGN_UP = EMOJI_MEAL_SIGN_UP + "Питание";
     public static final String TEXT_RELOAD_MENU = EMOJI_RELOAD_MENU + "Обновить меню бота";
     public static final String TEXT_ADMIN = EMOJI_ADMIN + "Администрирование";
