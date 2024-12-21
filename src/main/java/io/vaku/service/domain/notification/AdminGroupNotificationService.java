@@ -11,8 +11,8 @@ public class AdminGroupNotificationService {
 
     @Autowired
     public AdminGroupNotificationService(
-            long adminChatId,
             @Value("${app.feature.notifications.admin.group-id}")
+            long adminChatId,
             NotificationService notificationService
     ) {
         this.adminChatId = adminChatId;

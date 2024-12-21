@@ -36,7 +36,7 @@ public class MealDebtsNotificationService {
             return;
         }
 
-        var sb = new StringBuilder("Список должников за питание:");
+        var sb = new StringBuilder();
         for (var debt : userMealDebtService.findAllNotNotifiedBetween(getCurrentMonday(), getCurrentSunday())) {
             // TODO: check if record exists and not notified
             var user = debt.getUser();
@@ -47,6 +47,11 @@ public class MealDebtsNotificationService {
             userMealDebtService.createOrUpdate(debt);
         }
 
-        adminGroupNotificationService.sendMessage(sb.isEmpty() ? TEXT_NO_DEBTS : sb.toString());
+        if (sb.isEmpty()) {
+            adminGroupNotificationService.sendMessage(TEXT_NO_DEBTS);
+        } else {
+            sb.insert(0, "Список должников за питание:");
+            adminGroupNotificationService.sendMessage(sb.toString());
+        }
     }
 }
