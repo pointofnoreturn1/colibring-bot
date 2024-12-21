@@ -6,11 +6,11 @@ import lombok.*;
 import java.util.Date;
 import java.util.UUID;
 
-@Data
+@Getter
 @NoArgsConstructor
 @Entity
 @Table(name = "laundry_booking")
-public class LaundryBooking implements Booking {
+public final class LaundryBooking implements Booking {
 
     @Id
     @Column(name = "id")
@@ -27,6 +27,7 @@ public class LaundryBooking implements Booking {
     @Column(name = "is_active")
     private boolean isActive = true;
 
+    @Setter
     @Column(name = "is_notified")
     private boolean isNotified = false;
 

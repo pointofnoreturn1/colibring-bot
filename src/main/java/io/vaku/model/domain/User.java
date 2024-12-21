@@ -1,19 +1,26 @@
 package io.vaku.model.domain;
 
+import io.vaku.model.enm.AdminStatus;
 import io.vaku.model.enm.Lang;
 import io.vaku.model.enm.BookingStatus;
 import io.vaku.model.enm.UserStatus;
 import jakarta.persistence.*;
+import jakarta.persistence.Table;
 import lombok.*;
-import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.annotations.*;
 import org.hibernate.type.SqlTypes;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 import java.util.List;
 
+@FilterDef(
+        name = "userMealsFilter",
+        parameters = { @ParamDef(name = "from", type = Date.class), @ParamDef(name = "to", type = Date.class) }
+)
 @Getter
 @Setter
+@EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -51,13 +58,19 @@ public class User {
     @JoinColumn(name = "room_id", referencedColumnName = "id")
     private Room room;
 
-    @Column(name = "bio")
-    private String bio;
+    @Column(name = "photo_file_id")
+    private String photoFileId;
 
     @Enumerated(EnumType.STRING)
     @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     @Column(name = "status", nullable = false)
     private UserStatus status;
+
+    @Column(name = "is_admin")
+    private boolean isAdmin = false;
+
+    @Column(name = "is_vegan")
+    private boolean isVegan = false;
 
     @Enumerated(EnumType.STRING)
     @JdbcTypeCode(SqlTypes.NAMED_ENUM)
@@ -73,6 +86,16 @@ public class User {
     @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     @Column(name = "lnd_booking_status", nullable = false)
     private BookingStatus laundryBookingStatus = BookingStatus.NO_STATUS;
+
+    @Enumerated(EnumType.STRING)
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
+    @Column(name = "meal_sign_up_status", nullable = false)
+    private BookingStatus mealSignUpStatus = BookingStatus.NO_STATUS;
+
+    @Enumerated(EnumType.STRING)
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
+    @Column(name = "admin_status", nullable = false)
+    private AdminStatus adminStatus = AdminStatus.NO_STATUS;
 
     @Enumerated(EnumType.STRING)
     @JdbcTypeCode(SqlTypes.NAMED_ENUM)
@@ -92,6 +115,16 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     private List<LaundryBooking> laundryBookings;
+
+    @Filter(name = "userMealsFilter", condition = "start_date >= :from AND end_date <= :to")
+    @OneToMany(mappedBy = "user")
+    private List<UserMeal> userMeals;
+
+    @OneToMany(mappedBy = "user")
+    private List<UserBioQuestion> userBioQuestions;
+
+    @OneToMany(mappedBy = "user")
+    private List<UserMealDebt> userMealDebts;
 
     public User(long id, long chatId, String tgUserName, String tgFirstName, String tgLastName) {
         this.id = id;

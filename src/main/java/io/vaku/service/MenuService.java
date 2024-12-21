@@ -1,6 +1,7 @@
 package io.vaku.service;
 
 import io.vaku.model.domain.Room;
+import io.vaku.model.domain.User;
 import io.vaku.service.domain.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,6 +11,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static io.vaku.util.StringConstants.*;
@@ -32,18 +34,25 @@ public class MenuService {
         return new InlineKeyboardMarkup(List.of(buttons));
     }
 
-    public ReplyKeyboardMarkup getUserMenu() {
-        List<KeyboardRow> keyboard = List.of(
-                new KeyboardRow(List.of(new KeyboardButton(TEXT_MT_ROOM_BOOKING))),
-                new KeyboardRow(List.of(new KeyboardButton(TEXT_TV_BOOKING))),
-                new KeyboardRow(List.of(new KeyboardButton(TEXT_LAUNDRY_BOOKING)))
-        );
+    public ReplyKeyboardMarkup getUserMenu(User user) {
+        List<KeyboardRow> keyboard = new ArrayList<>() {{
+            add(new KeyboardRow(List.of(new KeyboardButton(TEXT_MT_ROOM_BOOKING))));
+            add(new KeyboardRow(List.of(new KeyboardButton(TEXT_TV_BOOKING))));
+            add(new KeyboardRow(List.of(new KeyboardButton(TEXT_LAUNDRY_BOOKING))));
+            add(new KeyboardRow(List.of(new KeyboardButton(TEXT_MEAL_SIGN_UP))));
+        }};
+
+        if (user.isAdmin()) {
+            keyboard.add(new KeyboardRow(List.of(new KeyboardButton(TEXT_ADMIN))));
+        }
+
+        keyboard.add(new KeyboardRow(List.of(new KeyboardButton(TEXT_RELOAD_MENU))));
 
         return ReplyKeyboardMarkup.builder().keyboard(keyboard).resizeKeyboard(true).build();
     }
 
     public ReplyKeyboardMarkup getRoomChoiceMenu() {
-        List<KeyboardRow> keyboard = ((List<Room>) roomService.getAll())
+        List<KeyboardRow> keyboard = roomService.getAll()
                 .stream()
                 .map(Room::getNumber)
                 .sorted()
@@ -60,5 +69,60 @@ public class MenuService {
         );
 
         return new InlineKeyboardMarkup(List.of(buttons));
+    }
+
+    public InlineKeyboardMarkup getInlineConfirmValues() {
+        List<InlineKeyboardButton> buttons = List.of(
+                InlineKeyboardButton.builder().text(TEXT_FAMILIARIZED).callbackData("callbackConfirmValues").build()
+        );
+
+        return new InlineKeyboardMarkup(List.of(buttons));
+    }
+
+    public InlineKeyboardMarkup getInlineConfirmRules() {
+        List<InlineKeyboardButton> buttons = List.of(
+                InlineKeyboardButton.builder().text(TEXT_FAMILIARIZED + ", согласен(на)").callbackData("callbackConfirmRules").build()
+        );
+
+        return new InlineKeyboardMarkup(List.of(buttons));
+    }
+
+    public InlineKeyboardMarkup getInlineTourMenu() {
+        return InlineKeyboardMarkup
+                .builder()
+                .keyboardRow(
+                        List.of(
+                                InlineKeyboardButton
+                                        .builder()
+                                        .text("Посмотреть экскурсию по дому")
+                                        .callbackData("TODO")
+                                        .build()
+                        )
+                )
+                .keyboardRow(
+                        List.of(
+                                InlineKeyboardButton
+                                        .builder()
+                                        .text("Узнать о правилах сортировки отходов")
+                                        .callbackData("TODO")
+                                        .build())
+                )
+                .keyboardRow(
+                        List.of(
+                                InlineKeyboardButton
+                                        .builder()
+                                        .text("Как тут стирать белье?")
+                                        .callbackData("TODO")
+                                        .build())
+                )
+                .keyboardRow(
+                        List.of(
+                                InlineKeyboardButton
+                                        .builder()
+                                        .text("Что есть рядом с домом?")
+                                        .callbackData("TODO")
+                                        .build())
+                )
+                .build();
     }
 }

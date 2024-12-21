@@ -2,7 +2,6 @@ package io.vaku.model;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.groupadministration.SetChatPhoto;
 import org.telegram.telegrambots.meta.api.methods.send.*;
@@ -32,5 +31,9 @@ public class Response {
 
     public Response(BotApiMethod<?> botApiMethod) {
         this.botApiMethod = botApiMethod;
+    }
+
+    public Response(SendMediaGroup sendMediaGroup) {
+        this.sendMediaGroup = sendMediaGroup;
     }
 }

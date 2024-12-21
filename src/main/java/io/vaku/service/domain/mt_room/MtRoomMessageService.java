@@ -65,7 +65,7 @@ public class MtRoomMessageService {
                 .builder()
                 .chatId(update.getChatId())
                 .messageId(user.getLastMsgId())
-                .text(EMOJI_MT_ROOM_BOOKING + (bookingsMap.isEmpty() ? TEXT_NO_BOOKINGS : "Мои бронирования эрекционной (кликабельны)"))
+                .text(EMOJI_MT_ROOM_BOOKING + (bookingsMap.isEmpty() ? TEXT_NO_BOOKINGS : "Мои бронирования лекционной (кликабельны)"))
                 .replyMarkup(menuService.getInlineMyMtRoomBookingsMenu(bookingsMap))
                 .build();
 
@@ -77,7 +77,7 @@ public class MtRoomMessageService {
                 .builder()
                 .chatId(update.getChatId())
                 .messageId(user.getLastMsgId())
-                .text(EMOJI_MT_ROOM_BOOKING + (bookings.isEmpty() ? TEXT_NO_BOOKINGS : "Бронирования эрекционной:\n\n" + messageService.getBookingsFormattedMessage(bookings)))
+                .text(EMOJI_MT_ROOM_BOOKING + (bookings.isEmpty() ? TEXT_NO_BOOKINGS : "Бронирования лекционной:\n\n" + messageService.getBookingsFormattedMessage(bookings)))
                 .replyMarkup(menuService.getInlineBackToMtRoomBookingMenu())
                 .build();
 

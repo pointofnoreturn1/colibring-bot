@@ -70,12 +70,17 @@ public class MessageService {
 
             User user = booking.getUser();
 
-            sb.append(user.getSpecifiedName())
-                    .append(" (")
-                    .append(user.getTgFirstName() == null ? "" : user.getTgFirstName())
-                    .append(user.getTgLastName() == null ? "" : " " + user.getTgLastName())
-                    .append(user.getTgUserName() == null ? "" : " @" + user.getTgUserName())
-                    .append(")\n\n");
+            sb.append(user.getSpecifiedName()).append(" (");
+
+            if (user.getTgUserName() == null) {
+                sb
+                        .append(user.getTgFirstName() == null ? "" : user.getTgFirstName())
+                        .append(user.getTgLastName() == null ? "" : " " + user.getTgLastName());
+            } else {
+                sb.append("@").append(user.getTgUserName());
+            }
+
+            sb.append(")\n\n");
         }
 
         return sb.toString();

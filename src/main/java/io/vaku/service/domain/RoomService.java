@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Transactional(readOnly = true)
 public class RoomService {
@@ -13,8 +15,8 @@ public class RoomService {
     @Autowired
     private RoomRepository repository;
 
-    public Iterable<Room> getAll() {
-        return repository.findAll();
+    public List<Room> getAll() {
+        return (List<Room>) repository.findAll();
     }
 
     public Room findByNumber(String number) {

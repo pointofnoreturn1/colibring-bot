@@ -12,12 +12,11 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import java.util.List;
 
 import static io.vaku.model.enm.UserStatus.REQUIRE_PASSWORD;
+import static io.vaku.util.StringConstants.TEXT_PASSWORD_REQUEST_EN;
+import static io.vaku.util.StringConstants.TEXT_PASSWORD_REQUEST_RU;
 
 @Component
 public class RegisterCallback implements Command {
-
-    private static final String TEXT_PASSWORD_REQUEST_RU = "Введи пароль";
-    private static final String TEXT_PASSWORD_REQUEST_EN = "Enter password";
 
     @Autowired
     private UserService userService;
