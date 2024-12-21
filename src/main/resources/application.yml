@@ -12,5 +12,8 @@ app:
     register:
       password: ${BOT_REGISTER_PASSWORD}
     cook-days-off: WED, SUN
+    notifications:
+      admin:
+        group-id: ${BOT_ADMIN_GROUP_ID}
   connection:
     timeout: ${BOT_CONNECTION_TIMEOUT}
