@@ -58,59 +58,58 @@ public final class DateTimeUtils {
     }
 
     public static Schedule getSchedule(String input) {
-        String trimmed = input.trim().replaceAll("\\s+", " ");
-        String[] dateTimeAndDescription = trimmed.split("(?<=\\d{2}:\\d{2}-\\d{2}:\\d{2})\\s");
+        var trimmed = input.trim().replaceAll("\\s+", " ");
+        var dateTimeAndDescription = trimmed.split("(?<=\\d{2}:\\d{2}-\\d{2}:\\d{2})\\s");
 
         if (trimmed.matches("^\\d{2}:\\d{2}-\\d{2}:\\d{2}.*")) { // 10:00-11:00 [description]
-            DateFormat sdf = new SimpleDateFormat(FULL_DATE_FORMAT);
+            var sdf = new SimpleDateFormat(FULL_DATE_FORMAT);
             sdf.setLenient(false);
-            String date = sdf.format(new Date());
-            String startTime = dateTimeAndDescription[0].split("-")[0];
-            String endTime = dateTimeAndDescription[0].split("-")[1];
+            var date = sdf.format(new Date());
+            var startTime = dateTimeAndDescription[0].split("-")[0];
+            var endTime = dateTimeAndDescription[0].split("-")[1];
 
             return createSchedule(date, startTime, endTime, dateTimeAndDescription.length == 2 ? dateTimeAndDescription[1] : null);
         } else if (trimmed.matches("^\\d{1,2}\\.\\d{1,2} \\d{2}:\\d{2}-\\d{2}:\\d{2}.*")) { // 30.01 10:00-11:00 [description]
-            String date = dateTimeAndDescription[0].split(" ")[0] + "." + String.valueOf(LocalDate.now().getYear()).substring(2, 4);
-            String startTime = dateTimeAndDescription[0].split(" ")[1].split("-")[0];
-            String endTime = dateTimeAndDescription[0].split(" ")[1].split("-")[1];
+            var date = dateTimeAndDescription[0].split(" ")[0] + "." + String.valueOf(LocalDate.now().getYear()).substring(2, 4);
+            var startTime = dateTimeAndDescription[0].split(" ")[1].split("-")[0];
+            var endTime = dateTimeAndDescription[0].split(" ")[1].split("-")[1];
 
             return createSchedule(date, startTime, endTime, dateTimeAndDescription.length == 2 ? dateTimeAndDescription[1] : null);
         } else if (trimmed.matches("^\\d{1,2}\\.\\d{1,2}\\.\\d{2} \\d{2}:\\d{2}-\\d{2}:\\d{2}.*")) { // 30.01.24 10:00-11:00 [description]
-            String date = dateTimeAndDescription[0].split(" ")[0];
-            String startTime = dateTimeAndDescription[0].split(" ")[1].split("-")[0];
-            String endTime = dateTimeAndDescription[0].split(" ")[1].split("-")[1];
+            var date = dateTimeAndDescription[0].split(" ")[0];
+            var startTime = dateTimeAndDescription[0].split(" ")[1].split("-")[0];
+            var endTime = dateTimeAndDescription[0].split(" ")[1].split("-")[1];
 
             return createSchedule(date, startTime, endTime, dateTimeAndDescription.length == 2 ? dateTimeAndDescription[1] : null);
         } else if (trimmed.matches("^\\d{2}:\\d{2}.*")) { // 10:00 [description] (from now till 10:00)
-            String[] dateTimeDesc = trimmed.split(" ");
-            DateFormat sdf = new SimpleDateFormat(FULL_DATE_FORMAT);
+            var dateTimeDesc = trimmed.split(" ");
+            var sdf = new SimpleDateFormat(FULL_DATE_FORMAT);
             sdf.setLenient(false);
-            DateFormat sdfTime = new SimpleDateFormat(TIME_FORMAT);
+            var sdfTime = new SimpleDateFormat(TIME_FORMAT);
             sdfTime.setLenient(false);
-            Date now = new Date();
-            String date = sdf.format(now);
-            String startTime = sdfTime.format(now);
-            String endTime = dateTimeDesc[0];
+            var now = new Date();
+            var date = sdf.format(now);
+            var startTime = sdfTime.format(now);
+            var endTime = dateTimeDesc[0];
 
-            return createSchedule(date, startTime, endTime, dateTimeDesc.length == 2 ? dateTimeDesc[1] : null);
+            return createSchedule(
+                    date,
+                    startTime,
+                    endTime,
+                    dateTimeDesc.length > 1 ? trimmed.substring(trimmed.indexOf(" ") + 1) : null
+            );
         }
 
         return null;
     }
 
     public static String getHumanScheduleDetailed(Date startTime, Date endTime, String description) {
-        LocalDateTime startDateTime = LocalDateTime.ofInstant(startTime.toInstant(), ZoneId.systemDefault());
-        LocalDateTime endDateTime = LocalDateTime.ofInstant(endTime.toInstant(), ZoneId.systemDefault());
+        var startDateTime = LocalDateTime.ofInstant(startTime.toInstant(), ZoneId.systemDefault());
+        var day = String.valueOf(startDateTime.getDayOfMonth());
+        var month = String.valueOf(startDateTime.getMonthValue());
+        var year = String.valueOf(startDateTime.getYear());
 
-        String day = String.valueOf(startDateTime.getDayOfMonth());
-        String month = String.valueOf(startDateTime.getMonthValue());
-        String year = String.valueOf(startDateTime.getYear());
-        String startTimeHours = String.valueOf(startDateTime.getHour());
-        String startTimeMinutes = String.valueOf(startDateTime.getMinute());
-        String endTimeHours = String.valueOf(endDateTime.getHour());
-        String endTimeMinutes = String.valueOf(endDateTime.getMinute());
-
-        StringBuilder sb = new StringBuilder();
+        var sb = new StringBuilder();
         sb
                 .append(day.length() == 1 ? "0" + day : day)
                 .append(".")
@@ -120,19 +119,9 @@ public final class DateTimeUtils {
                 .append(" ")
                 .append(startDateTime.format(DateTimeFormatter.ofPattern("EE", Locale.of("ru"))))
                 .append(" ")
-                .append(startTimeHours.length() == 1 ? "0" + startTimeHours : startTimeHours)
-                .append(":")
-                .append(startTimeMinutes.length() == 1 ? "0" + startTimeMinutes : startTimeMinutes)
-                .append("-")
-                .append(endTimeHours.length() == 1 ? "0" + endTimeHours : endTimeHours)
-                .append(":")
-                .append(endTimeMinutes.length() == 1 ? "0" + endTimeMinutes : endTimeMinutes);
+                .append(getHumanSchedule(startTime, endTime));
 
-                if (startDateTime.getDayOfMonth() < endDateTime.getDayOfMonth()) {
-                    sb.append(" (след. день)");
-                }
-
-                return sb.append(description == null ? "" : " " + description).toString();
+        return sb.append(description == null ? "" : " " + description).toString();
     }
 
     public static String getHumanSchedule(Date startTime, Date endTime) {
@@ -213,14 +202,36 @@ public final class DateTimeUtils {
         return LocalDate.now().with(TemporalAdjusters.next(day)).atStartOfDay(ZoneId.systemDefault());
     }
 
-    public static String getHumanPeriod(Date d1, Date d2) {
+    public static String getHumanDatesPeriod(Date d1, Date d2) {
         return getHumanDate(d1) + " - " + getHumanDate(d2);
     }
 
-    private static String getHumanDate(Date date) {
+    public static String getHumanDate(Date date) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yy");
         return LocalDate.ofInstant(date.toInstant(), ZoneId.systemDefault()).format(formatter);
     }
+
+//    //TODO: refactor - reuse this code in other methods
+//    public static String getHumanTimePeriod(Date d1, Date d2) {
+//        var startDateTime = LocalDateTime.ofInstant(d1.toInstant(), ZoneId.systemDefault());
+//        var endDateTime = LocalDateTime.ofInstant(d2.toInstant(), ZoneId.systemDefault());
+//
+//        var startTimeHours = String.valueOf(startDateTime.getHour());
+//        var startTimeMinutes = String.valueOf(startDateTime.getMinute());
+//        var endTimeHours = String.valueOf(endDateTime.getHour());
+//        var endTimeMinutes = String.valueOf(endDateTime.getMinute());
+//
+//        var sb = new StringBuilder();
+//        sb.append(startTimeHours.length() == 1 ? "0" + startTimeHours : startTimeHours);
+//        sb.append(":");
+//        sb.append(startTimeMinutes.length() == 1 ? "0" + startTimeMinutes : startTimeMinutes);
+//        sb.append("-");
+//        sb.append(endTimeHours.length() == 1 ? "0" + endTimeHours : endTimeHours);
+//        sb.append(":");
+//        sb.append(endTimeMinutes.length() == 1 ? "0" + endTimeMinutes : endTimeMinutes);
+//
+//        return sb.toString();
+//    }
     
     private static Date getTodayDate() {
         return Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant());

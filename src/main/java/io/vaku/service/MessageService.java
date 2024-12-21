@@ -15,6 +15,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
+import static io.vaku.util.DateTimeUtils.*;
 import static io.vaku.util.StringConstants.*;
 import static io.vaku.util.StringUtils.getStringUser;
 
@@ -42,21 +43,14 @@ public class MessageService {
     }
 
     public String getBookingDetails(Booking booking) {
-        String[] dateTimeDescription = DateTimeUtils.getHumanScheduleDetailed(
-                booking.getStartTime(),
-                booking.getEndTime(),
-                booking.getDescription()
-        ).split(" ");
-
-        StringBuilder sb = new StringBuilder();
-        sb.append("Дата: ")
-                .append(dateTimeDescription[0])
-                .append("\nВремя: ")
-                .append(dateTimeDescription[1]);
+        var sb = new StringBuilder();
+        sb.append("Дата: ").append(getHumanDate(booking.getStartTime()));
+        sb.append("\n");
+        sb.append("Время: ").append(getHumanSchedule(booking.getStartTime(), booking.getEndTime()));
 
         if (!(booking instanceof LaundryBooking)) {
-            sb.append("\nОписание: ")
-                    .append(dateTimeDescription.length == 3 ? dateTimeDescription[2] : "\uD83D\uDEAB нет описания");
+            sb.append("\nОписание: ");
+            sb.append(booking.getDescription() == null ? "\uD83D\uDEAB нет описания" : booking.getDescription());
         }
 
         return sb.toString();
