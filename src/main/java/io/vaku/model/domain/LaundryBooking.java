@@ -28,8 +28,12 @@ public final class LaundryBooking implements Booking {
     private boolean isActive = true;
 
     @Setter
-    @Column(name = "is_notified")
-    private boolean isNotified = false;
+    @Column(name = "is_notified_before_start")
+    private boolean isNotifiedBeforeStart = false;
+
+    @Setter
+    @Column(name = "is_notified_before_end")
+    private boolean isNotifiedBeforeEnd = false;
 
     @Column(name = "description")
     private String description;

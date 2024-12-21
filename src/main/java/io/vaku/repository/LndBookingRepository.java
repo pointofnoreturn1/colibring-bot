@@ -35,7 +35,9 @@ public interface LndBookingRepository extends CrudRepository<LaundryBooking, UUI
     @Query(
             value = "SELECT * " +
                     "FROM laundry_booking " +
-                    "WHERE is_active = TRUE AND end_time >= CURRENT_DATE AND is_notified = FALSE " +
+                    "WHERE is_active = TRUE " +
+                        "AND end_time >= CURRENT_DATE " +
+                        "AND (is_notified_before_start = FALSE OR is_notified_before_end = FALSE) " +
                     "ORDER BY start_time",
             nativeQuery = true
     )

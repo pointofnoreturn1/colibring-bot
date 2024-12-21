@@ -11,35 +11,43 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.stream.Collectors;
 
-import static io.vaku.util.StringConstants.EMOJI_NOTIFICATION;
-import static io.vaku.util.StringConstants.TEXT_LAUNDRY_NOTIFICATION;
+import static io.vaku.util.StringConstants.*;
 
 @Service
 public class LaundryNotificationService {
+    private final LaundryBookingService laundryBookingService;
+    private final NotificationService notificationService;
 
     @Autowired
-    private LaundryBookingService laundryBookingService;
-
-    @Autowired
-    private NotificationService notificationService;
+    public LaundryNotificationService(LaundryBookingService laundryBookingService, NotificationService notificationService) {
+        this.laundryBookingService = laundryBookingService;
+        this.notificationService = notificationService;
+    }
 
     @Scheduled(fixedRate = 60000) // 1 minute
-    public void checkUpcomingWashes() {
+    public void checkActiveWashes() {
         var laundryBookingToUser = laundryBookingService.findAllActiveNotNotified()
                 .stream()
                 .collect(Collectors.toMap(it -> it, LaundryBooking::getUser));
 
         for (var entry : laundryBookingToUser.entrySet()) {
             var booking = entry.getKey();
-            if (isInFifteenMinutes(booking)) {
-                notificationService.notify(entry.getValue().getChatId(), EMOJI_NOTIFICATION + TEXT_LAUNDRY_NOTIFICATION);
-                booking.setNotified(true);
+
+            if (!booking.isNotifiedBeforeStart() && startsInFifteenMinutes(booking)) {
+                notificationService.notify(entry.getValue().getChatId(), EMOJI_NOTIFICATION + TEXT_LAUNDRY_NOTIFICATION_START);
+                booking.setNotifiedBeforeStart(true);
+                laundryBookingService.createOrUpdate(booking);
+            }
+
+            if (!booking.isNotifiedBeforeEnd() && endsInFiveMinutes(booking)) {
+                notificationService.notify(entry.getValue().getChatId(), EMOJI_NOTIFICATION + TEXT_LAUNDRY_NOTIFICATION_END);
+                booking.setNotifiedBeforeEnd(true);
                 laundryBookingService.createOrUpdate(booking);
             }
         }
     }
 
-    private boolean isInFifteenMinutes(LaundryBooking booking) {
+    private boolean startsInFifteenMinutes(LaundryBooking booking) {
         var now = LocalDateTime.now(ZoneId.systemDefault());
         var startTime = LocalDateTime.ofInstant(booking.getStartTime().toInstant(), ZoneId.systemDefault());
         var createdAt = LocalDateTime.ofInstant(booking.getCreatedAt().toInstant(), ZoneId.systemDefault());
@@ -48,8 +56,16 @@ public class LaundryNotificationService {
             return false;
         }
 
-        long duration = Duration.between(now, startTime).toMinutes();
+        long diff = Duration.between(now, startTime).toMinutes();
 
-        return duration < 15 && duration > 0;
+        return diff < 15 && diff > 0;
+    }
+
+    private boolean endsInFiveMinutes(LaundryBooking booking) {
+        var now = LocalDateTime.now(ZoneId.systemDefault());
+        var endTime = LocalDateTime.ofInstant(booking.getEndTime().toInstant(), ZoneId.systemDefault());
+        long diff = Duration.between(now, endTime).toMinutes();
+
+        return diff < 5 && diff > 0;
     }
 }
