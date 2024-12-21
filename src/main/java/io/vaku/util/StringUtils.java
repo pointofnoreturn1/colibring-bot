@@ -18,10 +18,11 @@ public final class StringUtils {
     public static String getStringUser(User user, boolean escape) {
         var sb = new StringBuilder(user.getSpecifiedName());
         if (user.getTgUserName() == null) {
+            sb.append(" ");
             if (escape) {
                 sb.append("\\");
             }
-            sb.append(" (");
+            sb.append("(");
             if (user.getTgFirstName() != null) {
                 sb.append(user.getTgFirstName());
             }

@@ -5,7 +5,6 @@ import io.vaku.handler.laundry.LaundryShowMyRecordsCallbackHandler;
 import io.vaku.model.ClassifiedUpdate;
 import io.vaku.model.Response;
 import io.vaku.model.domain.LaundryBooking;
-import io.vaku.model.domain.TvBooking;
 import io.vaku.model.domain.User;
 import io.vaku.model.enm.BookingStatus;
 import io.vaku.service.domain.UserService;
@@ -56,7 +55,7 @@ public class LaundryShowMyRecordsCallback implements Command {
             myBookings.forEach(
                     it -> bookingsMap.put(
                             it.getId(),
-                            DateTimeUtils.getHumanSchedule(it.getStartTime(), it.getEndTime(), it.getDescription())
+                            DateTimeUtils.getHumanScheduleDetailed(it.getStartTime(), it.getEndTime(), it.getDescription())
                     )
             );
 

@@ -107,12 +107,8 @@ public final class StringConstants {
                     • Можно указывать время окончания в следующих сутках (например, 23:00-02:00)
                     • Записи можно передавать списком с новой строки каждая
                     """;
-    public static final String TEXT_INTERSECTION =
-            """
-                    Есть пересечения с другими записями \uD83E\uDD2F
-                    Введи дату и время еще раз или нажми "Назад"
-                    
-                    """;
+    public static final String TEXT_INTERSECTION = "Есть пересечения с другими записями " + EMOJI_WOW;
+    public static final String TEXT_REPEAT_BOOKING = "Отправь еще раз или нажми \"Назад\"";
     public static final String TEXT_ADD_NEW_MENU_PROMPT =
             """
                     Отправь меню на всю неделю или нажми "Назад"
