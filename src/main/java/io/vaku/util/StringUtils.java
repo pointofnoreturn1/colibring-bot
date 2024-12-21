@@ -4,20 +4,34 @@ import io.vaku.model.domain.User;
 
 import static io.vaku.util.StringConstants.LARI;
 
-public class StringUtils {
+public final class StringUtils {
     private StringUtils() {}
 
     public static String getStringPrice(int price) {
         return "(" + price + LARI + ")";
     }
 
-    // TODO: перенести эту логику в toString() сущности User?
     public static String getStringUser(User user) {
+        return getStringUser(user, false);
+    }
+
+    public static String getStringUser(User user, boolean escape) {
         var sb = new StringBuilder(user.getSpecifiedName());
         if (user.getTgUserName() == null) {
-            sb
-                    .append(user.getTgFirstName() == null ? "" : user.getTgFirstName())
-                    .append(user.getTgLastName() == null ? "" : " " + user.getTgLastName());
+            if (escape) {
+                sb.append("\\");
+            }
+            sb.append(" (");
+            if (user.getTgFirstName() != null) {
+                sb.append(user.getTgFirstName());
+            }
+            if (user.getTgLastName() != null) {
+                sb.append(" ").append(user.getTgLastName());
+            }
+            if (escape) {
+                sb.append("\\");
+            }
+            sb.append(")");
         } else {
             sb.append(" @").append(user.getTgUserName());
         }

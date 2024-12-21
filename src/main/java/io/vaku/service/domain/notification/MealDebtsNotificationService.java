@@ -41,7 +41,7 @@ public class MealDebtsNotificationService {
             // TODO: check if record exists and not notified
             var user = debt.getUser();
             int amount = debt.getAmount();
-            sb.append("\n").append(getStringUser(user)).append(" ").append(amount).append(LARI);
+            sb.append("\n").append(getStringUser(user, true)).append(" ").append(amount).append(LARI);
             notificationService.notify(user.getChatId(), TEXT_YOU_HAVE_DEBTS + amount + LARI + TEXT_BANK_DETAILS);
             debt.setNotified(true);
             userMealDebtService.createOrUpdate(debt);
