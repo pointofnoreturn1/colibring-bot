@@ -6,6 +6,7 @@ import io.vaku.model.ClassifiedUpdate;
 import io.vaku.model.domain.User;
 import io.vaku.model.enm.Lang;
 import io.vaku.service.MenuService;
+import io.vaku.service.MessageService;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -17,13 +18,18 @@ import static io.vaku.model.enm.UserStatus.REGISTERED;
 
 @Component
 public class StartCommand implements Command {
-
     private static final String TEXT_GREETING_RU = "Рады снова тебя видеть, ";
     private static final String TEXT_GREETING_EN = "Nice to see you again ";
     private static final String TEXT_LANG_CHOICE_REQUEST = "Выбери язык (Choose language)";
 
+    private final MenuService menuService;
+    private final MessageService messageService;
+
     @Autowired
-    private MenuService menuService;
+    public StartCommand(MenuService menuService, MessageService messageService) {
+        this.menuService = menuService;
+        this.messageService = messageService;
+    }
 
     @Override
     public Class<?> getHandler() {
@@ -44,7 +50,7 @@ public class StartCommand implements Command {
             return List.of(getNewUserResponse(update));
         }
 
-        return List.of(new Response());
+        return messageService.getEmptyResponse();
     }
 
     private Response getRegisteredUserResponse(User user, ClassifiedUpdate update) {

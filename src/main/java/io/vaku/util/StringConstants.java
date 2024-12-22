@@ -1,7 +1,6 @@
 package io.vaku.util;
 
 public final class StringConstants {
-
     public static final String EMOJI_OK = "✅";
     public static final String EMOJI_GO_BACK = "⏪";
     public static final String EMOJI_WOW = "\uD83E\uDD2F";
@@ -32,8 +31,11 @@ public final class StringConstants {
     public static final String TEXT_DONE_RU = "Готово " + EMOJI_OK;
     public static final String TEXT_DONE_EN = "Done " + EMOJI_OK;
     public static final String TEXT_REMOVE = EMOJI_REMOVE + " Удалить";
-    public static final String TEXT_INCORRECT_DATE_RU = "Неверный формат " + EMOJI_WOW;
-    public static final String TEXT_INCORRECT_DATE_EN = "Invalid format " + EMOJI_WOW;
+    public static final String TEXT_INVALID_STRING = "Это не текст " + EMOJI_WOW;
+    public static final String TEXT_INVALID_ROOM = "Такой комнаты нет " + EMOJI_WOW + "\nПожалуйста, выбери из предложенного списка";
+    public static final String TEXT_INVALID_PHOTO = "Это не фото " + EMOJI_WOW + "\nПожалуйста, пришли своё фото";
+    public static final String TEXT_INVALID_DATE_RU = "Неверный формат " + EMOJI_WOW;
+    public static final String TEXT_INVALID_DATE_EN = "Invalid format " + EMOJI_WOW;
     public static final String TEXT_NO_BOOKINGS = "Нет ни одной брони " + EMOJI_WOW;
     public static final String TEXT_NO_LAUNDRY_BOOKINGS = "Нет ни одной стирки " + EMOJI_WOW;
     public static final String TEXT_NO_MEAL_SCHEDULE = "Нет меню " + EMOJI_WOW;

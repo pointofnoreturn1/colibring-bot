@@ -4,6 +4,7 @@ import io.vaku.model.Response;
 import io.vaku.model.ClassifiedUpdate;
 import io.vaku.model.enm.TelegramType;
 import io.vaku.model.domain.User;
+import io.vaku.service.MessageService;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -14,11 +15,16 @@ import java.util.List;
 
 @Component
 public class HandlersMap {
-
     private final HashMap<TelegramType, List<Handler>> hashMap = new HashMap<>();
 
+    private final List<Handler> handlers;
+    private final MessageService messageService;
+
     @Autowired
-    private List<Handler> handlers;
+    public HandlersMap(List<Handler> handlers, MessageService messageService) {
+        this.handlers = handlers;
+        this.messageService = messageService;
+    }
 
     @PostConstruct
     private void init() {
@@ -32,14 +38,15 @@ public class HandlersMap {
     }
 
     public List<Response> execute(User user, ClassifiedUpdate update) {
+        var emptyResponse = messageService.getEmptyResponse();
         if (!hashMap.containsKey(update.getHandlerType()) || update.getHandlerType().equals(TelegramType.UNKNOWN)) {
-            return List.of(new Response());
+            return emptyResponse;
         }
 
         for (Handler handler : hashMap.get(update.getHandlerType())) {
             if (handler.isApplicable(user, update)) {
                 if (handler.isAdmin()) {
-                    return user.isAdmin() ? handler.getAnswer(user, update) : List.of(new Response());
+                    return user.isAdmin() ? handler.getAnswer(user, update) : emptyResponse;
                 }
 
                 return handler.getAnswer(user, update);
