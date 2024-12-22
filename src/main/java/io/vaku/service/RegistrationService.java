@@ -41,6 +41,7 @@ public class RegistrationService {
     private static final String TEXT_ROOM_REQUEST_EN = "Specify your room";
     private static final String TEXT_BIO_REQUEST_QUESTIONS_RU = "И ещё два рандомных вопроса, чтобы колибрята смогли сразу узнать тебя получше\n\n";
     private static final Map<Long, List<BioQuestion>> userQuestions = new HashMap<>();
+    private static final Set<Long> sentMediaGroup = new HashSet<>();
 
     private final String password;
     private final UserService userService;
@@ -195,6 +196,22 @@ public class RegistrationService {
     }
 
     private List<Response> proceedPhoto(User user, ClassifiedUpdate update) {
+        var userId = user.getId();
+        if (update.isMediaGroup()) {
+            if (!sentMediaGroup.contains(userId)) {
+                sentMediaGroup.add(userId);
+                var msg = SendMessage
+                        .builder()
+                        .chatId(update.getChatId())
+                        .text(TEXT_MEDIA_GROUP_FORBIDDEN)
+                        .build();
+
+                return List.of(new Response(msg));
+            }
+
+            return messageService.getEmptyResponse();
+        }
+
         var input = update.getPhotoFileId();
         if (inputIsInvalid(input)) {
             var msg = SendMessage
@@ -222,12 +239,14 @@ public class RegistrationService {
 
 
     private List<Response> proceedBioQuestion1(User user, ClassifiedUpdate update) {
+        var userId = user.getId();
+        sentMediaGroup.remove(userId);
+
         var input = update.getCommandName();
         if (inputIsInvalid(input)) {
             return List.of(messageService.getInvalidStringFormatMsg(user, update));
         }
 
-        var userId = user.getId();
         var userBioQuestion = new UserBioQuestion(user, userQuestions.get(userId).getFirst(), input);
         userBioQuestionService.createOrUpdate(userBioQuestion);
         user.setStatus(REQUIRE_QUESTION_2);

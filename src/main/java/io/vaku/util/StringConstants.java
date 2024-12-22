@@ -34,6 +34,7 @@ public final class StringConstants {
     public static final String TEXT_INVALID_STRING = "Это не текст " + EMOJI_WOW;
     public static final String TEXT_INVALID_ROOM = "Такой комнаты нет " + EMOJI_WOW + "\nПожалуйста, выбери из предложенного списка";
     public static final String TEXT_INVALID_PHOTO = "Это не фото " + EMOJI_WOW + "\nПожалуйста, пришли своё фото";
+    public static final String TEXT_MEDIA_GROUP_FORBIDDEN = "Я не могу выбрать из нескольких фото " + EMOJI_WOW + "\nПожалуйста, пришли своё фото";
     public static final String TEXT_INVALID_DATE_RU = "Неверный формат " + EMOJI_WOW;
     public static final String TEXT_INVALID_DATE_EN = "Invalid format " + EMOJI_WOW;
     public static final String TEXT_NO_BOOKINGS = "Нет ни одной брони " + EMOJI_WOW;
