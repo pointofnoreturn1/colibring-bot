@@ -79,7 +79,7 @@ public class MtRoomBookingHandleService {
         for (String line : inputArr) {
             Schedule schedule = getSchedule(line);
             if (schedule == null) {
-                return List.of(messageService.getInvalidFormatMsg(user, update));
+                return List.of(messageService.getInvalidDateFormatMsg(user, update));
             }
             schedules.add(schedule);
         }

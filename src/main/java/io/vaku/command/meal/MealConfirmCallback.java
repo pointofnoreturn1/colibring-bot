@@ -72,7 +72,7 @@ public class MealConfirmCallback implements Command {
         List<Meal> userMeals = mealSignUpService.getMealsByChatId(update.getChatId());
 
         if (userMeals.isEmpty()) {
-            return List.of(new Response());
+            return messageService.getEmptyResponse();
         }
 
         List<CustomDayOfWeek> daysOff = Arrays.stream(cookDaysOff).map(CustomDayOfWeek::valueOf).toList();

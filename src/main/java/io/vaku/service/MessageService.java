@@ -32,14 +32,28 @@ public class MessageService {
         return new Response(msg);
     }
 
-    public Response getInvalidFormatMsg(User user, ClassifiedUpdate update) {
+    public Response getInvalidDateFormatMsg(User user, ClassifiedUpdate update) {
         SendMessage msg = SendMessage
                 .builder()
                 .chatId(update.getChatId())
-                .text(user.getLang().equals(Lang.RU) ? TEXT_INCORRECT_DATE_RU : TEXT_INCORRECT_DATE_EN)
+                .text(user.getLang().equals(Lang.RU) ? TEXT_INVALID_DATE_RU : TEXT_INVALID_DATE_EN)
                 .build();
 
         return new Response(msg);
+    }
+
+    public Response getInvalidStringFormatMsg(User user, ClassifiedUpdate update) {
+        SendMessage msg = SendMessage
+                .builder()
+                .chatId(update.getChatId())
+                .text(TEXT_INVALID_STRING)
+                .build();
+
+        return new Response(msg);
+    }
+
+    public List<Response> getEmptyResponse() {
+        return List.of(new Response());
     }
 
     public String getBookingDetails(Booking booking) {

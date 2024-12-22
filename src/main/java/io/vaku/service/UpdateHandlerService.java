@@ -19,34 +19,41 @@ import static io.vaku.model.enm.BookingStatus.NO_STATUS;
 
 @Service
 public class UpdateHandlerService {
+    private final HandlersMap commandMap;
+    private final RegistrationService registrationService;
+    private final MtRoomBookingHandleService mtRoomBookingHandleService;
+    private final TvBookingHandleService tvBookingHandleService;
+    private final LaundryBookingHandleService laundryBookingHandleService;
+    private final MealSignUpHandleService mealSignUpHandleService;
+    private final MealAdminHandleService mealAdminHandleService;
+    private final MessageService messageService;
 
     @Autowired
-    private HandlersMap commandMap;
-
-    @Autowired
-    private RegistrationService registrationService;
-
-    @Autowired
-    private MtRoomBookingHandleService mtRoomBookingHandleService;
-
-    @Autowired
-    private TvBookingHandleService tvBookingHandleService;
-
-    @Autowired
-    private LaundryBookingHandleService laundryBookingHandleService;
-
-    @Autowired
-    private MealSignUpHandleService mealSignUpHandleService;
-
-    @Autowired
-    private MealAdminHandleService mealAdminHandleService;
+    public UpdateHandlerService(
+            HandlersMap commandMap,
+            RegistrationService registrationService,
+            MtRoomBookingHandleService mtRoomBookingHandleService,
+            TvBookingHandleService tvBookingHandleService,
+            LaundryBookingHandleService laundryBookingHandleService,
+            MealSignUpHandleService mealSignUpHandleService,
+            MealAdminHandleService mealAdminHandleService, MessageService messageService
+    ) {
+        this.commandMap = commandMap;
+        this.registrationService = registrationService;
+        this.mtRoomBookingHandleService = mtRoomBookingHandleService;
+        this.tvBookingHandleService = tvBookingHandleService;
+        this.laundryBookingHandleService = laundryBookingHandleService;
+        this.mealSignUpHandleService = mealSignUpHandleService;
+        this.mealAdminHandleService = mealAdminHandleService;
+        this.messageService = messageService;
+    }
 
     public List<Response> handleUpdate(ClassifiedUpdate update, User user) {
         if (user == null) {
             if (update.getCommandName().equals("/start") || update.getCommandName().startsWith("callbackSetLanguage")) {
                 return commandMap.execute(null, update);
             } else {
-                return List.of(new Response());
+                return messageService.getEmptyResponse();
             }
         } else if (!user.getStatus().equals(UserStatus.REQUIRE_REGISTRATION) && !user.getStatus().equals(UserStatus.REGISTERED)) {
             return registrationService.execute(user, update);

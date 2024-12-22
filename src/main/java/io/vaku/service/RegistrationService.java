@@ -28,8 +28,8 @@ import static io.vaku.util.StringConstants.*;
 public class RegistrationService {
     private static final String TEXT_NAME_REQUEST_RU = "Для начала расскажи о себе!\nКак тебя зовут?\nНапиши ту форму имени, которую предпочитаешь в обращении";
     private static final String TEXT_NAME_REQUEST_EN = "Enter your name";
-    private static final String TEXT_INCORRECT_PASSWORD_RU = "Неверный пароль \uD83D\uDE1E";
-    private static final String TEXT_INCORRECT_PASSWORD_EN = "Incorrect password \uD83D\uDE1E";
+    private static final String TEXT_INCORRECT_PASSWORD_RU = "Неверный пароль " + EMOJI_WOW;
+    private static final String TEXT_INCORRECT_PASSWORD_EN = "Incorrect password " + EMOJI_WOW;
     private static final String TEXT_BIRTHDATE_REQUEST_RU =
             """
                     Напиши дату рождения в одном из форматов ниже (год рождения можно не указывать)
@@ -71,6 +71,7 @@ public class RegistrationService {
     }
 
     public List<Response> execute(User user, ClassifiedUpdate update) {
+        var emptyResponse = messageService.getEmptyResponse();
         return switch (user.getStatus()) {
             case REQUIRE_PASSWORD -> proceedPassword(user, update);
             case REQUIRE_NAME -> proceedName(user, update);
@@ -81,16 +82,21 @@ public class RegistrationService {
             case REQUIRE_QUESTION_2 -> proceedBioQuestion2(user, update);
             case REQUIRE_VALUES_CONFIRM -> proceedValues(user, update);
             case REQUIRE_RULES_CONFIRM -> proceedRules(user, update);
-            case BLOCKED -> List.of(new Response()); // empty response is intentionally here
-            default -> List.of(new Response());
+            case BLOCKED -> emptyResponse; // empty response is intentionally here
+            default -> emptyResponse;
         };
     }
 
     private List<Response> proceedPassword(User user, ClassifiedUpdate update) {
-        if (checkPassword(update.getCommandName())) {
+        var input = update.getCommandName();
+        if (inputIsInvalid(input)) {
+            return List.of(messageService.getInvalidStringFormatMsg(user, update));
+        }
+
+        if (passwordIsCorrect(input)) {
             user.setStatus(REQUIRE_NAME);
             userService.createOrUpdate(user);
-            SendMessage msg = SendMessage
+            var msg = SendMessage
                     .builder()
                     .chatId(update.getChatId())
                     .text(user.getLang().equals(Lang.RU) ? TEXT_NAME_REQUEST_RU : TEXT_NAME_REQUEST_EN)
@@ -98,7 +104,7 @@ public class RegistrationService {
 
             return List.of(messageService.getDoneMsg(user, update), new Response(msg));
         } else {
-            SendMessage msg = SendMessage
+            var msg = SendMessage
                     .builder()
                     .chatId(update.getChatId())
                     .text(user.getLang().equals(Lang.RU) ? TEXT_INCORRECT_PASSWORD_RU : TEXT_INCORRECT_PASSWORD_EN)
@@ -109,16 +115,9 @@ public class RegistrationService {
     }
 
     private List<Response> proceedName(User user, ClassifiedUpdate update) {
-        // TODO: move to a separate method
         var input = update.getCommandName();
-        if (input == null || input.isBlank() || input.isEmpty()) {
-            var msg = SendMessage
-                    .builder()
-                    .chatId(update.getChatId())
-                    .text("Это не текст " + EMOJI_WOW + "\nПожалуйста, пришли ту форму имени, которую предпочитаешь в обращении")
-                    .build();
-
-            return List.of(new Response(msg));
+        if (inputIsInvalid(input)) {
+            return List.of(messageService.getInvalidStringFormatMsg(user, update));
         }
 
         user.setSpecifiedName(update.getCommandName());
@@ -136,6 +135,9 @@ public class RegistrationService {
     @SneakyThrows
     private List<Response> proceedBirthdate(User user, ClassifiedUpdate update) {
         var input = update.getCommandName();
+        if (inputIsInvalid(input)) {
+            return List.of(messageService.getInvalidStringFormatMsg(user, update));
+        }
 
         if (DateTimeUtils.isDateValid(input)) {
             var date = input.split("\\.");
@@ -147,7 +149,7 @@ public class RegistrationService {
             user.setBirthMonth(Integer.parseInt(date[1]));
             user.setBirthYear(Integer.parseInt(date[2]));
         } else {
-            return List.of(messageService.getInvalidFormatMsg(user, update));
+            return List.of(messageService.getInvalidDateFormatMsg(user, update));
         }
 
         user.setStatus(REQUIRE_ROOM);
@@ -163,9 +165,21 @@ public class RegistrationService {
     }
 
     private List<Response> proceedRoom(User user, ClassifiedUpdate update) {
-        var room = roomService.findByNumber(update.getCommandName());
+        var input = update.getCommandName();
+        if (inputIsInvalid(input)) {
+            return List.of(messageService.getInvalidStringFormatMsg(user, update));
+        }
+
+        var room = roomService.findByNumber(input);
         if (room == null) {
-            return List.of(new Response());
+            var msg = SendMessage
+                    .builder()
+                    .chatId(update.getChatId())
+                    .text(TEXT_INVALID_ROOM)
+                    .replyMarkup(menuService.getRoomChoiceMenu())
+                    .build();
+
+            return List.of(new Response(msg));
         }
 
         user.setRoom(room);
@@ -174,24 +188,25 @@ public class RegistrationService {
         var msg = SendMessage
                 .builder()
                 .chatId(update.getChatId())
-                .text("Теперь пришли своё фото")
+                .text("Теперь, пожалуйста, пришли своё фото")
                 .build();
 
         return List.of(messageService.getDoneMsg(user, update), new Response(msg));
     }
 
     private List<Response> proceedPhoto(User user, ClassifiedUpdate update) {
-        if (update.getPhotoFileId() == null) {
+        var input = update.getPhotoFileId();
+        if (inputIsInvalid(input)) {
             var msg = SendMessage
                     .builder()
                     .chatId(update.getChatId())
-                    .text("Это не фото " + EMOJI_WOW + "\nПожалуйста, пришли своё фото")
+                    .text(TEXT_INVALID_PHOTO)
                     .build();
 
             return List.of(new Response(msg));
         }
 
-        user.setPhotoFileId(update.getPhotoFileId());
+        user.setPhotoFileId(input);
         user.setStatus(REQUIRE_QUESTION_1);
         userService.createOrUpdate(user);
         userQuestions.put(user.getId(), bioQuestionService.getTwoRandomQuestions());
@@ -207,15 +222,17 @@ public class RegistrationService {
 
 
     private List<Response> proceedBioQuestion1(User user, ClassifiedUpdate update) {
-        var userBioQuestion = new UserBioQuestion(
-                user,
-                userQuestions.get(user.getId()).getFirst(),
-                update.getCommandName()
-        );
+        var input = update.getCommandName();
+        if (inputIsInvalid(input)) {
+            return List.of(messageService.getInvalidStringFormatMsg(user, update));
+        }
+
+        var userId = user.getId();
+        var userBioQuestion = new UserBioQuestion(user, userQuestions.get(userId).getFirst(), input);
         userBioQuestionService.createOrUpdate(userBioQuestion);
         user.setStatus(REQUIRE_QUESTION_2);
         userService.createOrUpdate(user);
-        var question = userQuestions.get(user.getId()).getLast().getQuestion();
+        var question = userQuestions.get(userId).getLast().getQuestion();
         var msg = SendMessage
                 .builder()
                 .chatId(update.getChatId())
@@ -226,25 +243,28 @@ public class RegistrationService {
     }
 
     private List<Response> proceedBioQuestion2(User user, ClassifiedUpdate update) {
-        var userBioQuestion = new UserBioQuestion(
-                user,
-                userQuestions.get(user.getId()).getLast(),
-                update.getCommandName()
-        );
+        var input = update.getCommandName();
+        if (inputIsInvalid(input)) {
+            return List.of(messageService.getInvalidStringFormatMsg(user, update));
+        }
+
+        var userId = user.getId();
+        var userBioQuestion = new UserBioQuestion(user, userQuestions.get(userId).getLast(), input);
         userBioQuestionService.createOrUpdate(userBioQuestion);
-        userQuestions.remove(user.getId());
+        userQuestions.remove(userId);
         user.setStatus(REQUIRE_VALUES_CONFIRM);
         userService.createOrUpdate(user);
 
+        var chatId = update.getChatId();
         var introMsg = SendMessage
                 .builder()
-                .chatId(update.getChatId())
+                .chatId(chatId)
                 .text("А теперь расскажем о главных ценностях этого дома")
                 .build();
 
         var mediaGroupMsg = SendMediaGroup
                 .builder()
-                .chatId(update.getChatId())
+                .chatId(chatId)
                 .medias(
                         List.of(
                                 new InputMediaPhoto("AgACAgIAAxkBAAILxWa1_MxWQe_3iGJGV-mJrsJSFzzuAAK33zEbd-WxSZFuLGlHu1-wAQADAgADeQADNQQ"),
@@ -255,7 +275,7 @@ public class RegistrationService {
 
         var confirmMsg = SendMessage
                 .builder()
-                .chatId(update.getChatId())
+                .chatId(chatId)
                 .text("Нажми " + TEXT_FAMILIARIZED + " для продолжения")
                 .replyMarkup(menuService.getInlineConfirmValues())
                 .build();
@@ -269,49 +289,57 @@ public class RegistrationService {
     }
 
     private List<Response> proceedValues(User user, ClassifiedUpdate update) {
-        if (update.getCommandName().equals("callbackConfirmValues")) {
-            user.setStatus(REQUIRE_RULES_CONFIRM);
-            userService.createOrUpdate(user);
-
-            SendMessage msg = SendMessage
-                    .builder()
-                    .chatId(update.getChatId())
-                    .text("В этом доме все соблюдают правила. Вот они:" + "\n **тут будут правила**")
-                    .replyMarkup(menuService.getInlineConfirmRules())
-                    .build();
-
-            return List.of(messageService.getDoneMsg(user, update), new Response(msg));
+        if (!update.getCommandName().equals("callbackConfirmValues")) {
+            return messageService.getEmptyResponse();
         }
 
-        return List.of(new Response());
+        user.setStatus(REQUIRE_RULES_CONFIRM);
+        userService.createOrUpdate(user);
+        var msg = SendMessage
+                .builder()
+                .chatId(update.getChatId())
+                .text("В этом доме все соблюдают правила. Вот они:" + "\n **тут будут правила**")
+                .replyMarkup(menuService.getInlineConfirmRules())
+                .build();
+
+        return List.of(messageService.getDoneMsg(user, update), new Response(msg));
     }
 
     private List<Response> proceedRules(User user, ClassifiedUpdate update) {
-        if (update.getCommandName().equals("callbackConfirmRules")) {
-            user.setStatus(REGISTERED);
-            userService.createOrUpdate(user);
-
-            SendMessage successfulRegistrationMsg = SendMessage
-                    .builder()
-                    .chatId(update.getChatId())
-                    .text("Поздравляю! Теперь ты официально часть стаи Колибрят\n*Ура!*")
-                    .replyMarkup(menuService.getUserMenu(user))
-                    .build();
-
-            SendMessage tourMsg = SendMessage
-                    .builder()
-                    .chatId(update.getChatId())
-                    .text("Чего бы тебе хотелось узнать ещё?")
-                    .replyMarkup(menuService.getInlineTourMenu())
-                    .build();
-
-            return List.of(messageService.getDoneMsg(user, update), new Response(successfulRegistrationMsg), new Response(tourMsg));
+        if (!update.getCommandName().equals("callbackConfirmRules")) {
+            return messageService.getEmptyResponse();
         }
 
-        return List.of(new Response());
+        user.setStatus(REGISTERED);
+        userService.createOrUpdate(user);
+
+        var chatId = update.getChatId();
+        var successfulRegistrationMsg = SendMessage
+                .builder()
+                .chatId(chatId)
+                .text("Поздравляю! Теперь ты официально часть стаи Колибрят\n*Ура!*")
+                .replyMarkup(menuService.getUserMenu(user))
+                .build();
+
+        var tourMsg = SendMessage
+                .builder()
+                .chatId(chatId)
+                .text("Чего бы тебе хотелось узнать ещё?")
+                .replyMarkup(menuService.getInlineTourMenu())
+                .build();
+
+        return List.of(
+                messageService.getDoneMsg(user, update),
+                new Response(successfulRegistrationMsg),
+                new Response(tourMsg)
+        );
     }
 
-    private boolean checkPassword(String input) {
+    private boolean passwordIsCorrect(String input) {
         return input.equals(password);
+    }
+
+    private boolean inputIsInvalid(String input) {
+        return input == null || input.isEmpty() || input.isBlank();
     }
 }

@@ -73,7 +73,7 @@ public class MealAdminHandleService {
                 .toList();
 
         if (meals.size() != 21) {
-            return List.of(messageService.getInvalidFormatMsg(user, update));
+            return List.of(messageService.getInvalidDateFormatMsg(user, update));
         }
 
         List<String> breakfasts = new ArrayList<>();
