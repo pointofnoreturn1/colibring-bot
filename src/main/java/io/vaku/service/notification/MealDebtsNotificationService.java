@@ -1,4 +1,4 @@
-package io.vaku.service.domain.notification;
+package io.vaku.service.notification;
 
 import io.vaku.service.domain.admin.meal.UserMealDebtService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,17 +15,17 @@ import static io.vaku.util.StringConstants.*;
 @Service
 public class MealDebtsNotificationService {
     private final UserMealDebtService userMealDebtService;
-    private final NotificationService notificationService;
+    private final TelegramClient telegramClient;
     private final AdminGroupNotificationService adminGroupNotificationService;
 
     @Autowired
     public MealDebtsNotificationService(
             UserMealDebtService userMealDebtService,
-            NotificationService notificationService,
+            TelegramClient telegramClient,
             AdminGroupNotificationService adminGroupNotificationService
     ) {
         this.userMealDebtService = userMealDebtService;
-        this.notificationService = notificationService;
+        this.telegramClient = telegramClient;
         this.adminGroupNotificationService = adminGroupNotificationService;
     }
 
@@ -42,7 +42,7 @@ public class MealDebtsNotificationService {
             var user = debt.getUser();
             int amount = debt.getAmount();
             sb.append("\n").append(getStringUser(user, true)).append(" ").append(amount).append(LARI);
-            notificationService.notify(user.getChatId(), TEXT_YOU_HAVE_DEBTS + amount + LARI + TEXT_BANK_DETAILS);
+            telegramClient.sendMessage(user.getChatId(), TEXT_YOU_HAVE_DEBTS + amount + LARI + TEXT_BANK_DETAILS);
             debt.setNotified(true);
             userMealDebtService.createOrUpdate(debt);
         }

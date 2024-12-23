@@ -1,4 +1,4 @@
-package io.vaku.service;
+package io.vaku.service.registration;
 
 import io.vaku.model.ClassifiedUpdate;
 import io.vaku.model.Response;
@@ -6,6 +6,8 @@ import io.vaku.model.domain.BioQuestion;
 import io.vaku.model.domain.User;
 import io.vaku.model.domain.UserBioQuestion;
 import io.vaku.model.enm.Lang;
+import io.vaku.service.MenuService;
+import io.vaku.service.MessageService;
 import io.vaku.service.domain.BioQuestionService;
 import io.vaku.service.domain.RoomService;
 import io.vaku.service.domain.UserBioQuestionService;
@@ -50,6 +52,7 @@ public class RegistrationService {
     private final MessageService messageService;
     private final BioQuestionService bioQuestionService;
     private final UserBioQuestionService userBioQuestionService;
+    private final AcquaintanceService acquaintanceService;
 
     @Autowired
     public RegistrationService(
@@ -60,7 +63,8 @@ public class RegistrationService {
             MenuService menuService,
             MessageService messageService,
             BioQuestionService bioQuestionService,
-            UserBioQuestionService userBioQuestionService
+            UserBioQuestionService userBioQuestionService,
+            AcquaintanceService acquaintanceService
     ) {
         this.password = password;
         this.userService = userService;
@@ -69,6 +73,7 @@ public class RegistrationService {
         this.messageService = messageService;
         this.bioQuestionService = bioQuestionService;
         this.userBioQuestionService = userBioQuestionService;
+        this.acquaintanceService = acquaintanceService;
     }
 
     public List<Response> execute(User user, ClassifiedUpdate update) {
@@ -365,6 +370,8 @@ public class RegistrationService {
                 .text("Чего бы тебе хотелось узнать ещё?")
                 .replyMarkup(menuService.getInlineTourMenu())
                 .build();
+
+        acquaintanceService.sendAcquaintanceMessage(user);
 
         return List.of(
                 messageService.getDoneMsg(user, update),
