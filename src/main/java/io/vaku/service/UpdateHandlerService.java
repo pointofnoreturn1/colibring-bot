@@ -10,6 +10,7 @@ import io.vaku.service.domain.laundry.LaundryBookingHandleService;
 import io.vaku.service.domain.meal.MealSignUpHandleService;
 import io.vaku.service.domain.mt_room.MtRoomBookingHandleService;
 import io.vaku.service.domain.tv.TvBookingHandleService;
+import io.vaku.service.registration.RegistrationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

@@ -7,17 +7,19 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.UUID;
 
 @Service
 @Transactional(readOnly = true)
 public class UserBioQuestionService {
+    private final UserBioQuestionRepository repository;
 
     @Autowired
-    private UserBioQuestionRepository repository;
+    public UserBioQuestionService(UserBioQuestionRepository repository) {
+        this.repository = repository;
+    }
 
-    public List<UserBioQuestion> getUserBioQuestionsByUserId(UUID userId) {
-        return (List<UserBioQuestion>) repository.findAllById(List.of(userId));
+    public List<UserBioQuestion> findByUserId(long userId) {
+        return repository.findByUserId(userId);
     }
 
     @Transactional

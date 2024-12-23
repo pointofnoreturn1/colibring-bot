@@ -10,7 +10,6 @@ import java.util.UUID;
 
 @Repository
 public interface BioQuestionRepository extends CrudRepository<BioQuestion, UUID> {
-
     @Query(
             value = "SELECT * " +
                     "FROM bio_question " +

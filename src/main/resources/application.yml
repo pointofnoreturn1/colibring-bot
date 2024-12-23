@@ -13,6 +13,9 @@ app:
       password: ${BOT_REGISTER_PASSWORD}
     cook-days-off: WED, SUN
     notifications:
+      user:
+        group-id: ${BOT_USER_GROUP_ID}
+        topic-id: ${BOT_USER_TOPIC_ID}
       admin:
         group-id: ${BOT_ADMIN_GROUP_ID}
   connection:
