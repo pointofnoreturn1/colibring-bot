@@ -111,6 +111,6 @@ public class ClassifiedUpdate {
     }
 
     private boolean handleMediaGroup() {
-        return update.getMessage().getMediaGroupId() != null;
+        return update.hasMessage() && update.getMessage().getMediaGroupId() != null;
     }
 }

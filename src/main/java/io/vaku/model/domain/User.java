@@ -62,6 +62,9 @@ public class User {
     @JoinColumn(name = "room_id", referencedColumnName = "id")
     private Room room;
 
+    @Column(name = "bio")
+    private String bio;
+
     @Column(name = "photo_file_id")
     private String photoFileId;
 
