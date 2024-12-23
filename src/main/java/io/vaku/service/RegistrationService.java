@@ -26,7 +26,7 @@ import static io.vaku.util.StringConstants.*;
 
 @Service
 public class RegistrationService {
-    private static final String TEXT_NAME_REQUEST_RU = "Для начала расскажи о себе!\nКак тебя зовут?\nНапиши ту форму имени, которую предпочитаешь в обращении";
+    private static final String TEXT_NAME_REQUEST_RU = "Как тебя зовут?\nНапиши ту форму имени, которую предпочитаешь в обращении";
     private static final String TEXT_NAME_REQUEST_EN = "Enter your name";
     private static final String TEXT_INCORRECT_PASSWORD_RU = "Неверный пароль " + EMOJI_WOW;
     private static final String TEXT_INCORRECT_PASSWORD_EN = "Incorrect password " + EMOJI_WOW;
@@ -41,6 +41,7 @@ public class RegistrationService {
     private static final String TEXT_ROOM_REQUEST_EN = "Specify your room";
     private static final String TEXT_BIO_REQUEST_QUESTIONS_RU = "И ещё два рандомных вопроса, чтобы колибрята смогли сразу узнать тебя получше\n\n";
     private static final Map<Long, List<BioQuestion>> userQuestions = new HashMap<>();
+    private static final Set<Long> sentMediaGroup = new HashSet<>();
 
     private final String password;
     private final UserService userService;
@@ -77,6 +78,7 @@ public class RegistrationService {
             case REQUIRE_NAME -> proceedName(user, update);
             case REQUIRE_BIRTHDATE -> proceedBirthdate(user, update);
             case REQUIRE_ROOM -> proceedRoom(user, update);
+            case REQUIRE_BIO -> proceedBio(user, update);
             case REQUIRE_PHOTO -> proceedPhoto(user, update);
             case REQUIRE_QUESTION_1 -> proceedBioQuestion1(user, update);
             case REQUIRE_QUESTION_2 -> proceedBioQuestion2(user, update);
@@ -183,6 +185,24 @@ public class RegistrationService {
         }
 
         user.setRoom(room);
+        user.setStatus(REQUIRE_BIO);
+        userService.createOrUpdate(user);
+        var msg = SendMessage
+                .builder()
+                .chatId(update.getChatId())
+                .text("Расскажи немного о себе")
+                .build();
+
+        return List.of(messageService.getDoneMsg(user, update), new Response(msg));
+    }
+
+    private List<Response> proceedBio(User user, ClassifiedUpdate update) {
+        var input = update.getCommandName();
+        if (inputIsInvalid(input)) {
+            return List.of(messageService.getInvalidStringFormatMsg(user, update));
+        }
+
+        user.setBio(input);
         user.setStatus(REQUIRE_PHOTO);
         userService.createOrUpdate(user);
         var msg = SendMessage
@@ -195,6 +215,22 @@ public class RegistrationService {
     }
 
     private List<Response> proceedPhoto(User user, ClassifiedUpdate update) {
+        var userId = user.getId();
+        if (update.isMediaGroup()) {
+            if (!sentMediaGroup.contains(userId)) {
+                sentMediaGroup.add(userId);
+                var msg = SendMessage
+                        .builder()
+                        .chatId(update.getChatId())
+                        .text(TEXT_MEDIA_GROUP_FORBIDDEN)
+                        .build();
+
+                return List.of(new Response(msg));
+            }
+
+            return messageService.getEmptyResponse();
+        }
+
         var input = update.getPhotoFileId();
         if (inputIsInvalid(input)) {
             var msg = SendMessage
@@ -222,12 +258,14 @@ public class RegistrationService {
 
 
     private List<Response> proceedBioQuestion1(User user, ClassifiedUpdate update) {
+        var userId = user.getId();
+        sentMediaGroup.remove(userId);
+
         var input = update.getCommandName();
         if (inputIsInvalid(input)) {
             return List.of(messageService.getInvalidStringFormatMsg(user, update));
         }
 
-        var userId = user.getId();
         var userBioQuestion = new UserBioQuestion(user, userQuestions.get(userId).getFirst(), input);
         userBioQuestionService.createOrUpdate(userBioQuestion);
         user.setStatus(REQUIRE_QUESTION_2);

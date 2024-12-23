@@ -6,24 +6,16 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 
 @Getter
 public class ClassifiedUpdate {
-
     private final Update update;
-
     private final TelegramType handlerType;
-
     private final long userId;
-
     private final long chatId;
-
     private final String userName;
-
     private final String firstName;
-
     private final String lastName;
-
     private final String commandName;
-
     private final String photoFileId;
+    private final boolean isMediaGroup;
 
     public ClassifiedUpdate(Update update) {
         this.update = update;
@@ -35,9 +27,8 @@ public class ClassifiedUpdate {
         this.lastName = handleLastName();
         this.commandName = handleCommand();
         this.photoFileId = handlePhoto();
+        this.isMediaGroup = handleMediaGroup();
     }
-
-
 
     private String handleCommand() {
         if (update.hasMessage() && update.getMessage().hasText()) {
@@ -117,5 +108,9 @@ public class ClassifiedUpdate {
         }
 
         return null;
+    }
+
+    private boolean handleMediaGroup() {
+        return update.hasMessage() && update.getMessage().getMediaGroupId() != null;
     }
 }
