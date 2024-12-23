@@ -371,6 +371,7 @@ public class RegistrationService {
                 .replyMarkup(menuService.getInlineTourMenu())
                 .build();
 
+        
         acquaintanceService.sendAcquaintanceMessage(user);
 
         return List.of(

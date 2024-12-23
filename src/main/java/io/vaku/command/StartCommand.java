@@ -7,6 +7,8 @@ import io.vaku.model.domain.User;
 import io.vaku.model.enm.Lang;
 import io.vaku.service.MenuService;
 import io.vaku.service.MessageService;
+import io.vaku.service.domain.UserService;
+import io.vaku.service.notification.AdminNotificationService;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -15,6 +17,7 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import java.util.List;
 
 import static io.vaku.model.enm.UserStatus.REGISTERED;
+import static io.vaku.util.StringUtils.getStringUserForAdmin;
 
 @Component
 public class StartCommand implements Command {
@@ -54,7 +57,7 @@ public class StartCommand implements Command {
     }
 
     private Response getRegisteredUserResponse(User user, ClassifiedUpdate update) {
-        SendMessage msg = SendMessage
+        var msg = SendMessage
                 .builder()
                 .chatId(update.getChatId())
                 .text(
@@ -69,7 +72,7 @@ public class StartCommand implements Command {
     }
 
     private Response getNewUserResponse(ClassifiedUpdate update) {
-        SendMessage msg = SendMessage
+        var msg = SendMessage
                 .builder()
                 .chatId(update.getChatId())
                 .text(TEXT_LANG_CHOICE_REQUEST)

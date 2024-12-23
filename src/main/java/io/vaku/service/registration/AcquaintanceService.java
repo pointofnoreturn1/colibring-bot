@@ -18,7 +18,7 @@ public class AcquaintanceService {
     }
 
     public void sendAcquaintanceMessage(User user) {
-        var sb = new StringBuilder(user.getBio());
+        var sb = new StringBuilder("О себе: " + user.getBio());
 
         for (var userBioQuestion : userBioQuestionService.findByUserId(user.getId())) {
             sb.append("\n\n");

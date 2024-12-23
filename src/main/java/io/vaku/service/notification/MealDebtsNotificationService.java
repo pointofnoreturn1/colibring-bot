@@ -16,17 +16,17 @@ import static io.vaku.util.StringConstants.*;
 public class MealDebtsNotificationService {
     private final UserMealDebtService userMealDebtService;
     private final TelegramClient telegramClient;
-    private final AdminGroupNotificationService adminGroupNotificationService;
+    private final AdminNotificationService adminNotificationService;
 
     @Autowired
     public MealDebtsNotificationService(
             UserMealDebtService userMealDebtService,
             TelegramClient telegramClient,
-            AdminGroupNotificationService adminGroupNotificationService
+            AdminNotificationService adminNotificationService
     ) {
         this.userMealDebtService = userMealDebtService;
         this.telegramClient = telegramClient;
-        this.adminGroupNotificationService = adminGroupNotificationService;
+        this.adminNotificationService = adminNotificationService;
     }
 
     @Scheduled(fixedRate = 3_600_000) // 1 hour
@@ -48,10 +48,10 @@ public class MealDebtsNotificationService {
         }
 
         if (sb.isEmpty()) {
-            adminGroupNotificationService.sendMessage(TEXT_NO_DEBTS);
+            adminNotificationService.sendMessage(TEXT_NO_DEBTS);
         } else {
             sb.insert(0, "Список должников за питание:");
-            adminGroupNotificationService.sendMessage(sb.toString());
+            adminNotificationService.sendMessage(sb.toString());
         }
     }
 }

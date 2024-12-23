@@ -48,6 +48,7 @@ public final class StringConstants {
     public static final String TEXT_YOU_ARE_MEAT_EATER_NOW = "Отметили у себя, что ты ешь мясо";
     public static final String TEXT_NO_DEBTS = "На этой неделе никто не должен денег за питание " + EMOJI_WOW;
     public static final String TEXT_YOU_HAVE_DEBTS = "Время платить за еду\\! С тебя ";
+    public static final String TEXT_USER_STARTED_REGISTRATION = "Registration started:\n";
     public static final String TEXT_BANK_DETAILS =
             """
                     
