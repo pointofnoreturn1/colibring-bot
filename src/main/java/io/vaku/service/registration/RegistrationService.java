@@ -18,9 +18,7 @@ import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.telegram.telegrambots.meta.api.methods.send.SendMediaGroup;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.objects.media.InputMediaPhoto;
 
 import java.util.*;
 
@@ -30,20 +28,6 @@ import static io.vaku.util.StringUtils.getStringUserForAdmin;
 
 @Service
 public class RegistrationService {
-    private static final String TEXT_NAME_REQUEST_RU = "Как тебя зовут?\nНапиши ту форму имени, которую предпочитаешь в обращении";
-    private static final String TEXT_NAME_REQUEST_EN = "Enter your name";
-    private static final String TEXT_INCORRECT_PASSWORD_RU = "Неверный пароль " + EMOJI_WOW;
-    private static final String TEXT_INCORRECT_PASSWORD_EN = "Incorrect password " + EMOJI_WOW;
-    private static final String TEXT_BIRTHDATE_REQUEST_RU =
-            """
-                    Напиши дату рождения в одном из форматов ниже (год рождения можно не указывать)
-                    • дд.мм
-                    • дд.мм.гггг
-                    """;
-    private static final String TEXT_BIRTHDATE_REQUEST_EN = "Enter your date of birth in the format dd.mm.yyyy";
-    private static final String TEXT_ROOM_REQUEST_RU = "В какую комнату заселяешься?";
-    private static final String TEXT_ROOM_REQUEST_EN = "Specify your room";
-    private static final String TEXT_BIO_REQUEST_QUESTIONS_RU = "И ещё два рандомных вопроса, чтобы колибрята смогли сразу узнать тебя получше\n\n";
     private static final Map<Long, List<BioQuestion>> userQuestions = new HashMap<>();
     private static final Set<Long> sentMediaGroup = new HashSet<>();
 
@@ -108,16 +92,14 @@ public class RegistrationService {
         if (passwordIsCorrect(input)) {
             user.setStatus(REQUIRE_NAME);
             userService.createOrUpdate(user);
-            var msg = SendMessage
-                    .builder()
+            var msg = SendMessage.builder()
                     .chatId(update.getChatId())
                     .text(user.getLang().equals(Lang.RU) ? TEXT_NAME_REQUEST_RU : TEXT_NAME_REQUEST_EN)
                     .build();
 
             return List.of(messageService.getDoneMsg(user, update), new Response(msg));
         } else {
-            var msg = SendMessage
-                    .builder()
+            var msg = SendMessage.builder()
                     .chatId(update.getChatId())
                     .text(user.getLang().equals(Lang.RU) ? TEXT_INCORRECT_PASSWORD_RU : TEXT_INCORRECT_PASSWORD_EN)
                     .build();
@@ -135,8 +117,7 @@ public class RegistrationService {
         user.setSpecifiedName(update.getCommandName());
         user.setStatus(REQUIRE_BIRTHDATE);
         userService.createOrUpdate(user);
-        var msg = SendMessage
-                .builder()
+        var msg = SendMessage.builder()
                 .chatId(update.getChatId())
                 .text(user.getLang().equals(Lang.RU) ? TEXT_BIRTHDATE_REQUEST_RU : TEXT_BIRTHDATE_REQUEST_EN)
                 .build();
@@ -166,8 +147,7 @@ public class RegistrationService {
 
         user.setStatus(REQUIRE_ROOM);
         userService.createOrUpdate(user);
-        var msg = SendMessage
-                .builder()
+        var msg = SendMessage.builder()
                 .chatId(update.getChatId())
                 .text(user.getLang().equals(Lang.RU) ? TEXT_ROOM_REQUEST_RU : TEXT_ROOM_REQUEST_EN)
                 .replyMarkup(menuService.getRoomChoiceMenu())
@@ -184,8 +164,7 @@ public class RegistrationService {
 
         var room = roomService.findByNumber(input);
         if (room == null) {
-            var msg = SendMessage
-                    .builder()
+            var msg = SendMessage.builder()
                     .chatId(update.getChatId())
                     .text(TEXT_INVALID_ROOM)
                     .replyMarkup(menuService.getRoomChoiceMenu())
@@ -197,10 +176,9 @@ public class RegistrationService {
         user.setRoom(room);
         user.setStatus(REQUIRE_BIO);
         userService.createOrUpdate(user);
-        var msg = SendMessage
-                .builder()
+        var msg = SendMessage.builder()
                 .chatId(update.getChatId())
-                .text("Расскажи немного о себе")
+                .text(TEXT_BIO_REQUEST)
                 .build();
 
         return List.of(messageService.getDoneMsg(user, update), new Response(msg));
@@ -215,10 +193,9 @@ public class RegistrationService {
         user.setBio(input);
         user.setStatus(REQUIRE_PHOTO);
         userService.createOrUpdate(user);
-        var msg = SendMessage
-                .builder()
+        var msg = SendMessage.builder()
                 .chatId(update.getChatId())
-                .text("Теперь, пожалуйста, пришли своё фото")
+                .text(TEXT_PHOTO_REQUEST)
                 .build();
 
         return List.of(messageService.getDoneMsg(user, update), new Response(msg));
@@ -229,8 +206,7 @@ public class RegistrationService {
         if (update.isMediaGroup()) {
             if (!sentMediaGroup.contains(userId)) {
                 sentMediaGroup.add(userId);
-                var msg = SendMessage
-                        .builder()
+                var msg = SendMessage.builder()
                         .chatId(update.getChatId())
                         .text(TEXT_MEDIA_GROUP_FORBIDDEN)
                         .build();
@@ -243,8 +219,7 @@ public class RegistrationService {
 
         var input = update.getPhotoFileId();
         if (inputIsInvalid(input)) {
-            var msg = SendMessage
-                    .builder()
+            var msg = SendMessage.builder()
                     .chatId(update.getChatId())
                     .text(TEXT_INVALID_PHOTO)
                     .build();
@@ -257,8 +232,7 @@ public class RegistrationService {
         userService.createOrUpdate(user);
         userQuestions.put(user.getId(), bioQuestionService.getTwoRandomQuestions());
         var question = userQuestions.get(user.getId()).getFirst().getQuestion();
-        var msg = SendMessage
-                .builder()
+        var msg = SendMessage.builder()
                 .chatId(update.getChatId())
                 .text(TEXT_BIO_REQUEST_QUESTIONS_RU + "Вопрос 1:\n" + question)
                 .build();
@@ -281,8 +255,7 @@ public class RegistrationService {
         user.setStatus(REQUIRE_QUESTION_2);
         userService.createOrUpdate(user);
         var question = userQuestions.get(userId).getLast().getQuestion();
-        var msg = SendMessage
-                .builder()
+        var msg = SendMessage.builder()
                 .chatId(update.getChatId())
                 .text("Вопрос 2:\n" + question)
                 .build();
@@ -304,36 +277,14 @@ public class RegistrationService {
         userService.createOrUpdate(user);
 
         var chatId = update.getChatId();
-        var introMsg = SendMessage
-                .builder()
-                .chatId(chatId)
-                .text("А теперь расскажем о главных ценностях этого дома")
-                .build();
-
-        var mediaGroupMsg = SendMediaGroup
-                .builder()
-                .chatId(chatId)
-                .medias(
-                        List.of(
-                                new InputMediaPhoto("AgACAgIAAxkBAAILxWa1_MxWQe_3iGJGV-mJrsJSFzzuAAK33zEbd-WxSZFuLGlHu1-wAQADAgADeQADNQQ"),
-                                new InputMediaPhoto("AgACAgIAAxkBAAIL-Wa2AAGsg9YbgRP37BDE_edgzotHkAAC3N8xG3flsUm_dCW64M927QEAAwIAA3MAAzUE")
-                        )
-                )
-                .build();
-
-        var confirmMsg = SendMessage
-                .builder()
+        var valuesMsg = SendMessage.builder().chatId(chatId).text(TEXT_VALUES).build();
+        var confirmMsg = SendMessage.builder()
                 .chatId(chatId)
                 .text("Нажми " + TEXT_FAMILIARIZED + " для продолжения")
                 .replyMarkup(menuService.getInlineConfirmValues())
                 .build();
 
-        return List.of(
-                messageService.getDoneMsg(user, update),
-                new Response(introMsg),
-                new Response(mediaGroupMsg),
-                new Response(confirmMsg)
-        );
+        return List.of(messageService.getDoneMsg(user, update), new Response(valuesMsg), new Response(confirmMsg));
     }
 
     private List<Response> proceedValues(User user, ClassifiedUpdate update) {
@@ -343,10 +294,9 @@ public class RegistrationService {
 
         user.setStatus(REQUIRE_RULES_CONFIRM);
         userService.createOrUpdate(user);
-        var msg = SendMessage
-                .builder()
+        var msg = SendMessage.builder()
                 .chatId(update.getChatId())
-                .text("В этом доме все соблюдают правила. Вот они:" + "\n **тут будут правила**")
+                .text(TEXT_RULES)
                 .replyMarkup(menuService.getInlineConfirmRules())
                 .build();
 
@@ -362,29 +312,22 @@ public class RegistrationService {
         userService.createOrUpdate(user);
 
         var chatId = update.getChatId();
-        var successfulRegistrationMsg = SendMessage
-                .builder()
+        var successfulRegistrationMsg = SendMessage.builder()
                 .chatId(chatId)
-                .text("Поздравляю! Теперь ты официально часть стаи Колибрят\n*Ура!*")
+                .text(TEXT_REGISTRATION_SUCCESS)
                 .replyMarkup(menuService.getUserMenu(user))
                 .build();
 
-        var tourMsg = SendMessage
-                .builder()
+        var tourMsg = SendMessage.builder()
                 .chatId(chatId)
-                .text("Чего бы тебе хотелось узнать ещё?")
+                .text(TEXT_WHAT_ELSE)
                 .replyMarkup(menuService.getInlineTourMenu())
                 .build();
-
 
         adminNotificationService.sendMessage("Registration completed:\n" + getStringUserForAdmin(user));
         acquaintanceService.sendAcquaintanceMessage(user);
 
-        return List.of(
-                messageService.getDoneMsg(user, update),
-                new Response(successfulRegistrationMsg),
-                new Response(tourMsg)
-        );
+        return List.of(new Response(successfulRegistrationMsg), new Response(tourMsg));
     }
 
     private boolean passwordIsCorrect(String input) {
