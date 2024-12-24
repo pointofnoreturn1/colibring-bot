@@ -5,12 +5,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
-public class AdminGroupNotificationService {
+public class AdminNotificationService {
     private final long adminChatId;
     private final TelegramClient telegramClient;
 
     @Autowired
-    public AdminGroupNotificationService(
+    public AdminNotificationService(
             @Value("${app.feature.notifications.admin.group-id}")
             long adminChatId,
             TelegramClient telegramClient

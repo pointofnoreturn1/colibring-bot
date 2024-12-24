@@ -18,13 +18,16 @@ public class AcquaintanceService {
     }
 
     public void sendAcquaintanceMessage(User user) {
-        var sb = new StringBuilder(user.getBio());
+        var userName = user.getSpecifiedName();
+        var sb = new StringBuilder("Поприветствуем нового жильца по имени " + userName + "!\n\n");
+        sb.append("Вот что ").append(userName).append(" рассказал(а) о себе: ").append(user.getBio());
 
         for (var userBioQuestion : userBioQuestionService.findByUserId(user.getId())) {
             sb.append("\n\n");
-            sb.append("Вопрос: ").append(userBioQuestion.getQuestion().getQuestion());
+            sb.append("Мы спросили у ").append(userName).append(": ");
+            sb.append(userBioQuestion.getQuestion().getQuestion());
             sb.append("\n");
-            sb.append("Ответ: ").append(userBioQuestion.getAnswer());
+            sb.append("Ответ убил: ").append(userBioQuestion.getAnswer());
         }
 
         notificationService.sendMessage(sb.toString(), user.getPhotoFileId());

@@ -22,7 +22,7 @@ public final class StringConstants {
     public static final String FULL_DATE_FORMAT = "dd.MM.yyyy";
     public static final String DATE_TIME_FORMAT = "dd.MM.yy HH:mm";
 
-    public static final String TEXT_REGISTER_REQUEST_RU = "Для продолжения зарегистрируйся";
+    public static final String TEXT_REGISTER_REQUEST_RU = "Привет!\nДавай тебя зарегистрируем. Введи пароль (его подскажет управляющий)";
     public static final String TEXT_REGISTER_REQUEST_EN = "Register to continue";
     public static final String TEXT_PASSWORD_REQUEST_RU = "Введи пароль";
     public static final String TEXT_PASSWORD_REQUEST_EN = "Enter password";
@@ -48,6 +48,7 @@ public final class StringConstants {
     public static final String TEXT_YOU_ARE_MEAT_EATER_NOW = "Отметили у себя, что ты ешь мясо";
     public static final String TEXT_NO_DEBTS = "На этой неделе никто не должен денег за питание " + EMOJI_WOW;
     public static final String TEXT_YOU_HAVE_DEBTS = "Время платить за еду\\! С тебя ";
+    public static final String TEXT_USER_STARTED_REGISTRATION = "Registration started:\n";
     public static final String TEXT_BANK_DETAILS =
             """
                     

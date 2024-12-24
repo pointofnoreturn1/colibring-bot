@@ -7,6 +7,7 @@ import io.vaku.model.domain.User;
 import io.vaku.model.enm.Lang;
 import io.vaku.service.MenuService;
 import io.vaku.service.domain.UserService;
+import io.vaku.service.notification.AdminNotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -16,15 +17,24 @@ import java.util.List;
 import static io.vaku.model.enm.UserStatus.REQUIRE_REGISTRATION;
 import static io.vaku.util.StringConstants.TEXT_DONE_RU;
 import static io.vaku.util.StringConstants.TEXT_REGISTER_REQUEST_RU;
+import static io.vaku.util.StringUtils.getStringUserForAdmin;
 
 @Component
 public class SetLanguageRuCallback implements Command {
+    private final UserService userService;
+    private final MenuService menuService;
+    private final AdminNotificationService adminNotificationService;
 
     @Autowired
-    private UserService userService;
-
-    @Autowired
-    private MenuService menuService;
+    public SetLanguageRuCallback(
+            UserService userService,
+            MenuService menuService,
+            AdminNotificationService adminNotificationService
+    ) {
+        this.userService = userService;
+        this.menuService = menuService;
+        this.adminNotificationService = adminNotificationService;
+    }
 
     @Override
     public Class<?> getHandler() {
@@ -38,7 +48,9 @@ public class SetLanguageRuCallback implements Command {
 
     @Override
     public List<Response> getAnswer(User user, ClassifiedUpdate update) {
-        userService.createOrUpdate(constructUser(update));
+        var newUser = constructUser(update);
+        userService.createOrUpdate(newUser);
+        adminNotificationService.sendMessage(getStringUserForAdmin(newUser));
 
         SendMessage doneMsg = SendMessage.builder().chatId(update.getChatId()).text(TEXT_DONE_RU).build();
         SendMessage msg = SendMessage

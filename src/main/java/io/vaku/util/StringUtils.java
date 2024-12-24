@@ -16,7 +16,23 @@ public final class StringUtils {
     }
 
     public static String getStringUser(User user, boolean escape) {
-        var sb = new StringBuilder(user.getSpecifiedName());
+        return user.getSpecifiedName() + getUserName(user, escape);
+    }
+
+    public static String getStringUserForAdmin(User user) {
+        var sb = new StringBuilder();
+        sb.append("user:");
+        if (user.getSpecifiedName() != null) {
+            sb.append(" ").append(user.getSpecifiedName());
+        }
+        sb.append(getUserName(user, true));
+        sb.append("\nid: ").append(user.getId());
+
+        return sb.toString();
+    }
+
+    public static String getUserName(User user, boolean escape) {
+        var sb = new StringBuilder();
         if (user.getTgUserName() == null) {
             sb.append(" ");
             if (escape) {
