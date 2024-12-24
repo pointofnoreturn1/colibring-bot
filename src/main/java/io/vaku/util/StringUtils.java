@@ -21,9 +21,9 @@ public final class StringUtils {
 
     public static String getStringUserForAdmin(User user) {
         var sb = new StringBuilder();
-        sb.append("user: ");
+        sb.append("user:");
         if (user.getSpecifiedName() != null) {
-            sb.append(user.getSpecifiedName()).append(" ");
+            sb.append(" ").append(user.getSpecifiedName());
         }
         sb.append(getUserName(user, true));
         sb.append("\nid: ").append(user.getId());

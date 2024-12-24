@@ -16,7 +16,8 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 
 import java.util.List;
 
-import static io.vaku.model.enm.UserStatus.REGISTERED;
+import static io.vaku.model.enm.UserStatus.*;
+import static io.vaku.util.StringConstants.TEXT_REGISTER_REQUEST_RU;
 import static io.vaku.util.StringUtils.getStringUserForAdmin;
 
 @Component
@@ -25,13 +26,22 @@ public class StartCommand implements Command {
     private static final String TEXT_GREETING_EN = "Nice to see you again ";
     private static final String TEXT_LANG_CHOICE_REQUEST = "Выбери язык (Choose language)";
 
+    private final UserService userService;
     private final MenuService menuService;
     private final MessageService messageService;
+    private final AdminNotificationService adminNotificationService;
 
     @Autowired
-    public StartCommand(MenuService menuService, MessageService messageService) {
+    public StartCommand(
+            UserService userService,
+            MenuService menuService,
+            MessageService messageService,
+            AdminNotificationService adminNotificationService
+    ) {
+        this.userService = userService;
         this.menuService = menuService;
         this.messageService = messageService;
+        this.adminNotificationService = adminNotificationService;
     }
 
     @Override
@@ -72,13 +82,29 @@ public class StartCommand implements Command {
     }
 
     private Response getNewUserResponse(ClassifiedUpdate update) {
+        var newUser = constructUser(update);
+        userService.createOrUpdate(newUser);
+        adminNotificationService.sendMessage("Registration started:\n" + getStringUserForAdmin(newUser));
         var msg = SendMessage
                 .builder()
                 .chatId(update.getChatId())
-                .text(TEXT_LANG_CHOICE_REQUEST)
-                .replyMarkup(menuService.getInlineLanguageChoice())
+                .text(TEXT_REGISTER_REQUEST_RU)
                 .build();
 
         return new Response(msg);
+    }
+
+    private User constructUser(ClassifiedUpdate update) {
+        var user = new User(
+                update.getUserId(),
+                update.getChatId(),
+                update.getUserName(),
+                update.getFirstName(),
+                update.getLastName()
+        );
+        user.setLang(Lang.RU);
+        user.setStatus(REQUIRE_PASSWORD);
+
+        return user;
     }
 }

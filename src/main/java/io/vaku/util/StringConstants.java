@@ -22,7 +22,7 @@ public final class StringConstants {
     public static final String FULL_DATE_FORMAT = "dd.MM.yyyy";
     public static final String DATE_TIME_FORMAT = "dd.MM.yy HH:mm";
 
-    public static final String TEXT_REGISTER_REQUEST_RU = "Для продолжения зарегистрируйся";
+    public static final String TEXT_REGISTER_REQUEST_RU = "Привет!\nДавай тебя зарегистрируем. Введи пароль (его подскажет управляющий)";
     public static final String TEXT_REGISTER_REQUEST_EN = "Register to continue";
     public static final String TEXT_PASSWORD_REQUEST_RU = "Введи пароль";
     public static final String TEXT_PASSWORD_REQUEST_EN = "Enter password";

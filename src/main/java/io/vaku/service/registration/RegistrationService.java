@@ -12,6 +12,7 @@ import io.vaku.service.domain.BioQuestionService;
 import io.vaku.service.domain.RoomService;
 import io.vaku.service.domain.UserBioQuestionService;
 import io.vaku.service.domain.UserService;
+import io.vaku.service.notification.AdminNotificationService;
 import io.vaku.util.DateTimeUtils;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,7 @@ import java.util.*;
 
 import static io.vaku.model.enm.UserStatus.*;
 import static io.vaku.util.StringConstants.*;
+import static io.vaku.util.StringUtils.getStringUserForAdmin;
 
 @Service
 public class RegistrationService {
@@ -53,6 +55,7 @@ public class RegistrationService {
     private final BioQuestionService bioQuestionService;
     private final UserBioQuestionService userBioQuestionService;
     private final AcquaintanceService acquaintanceService;
+    private final AdminNotificationService adminNotificationService;
 
     @Autowired
     public RegistrationService(
@@ -64,7 +67,8 @@ public class RegistrationService {
             MessageService messageService,
             BioQuestionService bioQuestionService,
             UserBioQuestionService userBioQuestionService,
-            AcquaintanceService acquaintanceService
+            AcquaintanceService acquaintanceService,
+            AdminNotificationService adminNotificationService
     ) {
         this.password = password;
         this.userService = userService;
@@ -74,6 +78,7 @@ public class RegistrationService {
         this.bioQuestionService = bioQuestionService;
         this.userBioQuestionService = userBioQuestionService;
         this.acquaintanceService = acquaintanceService;
+        this.adminNotificationService = adminNotificationService;
     }
 
     public List<Response> execute(User user, ClassifiedUpdate update) {
@@ -371,7 +376,8 @@ public class RegistrationService {
                 .replyMarkup(menuService.getInlineTourMenu())
                 .build();
 
-        
+
+        adminNotificationService.sendMessage("Registration completed:\n" + getStringUserForAdmin(user));
         acquaintanceService.sendAcquaintanceMessage(user);
 
         return List.of(
