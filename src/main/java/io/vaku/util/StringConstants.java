@@ -80,7 +80,7 @@ public final class StringConstants {
             https://docs.google.com/document/d/1wjAGArkJEiq1u5A9Z0wgMQhdDLQC724lkbXOcjhUTR4/edit?pli=1&tab=t.84szcxwppbku
             """;
     public static final String TEXT_REGISTRATION_SUCCESS = "Всё, мы это сделали! Спасибо за терпение!";
-    public static final String TEXT_WHAT_ELSE = "Чего бы тебе хотелось узнать ещё?!";
+    public static final String TEXT_WHAT_ELSE = "Чего бы тебе хотелось узнать ещё?";
     public static final String TEXT_INVALID_ROOM = "Такой комнаты нет " + EMOJI_WOW + "\nПожалуйста, выбери из предложенного списка";
     public static final String TEXT_INVALID_PHOTO = "Это не фото " + EMOJI_WOW + "\nПожалуйста, пришли своё фото";
     public static final String TEXT_MEDIA_GROUP_FORBIDDEN = "Я не могу выбрать из нескольких фото " + EMOJI_WOW + "\nПожалуйста, пришли своё фото";
@@ -99,17 +99,17 @@ public final class StringConstants {
     public static final String TEXT_YOU_HAVE_DEBTS = "Время платить за еду\\! С тебя ";
     public static final String TEXT_BANK_DETAILS =
             """
-                                        
+                                       \s
                     Реквизиты для оплаты \\(нажми на них, чтобы скопировать\\):
-                                        
+                                       \s
                     Bank of Georgia
                     `GE40BG0000000537661778`
                     `Daria Marshalkina`
-                                        
+                                       \s
                     TBC
                     `GE19TB7674945064400007`
                     `Nikita Vasilev`
-                    """;
+                   \s""";
     public static final String TEXT_MEAL_SIGN_UP_INFO =
             """
                     • Выбери блюда, нажми "Подтвердить" или нажми "Назад"
@@ -132,50 +132,50 @@ public final class StringConstants {
     public static final String DATE_TIME_SUPPORTED_FORMATS =
             """
                     Введи дату и время
-                                        
+                                       \s
                     Поддерживаемые форматы:
                     • 10:00 описание*
                     • 10:00-11:00 описание**
                     • 30.01 10:00-11:00 описание***
                     • 30.01.24 10:00-11:00 описание
-                                        
+                                       \s
                     • *При указании только одного времени (например, 15:00) будет произведена запись с текущей минуты до указанного времени на текущий день
                     • **При отсутствии даты запись будет сделана на текущий день
                     • ***При отсутствии года запись будет сделана на текущий год
                     • Можно указывать время окончания в следующих сутках (например, 23:00-02:00)
                     • Описание опционально во всех форматах
                     • Записи можно передавать списком с новой строки каждая
-                    """;
+                   \s""";
     public static final String DATE_TIME_LAUNDRY_SUPPORTED_FORMATS =
             """
                     Введи дату и время
-                                        
+                                       \s
                     Поддерживаемые форматы:
                     • 10:00*
                     • 10:00-11:00**
                     • 30.01 10:00-11:00***
                     • 30.01.24 10:00-11:00
-                                        
+                                       \s
                     • *При указании только одного времени (например, 15:00) будет произведена запись с текущей минуты до указанного времени на текущий день
                     • **При отсутствии даты запись будет сделана на текущий день
                     • ***При отсутствии года запись будет сделана на текущий год
                     • Можно указывать время окончания в следующих сутках (например, 23:00-02:00)
                     • Записи можно передавать списком с новой строки каждая
-                    """;
+                   \s""";
     public static final String TEXT_INTERSECTION = "Есть пересечения с другими записями " + EMOJI_WOW;
     public static final String TEXT_REPEAT_BOOKING = "Отправь еще раз или нажми \"Назад\"";
     public static final String TEXT_ADD_NEW_MENU_PROMPT =
             """
                     Отправь меню на всю неделю или нажми "Назад"
-                                        
+                                       \s
                     Формат меню:
                     Понедельник
                     # Блюдо №1
                     # Блюдо №2
                     # Блюдо №3
-                                        
+                                       \s
                     • Не нарушай порядок дней недели и порядок блюд
                     • Цена опциональна и указывается после символа '$', например: 'Блюдо №3 $ 15'. Если не указана, будет установлено значение по умолчанию 10₾
                     • Символы '#' и '$' заменять на другие нельзя, по ним распознаются данные
-                    """;
+                   \s""";
 }

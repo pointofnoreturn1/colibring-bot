@@ -19,15 +19,15 @@ public class AcquaintanceService {
 
     public void sendAcquaintanceMessage(User user) {
         var userName = user.getSpecifiedName();
-        var sb = new StringBuilder("Поприветствуем нового жильца по имени " + userName + "!\n\n");
-        sb.append("Вот что ").append(userName).append(" рассказал(а) о себе: ").append(user.getBio());
+        var sb = new StringBuilder("\uD83C\uDF89 Поприветствуем нового жильца по имени " + userName + "!\n\n");
+        sb.append("\uD83D\uDCDD Вот что ").append(userName).append(" рассказал(а) о себе: ").append(user.getBio());
 
         for (var userBioQuestion : userBioQuestionService.findByUserId(user.getId())) {
             sb.append("\n\n");
-            sb.append("Мы спросили у ").append(userName).append(": ");
+            sb.append("❓ Мы спросили у ").append(userName).append(": ");
             sb.append(userBioQuestion.getQuestion().getQuestion());
             sb.append("\n");
-            sb.append("Ответ убил: ").append(userBioQuestion.getAnswer());
+            sb.append("❗ Ответ убил: ").append(userBioQuestion.getAnswer());
         }
 
         notificationService.sendMessage(sb.toString(), user.getPhotoFileId());
