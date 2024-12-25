@@ -29,6 +29,6 @@ public class MealAdminWhoEatsTodayCallback implements Command {
 
     @Override
     public List<Response> getAnswer(User user, ClassifiedUpdate update) {
-        return List.of(mealAdminMessageService.getMealAdminWhoEatsTodayMsg(user, update));
+        return List.of(mealAdminMessageService.getMealAdminWhoEatsTodayMsg(update));
     }
 }

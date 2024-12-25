@@ -4,7 +4,7 @@ public final class StringConstants {
     public static final String EMOJI_OK = "✅";
     public static final String EMOJI_GO_BACK = "⏪";
     public static final String EMOJI_WOW = "\uD83E\uDD2F";
-    public static final String EMOJI_IS_VEGAN = " \uD83E\uDD66";
+    public static final String EMOJI_IS_VEGAN = "\uD83E\uDD66 ";
     public static final String EMOJI_MT_ROOM_BOOKING = "\uD83C\uDF93 ";
     public static final String EMOJI_TV_BOOKING = "\uD83D\uDCFA ";
     public static final String EMOJI_LAUNDRY_BOOKING = "\uD83E\uDDFA ";

@@ -3,7 +3,6 @@ package io.vaku.service.domain.admin.meal;
 import io.vaku.model.domain.Meal;
 import io.vaku.model.domain.User;
 import io.vaku.model.domain.UserMeal;
-import io.vaku.service.domain.UserService;
 import io.vaku.service.domain.meal.MealService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,23 +17,23 @@ import static java.util.function.Predicate.not;
 
 @Service
 public class MealAdminService {
+    private final MealService mealService;
 
     @Autowired
-    private MealService mealService;
-
-    @Autowired
-    private UserService userService;
+    public MealAdminService(MealService mealService) {
+        this.mealService = mealService;
+    }
 
     public String getWhoEatsWeek() {
-        var dayMeals = mealService.getDayMeals();
         var stringDayMeals = new ArrayList<String>();
 
-        for (var entry : dayMeals.entrySet()) {
-            var sb = new StringBuilder(entry.getKey().getPlainName().toUpperCase());
-            for (Meal meal : entry.getValue()) {
+        for (var entry : mealService.getDayMeals().entrySet()) {
+            var sb = new StringBuilder();
+            sb.append("*__").append(entry.getKey().getPlainName().toUpperCase()).append("__*");
+            for (var meal : entry.getValue()) {
                 sb.append(getStringWeekMeals(meal));
             }
-            stringDayMeals.add(sb.toString());
+            stringDayMeals.add(sb.toString().trim());
         }
 
         if (stringDayMeals.isEmpty()) {
@@ -55,7 +54,7 @@ public class MealAdminService {
         var sb = new StringBuilder();
 
         if (todayMeals != null) {
-            sb.append(todayMeals.getKey().getPlainName().toUpperCase());
+            sb.append("*__").append(todayMeals.getKey().getPlainName().toUpperCase()).append("__*");
             todayMeals.getValue().forEach(it -> sb.append(getStringDayMeals(it)));
 
             return sb.toString();
@@ -68,21 +67,23 @@ public class MealAdminService {
         var sb = new StringBuilder();
         sb.append("\n• ").append(meal.getName());
 
-        var users = meal.getUserMeals()
-                .stream()
+        var comparator = Comparator.comparing(User::isVegan).thenComparing(User::getId).reversed();
+        var users = meal.getUserMeals().stream()
                 .map(UserMeal::getUser)
-                .sorted(Comparator.comparingLong(User::getId))
+                .sorted(comparator)
                 .toList();
 
         if (!users.isEmpty()) {
-            sb.append(" [").append(users.size()).append("] ");
-            for (User user : users) {
-                sb.append("\n   ").append(getStringUser(user));
+            sb.append(" \\[").append(users.size()).append("\\] ");
+            for (var user : users) {
+                sb.append("\n   ");
                 if (user.isVegan()) {
                     sb.append(EMOJI_IS_VEGAN);
                 }
+                sb.append(getStringUser(user));
             }
         }
+        sb.append("\n");
 
         return sb.toString();
     }
@@ -92,29 +93,30 @@ public class MealAdminService {
 
         sb.append("\n\n• ").append(meal.getName());
 
-        var users = meal.getUserMeals()
-                .stream()
+        var comparator = Comparator.comparing(User::isVegan).thenComparing(User::getId).reversed();
+        var users = meal.getUserMeals().stream()
                 .map(UserMeal::getUser)
-                .sorted(Comparator.comparingLong(User::getId))
+                .sorted(comparator)
                 .toList();
 
         if (!users.isEmpty()) {
             int vegMealsCount = (int) users.stream().filter(User::isVegan).count();
             int nonVegMealsCount = (int) users.stream().filter(not(User::isVegan)).count();
 
-            sb.append(" (Всего: ")
+            sb.append(" \\(Всего: ")
                     .append(users.size())
                     .append(", вег: ")
                     .append(vegMealsCount)
                     .append(", не вег: ")
                     .append(nonVegMealsCount)
-                    .append(")");
+                    .append("\\)");
 
-            for (User user : users) {
-                sb.append("\n   ").append(getStringUser(user));
+            for (var user : users) {
+                sb.append("\n   ");
                 if (user.isVegan()) {
                     sb.append(EMOJI_IS_VEGAN);
                 }
+                sb.append(getStringUser(user));
             }
         }
 
