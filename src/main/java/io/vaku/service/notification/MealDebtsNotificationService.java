@@ -42,7 +42,7 @@ public class MealDebtsNotificationService {
             var user = debt.getUser();
             int amount = debt.getAmount();
             sb.append("\n").append(getStringUser(user, true)).append(" ").append(amount).append(LARI);
-            telegramClient.sendMessage(user.getChatId(), TEXT_YOU_HAVE_DEBTS + amount + LARI + TEXT_BANK_DETAILS);
+            telegramClient.sendMessage(user.getChatId(), TEXT_YOU_HAVE_DEBTS + amount + LARI + TEXT_BANK_DETAILS, true);
             debt.setNotified(true);
             userMealDebtService.createOrUpdate(debt);
         }
