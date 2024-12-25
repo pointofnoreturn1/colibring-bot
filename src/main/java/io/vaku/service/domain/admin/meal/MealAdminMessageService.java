@@ -5,6 +5,7 @@ import io.vaku.model.Response;
 import io.vaku.model.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.telegram.telegrambots.meta.api.methods.ParseMode;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 
@@ -12,16 +13,17 @@ import static io.vaku.util.StringConstants.*;
 
 @Service
 public class MealAdminMessageService {
+    private final MealAdminMenuService mealAdminMenuService;
+    private final MealAdminService mealAdminService;
 
     @Autowired
-    private MealAdminMenuService mealAdminMenuService;
-
-    @Autowired
-    private MealAdminService mealAdminService;
+    public MealAdminMessageService(MealAdminMenuService mealAdminMenuService, MealAdminService mealAdminService) {
+        this.mealAdminMenuService = mealAdminMenuService;
+        this.mealAdminService = mealAdminService;
+    }
 
     public Response getMealAdminMenuEditedMsg(User user, ClassifiedUpdate update) {
-        EditMessageText msg = EditMessageText
-                .builder()
+        var msg = EditMessageText.builder()
                 .chatId(update.getChatId())
                 .messageId(user.getLastMsgId())
                 .text(TEXT_CHOOSE_ACTION)
@@ -32,8 +34,7 @@ public class MealAdminMessageService {
     }
 
     public Response getMealAdminAddNewMenuPromptMsg(User user, ClassifiedUpdate update) {
-        EditMessageText msg = EditMessageText
-                .builder()
+        var msg = EditMessageText.builder()
                 .chatId(update.getChatId())
                 .messageId(user.getLastMsgId())
                 .text(TEXT_ADD_NEW_MENU_PROMPT)
@@ -43,9 +44,8 @@ public class MealAdminMessageService {
         return new Response(msg);
     }
 
-    public Response getMenuAlreadyExistsMsg(User user, ClassifiedUpdate update) {
-        SendMessage msg = SendMessage
-                .builder()
+    public Response getMenuAlreadyExistsMsg(ClassifiedUpdate update) {
+        var msg = SendMessage.builder()
                 .chatId(update.getChatId())
                 .text(TEXT_MENU_ALREADY_EXISTS)
                 .build();
@@ -53,21 +53,21 @@ public class MealAdminMessageService {
         return new Response(msg);
     }
 
-    public Response getMealAdminWhoEatsWeekMsg(User user, ClassifiedUpdate update) {
-        SendMessage msg = SendMessage
-                .builder()
+    public Response getMealAdminWhoEatsWeekMsg(ClassifiedUpdate update) {
+        var msg = SendMessage.builder()
                 .chatId(update.getChatId())
                 .text(mealAdminService.getWhoEatsWeek())
+                .parseMode(ParseMode.MARKDOWNV2)
                 .build();
 
         return new Response(msg);
     }
 
-    public Response getMealAdminWhoEatsTodayMsg(User user, ClassifiedUpdate update) {
-        SendMessage msg = SendMessage
-                .builder()
+    public Response getMealAdminWhoEatsTodayMsg(ClassifiedUpdate update) {
+        var msg = SendMessage.builder()
                 .chatId(update.getChatId())
                 .text(mealAdminService.getWhoEatsToday())
+                .parseMode(ParseMode.MARKDOWNV2)
                 .build();
 
         return new Response(msg);

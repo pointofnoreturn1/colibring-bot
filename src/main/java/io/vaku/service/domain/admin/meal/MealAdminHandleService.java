@@ -61,7 +61,7 @@ public class MealAdminHandleService {
             user.setAdminStatus(NO_STATUS);
             userService.createOrUpdate(user);
 
-            return List.of(mealAdminMessageService.getMenuAlreadyExistsMsg(user, update));
+            return List.of(mealAdminMessageService.getMenuAlreadyExistsMsg(update));
         }
 
         List<String> meals = update.getCommandName()
