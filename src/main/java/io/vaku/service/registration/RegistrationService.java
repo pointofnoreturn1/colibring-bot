@@ -18,6 +18,7 @@ import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.telegram.telegrambots.meta.api.methods.ParseMode;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 
 import java.util.*;
@@ -276,15 +277,15 @@ public class RegistrationService {
         user.setStatus(REQUIRE_VALUES_CONFIRM);
         userService.createOrUpdate(user);
 
-        var chatId = update.getChatId();
-        var valuesMsg = SendMessage.builder().chatId(chatId).text(TEXT_VALUES).build();
-        var confirmMsg = SendMessage.builder()
-                .chatId(chatId)
-                .text("Нажми " + TEXT_FAMILIARIZED + " для продолжения")
+        var msg = SendMessage.builder()
+                .chatId(update.getChatId())
+                .text(TEXT_VALUES)
+                .parseMode(ParseMode.MARKDOWNV2)
+                .disableWebPagePreview(true)
                 .replyMarkup(menuService.getInlineConfirmValues())
                 .build();
 
-        return List.of(messageService.getDoneMsg(user, update), new Response(valuesMsg), new Response(confirmMsg));
+        return List.of(messageService.getDoneMsg(user, update), new Response(msg));
     }
 
     private List<Response> proceedValues(User user, ClassifiedUpdate update) {
@@ -297,6 +298,8 @@ public class RegistrationService {
         var msg = SendMessage.builder()
                 .chatId(update.getChatId())
                 .text(TEXT_RULES)
+                .parseMode(ParseMode.MARKDOWNV2)
+                .disableWebPagePreview(true)
                 .replyMarkup(menuService.getInlineConfirmRules())
                 .build();
 

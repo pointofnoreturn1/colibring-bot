@@ -6,6 +6,8 @@ import io.vaku.service.notification.AcquaintanceNotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import static io.vaku.util.StringConstants.EMOJI_WOW;
+
 @Service
 public class AcquaintanceService {
     private final UserBioQuestionService userBioQuestionService;
@@ -27,7 +29,7 @@ public class AcquaintanceService {
             sb.append("❓ Мы спросили у ").append(userName).append(": ");
             sb.append(userBioQuestion.getQuestion().getQuestion());
             sb.append("\n");
-            sb.append("❗ Ответ убил: ").append(userBioQuestion.getAnswer());
+            sb.append(EMOJI_WOW + " Ответ убил: ").append(userBioQuestion.getAnswer());
         }
 
         notificationService.sendMessage(sb.toString(), user.getPhotoFileId());

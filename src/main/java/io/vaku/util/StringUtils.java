@@ -25,7 +25,7 @@ public final class StringUtils {
         if (user.getSpecifiedName() != null) {
             sb.append(" ").append(user.getSpecifiedName());
         }
-        sb.append(getUserName(user, true));
+        sb.append(getUserName(user, false));
         sb.append("\nid: ").append(user.getId());
 
         return sb.toString();
