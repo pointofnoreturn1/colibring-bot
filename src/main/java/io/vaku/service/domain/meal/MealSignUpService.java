@@ -7,7 +7,6 @@ import java.util.*;
 
 @Service
 public class MealSignUpService {
-
     private final Map<Long, Set<Meal>> userMeals = new HashMap<>();
 
     public void addMeal(long chatId, Meal meal) {

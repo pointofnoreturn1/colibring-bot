@@ -53,7 +53,7 @@ public class RegistrationMenuService {
 
         keyboard.add(new KeyboardRow(List.of(new KeyboardButton(TEXT_RELOAD_MENU))));
 
-        return ReplyKeyboardMarkup.builder().keyboard(keyboard).build();
+        return ReplyKeyboardMarkup.builder().keyboard(keyboard).resizeKeyboard(true).build();
     }
 
     public ReplyKeyboardMarkup getRoomChoiceMenu() {

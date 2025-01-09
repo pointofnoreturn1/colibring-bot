@@ -2,6 +2,7 @@ package io.vaku.util;
 
 import io.vaku.model.domain.User;
 
+import static io.vaku.util.StringConstants.EMOJI_IS_VEGAN;
 import static io.vaku.util.StringConstants.LARI;
 
 public final class StringUtils {
@@ -21,9 +22,12 @@ public final class StringUtils {
 
     public static String getStringUserForAdmin(User user) {
         var sb = new StringBuilder();
-        sb.append("user:");
+        sb.append("user: ");
+        if (user.isVegan()) {
+            sb.append(EMOJI_IS_VEGAN);
+        }
         if (user.getSpecifiedName() != null) {
-            sb.append(" ").append(user.getSpecifiedName());
+            sb.append(user.getSpecifiedName());
         }
         sb.append(getUserName(user, false));
         sb.append("\nid: ").append(user.getId());
