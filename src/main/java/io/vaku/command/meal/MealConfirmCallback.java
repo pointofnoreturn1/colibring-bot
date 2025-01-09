@@ -14,6 +14,7 @@ import io.vaku.service.domain.UserService;
 import io.vaku.service.domain.meal.MealService;
 import io.vaku.service.domain.meal.MealSignUpMessageService;
 import io.vaku.service.domain.meal.MealSignUpService;
+import io.vaku.service.notification.AdminNotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -21,11 +22,11 @@ import org.springframework.stereotype.Component;
 import java.time.*;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 import static io.vaku.model.enm.BookingStatus.NO_STATUS;
 import static io.vaku.util.DateTimeUtils.*;
+import static io.vaku.util.StringUtils.getStringUserForAdmin;
 
 @Component
 public class MealConfirmCallback implements Command {
@@ -35,6 +36,7 @@ public class MealConfirmCallback implements Command {
     private final MealSignUpMessageService mealSignUpMessageService;
     private final MealService mealService;
     private final UserMealService userMealService;
+    private final AdminNotificationService adminNotificationService;
     private final String[] cookDaysOff;
 
     @Autowired
@@ -45,6 +47,7 @@ public class MealConfirmCallback implements Command {
             MealSignUpMessageService mealSignUpMessageService,
             MealService mealService,
             UserMealService userMealService,
+            AdminNotificationService adminNotificationService,
             @Value("${app.feature.cook-days-off}") String[] cookDaysOff
     ) {
         this.userService = userService;
@@ -53,6 +56,7 @@ public class MealConfirmCallback implements Command {
         this.mealSignUpMessageService = mealSignUpMessageService;
         this.mealService = mealService;
         this.userMealService = userMealService;
+        this.adminNotificationService = adminNotificationService;
         this.cookDaysOff = cookDaysOff;
     }
 
@@ -90,6 +94,8 @@ public class MealConfirmCallback implements Command {
         user.setMealSignUpStatus(NO_STATUS);
         userService.createOrUpdate(user);
         mealSignUpService.truncate(user.getChatId());
+
+        adminNotificationService.sendMessage(getSignUpInfo(user, userMeals));
 
         return List.of(messageService.getDoneMsg(user, update));
     }
@@ -131,5 +137,25 @@ public class MealConfirmCallback implements Command {
 
     private boolean violatesDayOffThreshold(Temporal t1, Temporal t2) {
         return ChronoUnit.MINUTES.between(t1, t2) < (24 * 60); // 24 hours restriction before cook's days off
+    }
+
+    private String getSignUpInfo(User user, List<Meal> meals) {
+        var sb = new StringBuilder("User signed up for meals\n");
+        sb.append(getStringUserForAdmin(user));
+
+        var dayMeals = new LinkedHashMap<CustomDayOfWeek, List<Meal>>();
+        for (var meal : meals) {
+            dayMeals.computeIfAbsent(meal.getDayOfWeek(), _ -> new ArrayList<>());
+            dayMeals.get(meal.getDayOfWeek()).add(meal);
+        }
+
+        for (var entry : dayMeals.entrySet()) {
+            sb.append("\n\n").append(entry.getKey().getPlainName().toUpperCase());
+            for (var meal : entry.getValue()) {
+                sb.append("\n• ").append(meal.getName());
+            }
+        }
+
+        return sb.toString();
     }
 }
