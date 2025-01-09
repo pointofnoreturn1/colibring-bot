@@ -27,7 +27,7 @@ public class MealAdminMessageService {
                 .chatId(update.getChatId())
                 .messageId(user.getLastMsgId())
                 .text(TEXT_CHOOSE_ACTION)
-                .replyMarkup(mealAdminMenuService.getInlineAdminMenu())
+                .replyMarkup(mealAdminMenuService.getInlineAdminMenu(user))
                 .build();
 
         return new Response(msg);

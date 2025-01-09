@@ -5,7 +5,7 @@ import io.vaku.model.Response;
 import io.vaku.model.ClassifiedUpdate;
 import io.vaku.model.domain.User;
 import io.vaku.model.enm.Lang;
-import io.vaku.service.MenuService;
+import io.vaku.service.registration.RegistrationMenuService;
 import io.vaku.service.MessageService;
 import io.vaku.service.domain.UserService;
 import io.vaku.service.notification.AdminNotificationService;
@@ -27,19 +27,19 @@ public class StartCommand implements Command {
     private static final String TEXT_LANG_CHOICE_REQUEST = "Выбери язык (Choose language)";
 
     private final UserService userService;
-    private final MenuService menuService;
+    private final RegistrationMenuService registrationMenuService;
     private final MessageService messageService;
     private final AdminNotificationService adminNotificationService;
 
     @Autowired
     public StartCommand(
             UserService userService,
-            MenuService menuService,
+            RegistrationMenuService registrationMenuService,
             MessageService messageService,
             AdminNotificationService adminNotificationService
     ) {
         this.userService = userService;
-        this.menuService = menuService;
+        this.registrationMenuService = registrationMenuService;
         this.messageService = messageService;
         this.adminNotificationService = adminNotificationService;
     }
@@ -75,7 +75,7 @@ public class StartCommand implements Command {
                         ? TEXT_GREETING_RU + user.getSpecifiedName() + "!"
                         : TEXT_GREETING_EN + user.getSpecifiedName() + "!"
                 )
-                .replyMarkup(menuService.getUserMenu(user))
+                .replyMarkup(registrationMenuService.getUserMenu(user))
                 .build();
 
         return new Response(msg);

@@ -5,7 +5,7 @@ import io.vaku.handler.lang.SetLanguageRuCallbackHandler;
 import io.vaku.model.*;
 import io.vaku.model.domain.User;
 import io.vaku.model.enm.Lang;
-import io.vaku.service.MenuService;
+import io.vaku.service.registration.RegistrationMenuService;
 import io.vaku.service.domain.UserService;
 import io.vaku.service.notification.AdminNotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,17 +22,17 @@ import static io.vaku.util.StringUtils.getStringUserForAdmin;
 @Component
 public class SetLanguageRuCallback implements Command {
     private final UserService userService;
-    private final MenuService menuService;
+    private final RegistrationMenuService registrationMenuService;
     private final AdminNotificationService adminNotificationService;
 
     @Autowired
     public SetLanguageRuCallback(
             UserService userService,
-            MenuService menuService,
+            RegistrationMenuService registrationMenuService,
             AdminNotificationService adminNotificationService
     ) {
         this.userService = userService;
-        this.menuService = menuService;
+        this.registrationMenuService = registrationMenuService;
         this.adminNotificationService = adminNotificationService;
     }
 
@@ -57,7 +57,7 @@ public class SetLanguageRuCallback implements Command {
                 .builder()
                 .chatId(update.getChatId())
                 .text(TEXT_REGISTER_REQUEST_RU)
-                .replyMarkup(menuService.getInlineRegisterRequest(true))
+                .replyMarkup(registrationMenuService.getInlineRegisterRequest(true))
                 .build();
 
         return List.of(new Response(doneMsg), new Response(msg));

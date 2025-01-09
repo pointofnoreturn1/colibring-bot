@@ -3,6 +3,7 @@ package io.vaku.model.enm;
 public enum UserStatus {
     REQUIRE_REGISTRATION,
     REQUIRE_PASSWORD,
+    REQUIRE_ROLE,
     REQUIRE_NAME,
     REQUIRE_BIRTHDATE,
     REQUIRE_ROOM,

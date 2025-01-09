@@ -1,9 +1,6 @@
 package io.vaku.model.domain;
 
-import io.vaku.model.enm.AdminStatus;
-import io.vaku.model.enm.Lang;
-import io.vaku.model.enm.BookingStatus;
-import io.vaku.model.enm.UserStatus;
+import io.vaku.model.enm.*;
 import jakarta.persistence.*;
 import jakarta.persistence.Table;
 import lombok.*;
@@ -57,6 +54,11 @@ public class User {
     @Column(name = "birth_year")
     private int birthYear;
 
+    @Enumerated(EnumType.STRING)
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
+    @Column(name = "role")
+    private Role role;
+
     @ManyToOne
     @JoinColumn(name = "room_id", referencedColumnName = "id")
     private Room room;
@@ -71,9 +73,6 @@ public class User {
     @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     @Column(name = "status", nullable = false)
     private UserStatus status;
-
-    @Column(name = "is_admin")
-    private boolean isAdmin = false;
 
     @Column(name = "is_vegan")
     private boolean isVegan = false;

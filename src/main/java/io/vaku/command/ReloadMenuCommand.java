@@ -4,7 +4,7 @@ import io.vaku.handler.ReloadMenuCommandHandler;
 import io.vaku.model.ClassifiedUpdate;
 import io.vaku.model.Response;
 import io.vaku.model.domain.User;
-import io.vaku.service.MenuService;
+import io.vaku.service.registration.RegistrationMenuService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -17,7 +17,7 @@ import static io.vaku.util.StringConstants.TEXT_RELOAD_MENU;
 public class ReloadMenuCommand implements Command {
 
     @Autowired
-    private MenuService menuService;
+    private RegistrationMenuService registrationMenuService;
 
     @Override
     public Class<?> getHandler() {
@@ -39,7 +39,7 @@ public class ReloadMenuCommand implements Command {
                 .builder()
                 .chatId(update.getChatId())
                 .text("Меню бота успешно обновлено")
-                .replyMarkup(menuService.getUserMenu(user))
+                .replyMarkup(registrationMenuService.getUserMenu(user))
                 .build();
 
         return new Response(msg);

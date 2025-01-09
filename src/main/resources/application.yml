@@ -15,7 +15,8 @@ app:
     notifications:
       user:
         group-id: ${BOT_USER_GROUP_ID}
-        topic-id: ${BOT_USER_TOPIC_ID}
+        residents-topic-id: ${BOT_USER_RESIDENTS_TOPIC_ID}
+        staff-topic-id: ${BOT_USER_STAFF_TOPIC_ID}
       admin:
         group-id: ${BOT_ADMIN_GROUP_ID}
   connection:

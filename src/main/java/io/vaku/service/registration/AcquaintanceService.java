@@ -6,7 +6,7 @@ import io.vaku.service.notification.AcquaintanceNotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import static io.vaku.util.StringConstants.EMOJI_WOW;
+import static io.vaku.model.enm.Role.RESIDENT;
 
 @Service
 public class AcquaintanceService {
@@ -20,18 +20,35 @@ public class AcquaintanceService {
     }
 
     public void sendAcquaintanceMessage(User user) {
-        var userName = user.getSpecifiedName();
-        var sb = new StringBuilder("\uD83C\uDF89 Поприветствуем нового жильца по имени " + userName + "!\n\n");
-        sb.append("\uD83D\uDCDD Вот что ").append(userName).append(" рассказал(а) о себе: ").append(user.getBio());
+        if (user.getRole().equals(RESIDENT)) {
+            sendResidentAcquaintance(user);
+        } else {
+            sendStaffAcquaintance(user);
+        }
+    }
+
+    private void sendResidentAcquaintance(User user) {
+        var sb = new StringBuilder("\uD83C\uDF89 Ура, с нами теперь живёт " + user.getSpecifiedName() + "!\n\n");
+        sb.append("\uD83D\uDCDD  ").append(user.getBio());
 
         for (var userBioQuestion : userBioQuestionService.findByUserId(user.getId())) {
             sb.append("\n\n");
-            sb.append("❓ Мы спросили у ").append(userName).append(": ");
-            sb.append(userBioQuestion.getQuestion().getQuestion());
+            sb.append("❓ ").append(userBioQuestion.getQuestion().getQuestion());
             sb.append("\n");
-            sb.append(EMOJI_WOW + " Ответ убил: ").append(userBioQuestion.getAnswer());
+            sb.append("❕ ").append(userBioQuestion.getAnswer());
         }
 
-        notificationService.sendMessage(sb.toString(), user.getPhotoFileId());
+        notificationService.sendResidentMessage(sb.toString(), user.getPhotoFileId());
+    }
+
+    private void sendStaffAcquaintance(User user) {
+        var role = user.getRole().genNameRu();
+        var name = user.getSpecifiedName();
+        var bio = user.getBio();
+
+        notificationService.sendStaffMessage(
+                "\uD83C\uDF89 Ура, с нами новый " + role + " по имени " + name + "!\n\n" + "\uD83D\uDCDD  " + bio,
+                user.getPhotoFileId()
+        );
     }
 }
