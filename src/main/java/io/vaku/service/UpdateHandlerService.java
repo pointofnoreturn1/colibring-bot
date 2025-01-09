@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 import static io.vaku.model.enm.BookingStatus.NO_STATUS;
+import static io.vaku.model.enm.Role.ADMIN;
 
 @Service
 public class UpdateHandlerService {
@@ -49,6 +50,7 @@ public class UpdateHandlerService {
         this.messageService = messageService;
     }
 
+    //TODO: review and refactor this logic
     public List<Response> handleUpdate(ClassifiedUpdate update, User user) {
         if (user == null) {
             if (update.getCommandName().equals("/start") || update.getCommandName().startsWith("callbackSetLanguage")) {
@@ -66,7 +68,7 @@ public class UpdateHandlerService {
             return laundryBookingHandleService.execute(user, update);
         } else if (!user.getMealSignUpStatus().equals(NO_STATUS)) {
             return mealSignUpHandleService.execute(user, update);
-        } else if (user.isAdmin()) {
+        } else if (user.getRole().equals(ADMIN)) {
             if (!user.getAdminStatus().equals(NO_STATUS)) {
                 return mealAdminHandleService.execute(user, update);
             }

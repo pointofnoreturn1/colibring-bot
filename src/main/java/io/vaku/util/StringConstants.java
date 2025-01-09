@@ -58,6 +58,13 @@ public final class StringConstants {
                     Расскажи о себе другим жителям коливинга всё, что считаешь нужным
                     Эта информация отобразится во вкладке «анкеты», там же сможешь познакомиться с остальными
                     \s""";
+    public static final String TEXT_BIO_REQUEST_STAFF =
+            """
+                    Познакомимся поближе?
+                    \s
+                    Расскажи о себе жителям коливинга всё, что считаешь нужным
+                    Эта информация отобразится жильцам
+                    \s""";
     public static final String TEXT_DONE_RU = "Готово " + EMOJI_OK;
     public static final String TEXT_DONE_EN = "Done " + EMOJI_OK;
     public static final String TEXT_REMOVE = EMOJI_REMOVE + " Удалить";
@@ -66,6 +73,12 @@ public final class StringConstants {
             """
                     Прикрепи свою фотку
                     Она тоже отобразится в анкете
+                    Это важно, чтобы ребята в доме не пугались незнакомого человека, а сразу приветствовали как своего :)
+                    """;
+    public static final String TEXT_PHOTO_REQUEST_STAFF =
+            """
+                    Прикрепи свою фотку
+                    Она тоже отобразится жильцам
                     Это важно, чтобы ребята в доме не пугались незнакомого человека, а сразу приветствовали как своего :)
                     """;
     public static final String TEXT_VALUES =

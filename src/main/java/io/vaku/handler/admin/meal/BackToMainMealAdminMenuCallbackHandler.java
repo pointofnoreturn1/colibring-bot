@@ -16,4 +16,9 @@ public class BackToMainMealAdminMenuCallbackHandler extends AbstractHandler {
     public boolean isAdmin() {
         return true;
     }
+
+    @Override
+    public boolean isCook() {
+        return true;
+    }
 }

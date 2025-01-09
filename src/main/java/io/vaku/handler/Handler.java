@@ -20,4 +20,8 @@ public interface Handler {
     List<Response> getAnswer(User user, ClassifiedUpdate update);
 
     boolean isAdmin();
+
+    default boolean isCook() {
+        return false;
+    }
 }

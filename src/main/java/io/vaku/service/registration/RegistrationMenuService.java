@@ -1,4 +1,4 @@
-package io.vaku.service;
+package io.vaku.service.registration;
 
 import io.vaku.model.domain.Room;
 import io.vaku.model.domain.User;
@@ -14,13 +14,18 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.Keyboard
 import java.util.ArrayList;
 import java.util.List;
 
+import static io.vaku.model.enm.Role.ADMIN;
+import static io.vaku.model.enm.Role.COOK;
 import static io.vaku.util.StringConstants.*;
 
 @Service
-public class MenuService {
+public class RegistrationMenuService {
+    private final RoomService roomService;
 
     @Autowired
-    private RoomService roomService;
+    public RegistrationMenuService(RoomService roomService) {
+        this.roomService = roomService;
+    }
 
     public InlineKeyboardMarkup getInlineRegisterRequest(boolean ru) {
         List<InlineKeyboardButton> buttons = List.of(
@@ -42,13 +47,13 @@ public class MenuService {
             add(new KeyboardRow(List.of(new KeyboardButton(TEXT_MEAL_SIGN_UP))));
         }};
 
-        if (user.isAdmin()) {
+        if (user.getRole().equals(ADMIN) || user.getRole().equals(COOK)) {
             keyboard.add(new KeyboardRow(List.of(new KeyboardButton(TEXT_ADMIN))));
         }
 
         keyboard.add(new KeyboardRow(List.of(new KeyboardButton(TEXT_RELOAD_MENU))));
 
-        return ReplyKeyboardMarkup.builder().keyboard(keyboard).resizeKeyboard(true).build();
+        return ReplyKeyboardMarkup.builder().keyboard(keyboard).build();
     }
 
     public ReplyKeyboardMarkup getRoomChoiceMenu() {
@@ -60,6 +65,29 @@ public class MenuService {
                 .toList();
 
         return ReplyKeyboardMarkup.builder().keyboard(keyboard).oneTimeKeyboard(true).resizeKeyboard(true).build();
+    }
+
+    public InlineKeyboardMarkup getInlineRoleChoice() {
+        return InlineKeyboardMarkup
+                .builder()
+                .keyboardRow(
+                        List.of(
+                                InlineKeyboardButton
+                                        .builder()
+                                        .text("Живу")
+                                        .callbackData("callbackIsResident")
+                                        .build()
+                        )
+                )
+                .keyboardRow(
+                        List.of(
+                                InlineKeyboardButton
+                                        .builder()
+                                        .text("Работаю")
+                                        .callbackData("callbackIsStaff")
+                                        .build())
+                )
+                .build();
     }
 
     public InlineKeyboardMarkup getInlineLanguageChoice() {
@@ -87,14 +115,14 @@ public class MenuService {
         return new InlineKeyboardMarkup(List.of(buttons));
     }
 
-    public InlineKeyboardMarkup getInlineTourMenu() {
+    public InlineKeyboardMarkup getInlineWhatElseMenu() {
         return InlineKeyboardMarkup
                 .builder()
                 .keyboardRow(
                         List.of(
                                 InlineKeyboardButton
                                         .builder()
-                                        .text("Посмотреть экскурсию по дому")
+                                        .text("Хочу посмотреть экскурсию по дому")
                                         .callbackData("TODO")
                                         .build()
                         )
@@ -103,7 +131,7 @@ public class MenuService {
                         List.of(
                                 InlineKeyboardButton
                                         .builder()
-                                        .text("Узнать о правилах сортировки отходов")
+                                        .text("Где что лежит на кухне?")
                                         .callbackData("TODO")
                                         .build())
                 )
@@ -111,7 +139,7 @@ public class MenuService {
                         List.of(
                                 InlineKeyboardButton
                                         .builder()
-                                        .text("Как тут стирать белье?")
+                                        .text("Как тут стирать бельё?")
                                         .callbackData("TODO")
                                         .build())
                 )
@@ -124,5 +152,43 @@ public class MenuService {
                                         .build())
                 )
                 .build();
+    }
+
+    public InlineKeyboardMarkup getInlineStaffRoleMenu() {
+        return InlineKeyboardMarkup
+                .builder()
+                .keyboardRow(
+                        List.of(
+                                InlineKeyboardButton
+                                        .builder()
+                                        .text("Клинер")
+                                        .callbackData("callbackSetCleanerRole")
+                                        .build()
+                        )
+                )
+                .keyboardRow(
+                        List.of(
+                                InlineKeyboardButton
+                                        .builder()
+                                        .text("Повар")
+                                        .callbackData("callbackMSetCookRole")
+                                        .build()
+                        )
+                )
+                .keyboardRow(
+                        List.of(
+                                InlineKeyboardButton
+                                        .builder()
+                                        .text("Управляюший")
+                                        .callbackData("callbackSetManagerRole")
+                                        .build()
+                        )
+                )
+                .keyboardRow(List.of(getBackToRoleMenuButton()))
+                .build();
+    }
+
+    private InlineKeyboardButton getBackToRoleMenuButton() {
+        return InlineKeyboardButton.builder().text(TEXT_GO_BACK).callbackData("callbackBackToRoleMenu").build();
     }
 }

@@ -13,6 +13,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import static io.vaku.model.enm.Role.ADMIN;
+import static io.vaku.model.enm.Role.COOK;
+
 @Component
 public class HandlersMap {
     private final HashMap<TelegramType, List<Handler>> hashMap = new HashMap<>();
@@ -46,7 +49,10 @@ public class HandlersMap {
         for (Handler handler : hashMap.get(update.getHandlerType())) {
             if (handler.isApplicable(user, update)) {
                 if (handler.isAdmin()) {
-                    return user.isAdmin() ? handler.getAnswer(user, update) : emptyResponse;
+                    if (handler.isCook() && user.getRole().equals(COOK)) {
+                        return handler.getAnswer(user, update);
+                    }
+                    return user.getRole().equals(ADMIN) ? handler.getAnswer(user, update) : emptyResponse;
                 }
 
                 return handler.getAnswer(user, update);

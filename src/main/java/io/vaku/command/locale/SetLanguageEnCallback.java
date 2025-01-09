@@ -5,14 +5,12 @@ import io.vaku.handler.lang.SetLanguageRuCallbackHandler;
 import io.vaku.model.*;
 import io.vaku.model.domain.User;
 import io.vaku.model.enm.Lang;
-import io.vaku.service.MenuService;
+import io.vaku.service.registration.RegistrationMenuService;
 import io.vaku.service.domain.UserService;
 import io.vaku.service.notification.AdminNotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
 import java.util.List;
 
@@ -23,17 +21,17 @@ import static io.vaku.util.StringUtils.getStringUserForAdmin;
 @Component
 public class SetLanguageEnCallback implements Command {
     private final UserService userService;
-    private final MenuService menuService;
+    private final RegistrationMenuService registrationMenuService;
     private final AdminNotificationService adminNotificationService;
 
     @Autowired
     public SetLanguageEnCallback(
             UserService userService,
-            MenuService menuService,
+            RegistrationMenuService registrationMenuService,
             AdminNotificationService adminNotificationService
     ) {
         this.userService = userService;
-        this.menuService = menuService;
+        this.registrationMenuService = registrationMenuService;
         this.adminNotificationService = adminNotificationService;
     }
 
@@ -58,7 +56,7 @@ public class SetLanguageEnCallback implements Command {
                 .builder()
                 .chatId(update.getChatId())
                 .text(TEXT_REGISTER_REQUEST_EN)
-                .replyMarkup(menuService.getInlineRegisterRequest(false))
+                .replyMarkup(registrationMenuService.getInlineRegisterRequest(false))
                 .build();
 
         return List.of(new Response(doneMsg), new Response(msg));
