@@ -7,15 +7,15 @@ import org.springframework.stereotype.Service;
 @Service
 public class AcquaintanceNotificationService {
     private final long chatId;
-    private final int residentsThreadId;
-    private final int staffThreadId;
+    private final long residentsThreadId;
+    private final long staffThreadId;
     private final TelegramClient telegramClient;
 
     @Autowired
     public AcquaintanceNotificationService(
             @Value("${app.feature.notifications.user.group-id}") long chatId,
-            @Value("${app.feature.notifications.user.residents-topic-id}") int residentsThreadId,
-            @Value("${app.feature.notifications.user.staff-topic-id}") int staffThreadId,
+            @Value("${app.feature.notifications.user.residents-topic-id}") long residentsThreadId,
+            @Value("${app.feature.notifications.user.staff-topic-id}") long staffThreadId,
             TelegramClient telegramClient
     ) {
         this.chatId = chatId;

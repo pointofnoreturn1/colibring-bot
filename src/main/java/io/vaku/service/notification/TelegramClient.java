@@ -29,6 +29,10 @@ public class TelegramClient {
         sendMessage(chatId, msg, false);
     }
 
+    public void sendMessage(long chatId, long threadId, String msg) {
+        sendMessage(chatId, threadId, msg, false);
+    }
+
     @SneakyThrows
     public void sendMessage(long chatId, String msg, boolean enableMarkdown) {
         var mapper = new ObjectMapper();
@@ -46,7 +50,24 @@ public class TelegramClient {
     }
 
     @SneakyThrows
-    public void sendPhotoToTopic(long chatId, int threadId, String msg, String photoId) {
+    public void sendMessage(long chatId, long threadId, String msg, boolean enableMarkdown) {
+        var mapper = new ObjectMapper();
+        var rootNode = mapper.createObjectNode();
+        rootNode.put("chat_id", chatId);
+        rootNode.put("message_thread_id", threadId);
+        rootNode.put("text", msg);
+        if (enableMarkdown) {
+            rootNode.put("parse_mode", ParseMode.MARKDOWNV2);
+        }
+        var jsonString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(rootNode);
+        var uriBuilder = UriComponentsBuilder.fromHttpUrl(TG_API + botToken + "/sendMessage");
+        var entity = new HttpEntity<>(jsonString, getHeaders());
+
+        restTemplate.exchange(uriBuilder.toUriString(), HttpMethod.POST, entity, String.class);
+    }
+
+    @SneakyThrows
+    public void sendPhotoToTopic(long chatId, long threadId, String msg, String photoId) {
         var mapper = new ObjectMapper();
         var rootNode = mapper.createObjectNode();
         rootNode.put("chat_id", chatId);

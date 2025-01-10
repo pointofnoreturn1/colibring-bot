@@ -121,7 +121,7 @@ public final class DateTimeUtils {
                 .append(" ")
                 .append(getHumanSchedule(startTime, endTime));
 
-        return sb.append(description == null ? "" : " " + description).toString();
+        return sb.append(description == null ? "" : " / " + description).toString();
     }
 
     public static String getHumanSchedule(Date startTime, Date endTime) {

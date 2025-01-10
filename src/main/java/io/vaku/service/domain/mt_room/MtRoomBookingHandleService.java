@@ -10,6 +10,8 @@ import io.vaku.model.domain.Schedule;
 import io.vaku.model.domain.User;
 import io.vaku.service.MessageService;
 import io.vaku.service.domain.UserService;
+import io.vaku.service.notification.BookingsNotificationService;
+import io.vaku.util.DateTimeUtils;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,30 +23,41 @@ import java.util.UUID;
 import static io.vaku.model.enm.BookingStatus.*;
 import static io.vaku.util.DateTimeUtils.checkTimeIntersections;
 import static io.vaku.util.DateTimeUtils.getSchedule;
+import static io.vaku.util.StringConstants.EMOJI_MT_ROOM_BOOKING;
+import static io.vaku.util.StringConstants.EMOJI_REMOVE;
+import static io.vaku.util.StringUtils.getStringUser;
 
 @Service
 public class MtRoomBookingHandleService {
+    private final UserService userService;
+    private final MtRoomBookingService mtRoomBookingService;
+    private final HandlersMap commandMap;
+    private final MtRoomMessageService mtRoomMessageService;
+    private final MessageService messageService;
+    private final MtRoomBackToMenuCallback mtRoomBackToMenuCallback;
+    private final MtRoomShowMyRecordsCallback mtRoomShowMyRecordsCallback;
+    private final BookingsNotificationService bookingsNotificationService;
 
     @Autowired
-    private UserService userService;
-
-    @Autowired
-    private MtRoomBookingService mtRoomBookingService;
-
-    @Autowired
-    private HandlersMap commandMap;
-
-    @Autowired
-    private MtRoomMessageService mtRoomMessageService;
-
-    @Autowired
-    private MessageService messageService;
-
-    @Autowired
-    private MtRoomBackToMenuCallback mtRoomBackToMenuCallback;
-
-    @Autowired
-    private MtRoomShowMyRecordsCallback mtRoomShowMyRecordsCallback;
+    public MtRoomBookingHandleService(
+            UserService userService,
+            MtRoomBookingService mtRoomBookingService,
+            HandlersMap commandMap,
+            MtRoomMessageService mtRoomMessageService,
+            MessageService messageService,
+            MtRoomBackToMenuCallback mtRoomBackToMenuCallback,
+            MtRoomShowMyRecordsCallback mtRoomShowMyRecordsCallback,
+            BookingsNotificationService bookingsNotificationService
+    ) {
+        this.userService = userService;
+        this.mtRoomBookingService = mtRoomBookingService;
+        this.commandMap = commandMap;
+        this.mtRoomMessageService = mtRoomMessageService;
+        this.messageService = messageService;
+        this.mtRoomBackToMenuCallback = mtRoomBackToMenuCallback;
+        this.mtRoomShowMyRecordsCallback = mtRoomShowMyRecordsCallback;
+        this.bookingsNotificationService = bookingsNotificationService;
+    }
 
     public List<Response> execute(User user, ClassifiedUpdate update) {
 
@@ -52,8 +65,8 @@ public class MtRoomBookingHandleService {
                 !update.getCommandName().equals(mtRoomBackToMenuCallback.getCommandName())) {
             return proceedMeetingRoomBooking(user, update);
         } else if (update.getCommandName().startsWith("callBackShowBookingMenu_")) {
-            String bookingId = update.getCommandName().split("_")[1];
-            MeetingRoomBooking booking = mtRoomBookingService.findById(UUID.fromString(bookingId));
+            var bookingId = update.getCommandName().split("_")[1];
+            var booking = mtRoomBookingService.findById(UUID.fromString(bookingId));
 
             if (booking != null) {
                 user.setMtRoomBookingStatus(REQUIRE_ITEM_ACTION);
@@ -62,8 +75,10 @@ public class MtRoomBookingHandleService {
                 return List.of(mtRoomMessageService.getMtRoomBookingDetailsEditedMsg(user, update, booking));
             }
         } else if (update.getCommandName().startsWith("callbackRemoveBooking_")) {
-            String bookingId = update.getCommandName().split("_")[1];
-            mtRoomBookingService.removeById(UUID.fromString(bookingId));
+            var bookingId = UUID.fromString(update.getCommandName().split("_")[1]);
+            var booking = mtRoomBookingService.findById(bookingId);
+            mtRoomBookingService.removeById(bookingId);
+            bookingsNotificationService.sendMessage(getRemovedScheduleInfo(booking));
 
             return mtRoomShowMyRecordsCallback.getAnswer(user, update);
         }
@@ -73,11 +88,11 @@ public class MtRoomBookingHandleService {
 
     @SneakyThrows
     private List<Response> proceedMeetingRoomBooking(User user, ClassifiedUpdate update) {
-        String[] inputArr = update.getCommandName().split("\n");
-        List<Schedule> schedules = new ArrayList<>();
+        var inputArr = update.getCommandName().split("\n");
+        var schedules = new ArrayList<Schedule>();
 
-        for (String line : inputArr) {
-            Schedule schedule = getSchedule(line);
+        for (var line : inputArr) {
+            var schedule = getSchedule(line);
             if (schedule == null) {
                 return List.of(messageService.getInvalidDateFormatMsg(user, update));
             }
@@ -85,25 +100,63 @@ public class MtRoomBookingHandleService {
         }
 
         @SuppressWarnings("unchecked")
-        List<MeetingRoomBooking> intersections = (List<MeetingRoomBooking>) checkTimeIntersections(mtRoomBookingService.findAllActive(), schedules);
+        var intersections = (List<MeetingRoomBooking>) checkTimeIntersections(mtRoomBookingService.findAllActive(), schedules);
         if (!intersections.isEmpty()) {
             return List.of(mtRoomMessageService.getIntersectedMtRoomBookingsEditedMsg(user, update, intersections));
         }
 
-        for (Schedule schedule : schedules) {
-            MeetingRoomBooking booking = new MeetingRoomBooking(
-                    UUID.randomUUID(),
-                    schedule.getStartTime(),
-                    schedule.getEndTime(),
-                    schedule.getDescription(),
-                    user
+        var bookings = new ArrayList<MeetingRoomBooking>();
+        for (var schedule : schedules) {
+            bookings.add(
+                    new MeetingRoomBooking(
+                            UUID.randomUUID(),
+                            schedule.getStartTime(),
+                            schedule.getEndTime(),
+                            schedule.getDescription(),
+                            user
+                    )
             );
-            mtRoomBookingService.createOrUpdate(booking);
         }
-
+        bookings.forEach(mtRoomBookingService::createOrUpdate);
+        bookingsNotificationService.sendMessage(getCreatedScheduleInfo(bookings));
         user.setMtRoomBookingStatus(NO_STATUS);
         userService.createOrUpdate(user);
 
         return List.of(messageService.getDoneMsg(user, update));
+    }
+
+    private String getCreatedScheduleInfo(List<MeetingRoomBooking> bookings) {
+        var sb = new StringBuilder(EMOJI_MT_ROOM_BOOKING);
+        sb.append(getStringUser(bookings.getFirst().getUser())).append(" забронировал(а) лекционную:\n");
+        for (var booking : bookings) {
+            sb.append(
+                    DateTimeUtils.getHumanScheduleDetailed(
+                            booking.getStartTime(),
+                            booking.getEndTime(),
+                            booking.getDescription()
+                    )
+            );
+            sb.append("\n");
+        }
+
+        return sb.toString();
+    }
+
+    private String getRemovedScheduleInfo(MeetingRoomBooking booking) {
+        var sb = new StringBuilder(EMOJI_REMOVE);
+        sb.append(" ")
+                .append(EMOJI_MT_ROOM_BOOKING)
+                .append(getStringUser(booking.getUser()))
+                .append(" удалил(а) бронь лекционной:\n")
+                .append(
+                        DateTimeUtils.getHumanScheduleDetailed(
+                                booking.getStartTime(),
+                                booking.getEndTime(),
+                                booking.getDescription()
+                        )
+                )
+                .append("\n");
+
+        return sb.toString();
     }
 }

@@ -10,6 +10,8 @@ import io.vaku.model.domain.Schedule;
 import io.vaku.model.domain.User;
 import io.vaku.service.MessageService;
 import io.vaku.service.domain.UserService;
+import io.vaku.service.notification.BookingsNotificationService;
+import io.vaku.util.DateTimeUtils;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,39 +23,48 @@ import java.util.UUID;
 import static io.vaku.model.enm.BookingStatus.*;
 import static io.vaku.util.DateTimeUtils.checkTimeIntersections;
 import static io.vaku.util.DateTimeUtils.getSchedule;
+import static io.vaku.util.StringConstants.*;
+import static io.vaku.util.StringUtils.getStringUser;
 
 @Service
 public class LaundryBookingHandleService {
+    private final UserService userService;
+    private final LaundryBookingService laundryBookingService;
+    private final HandlersMap commandMap;
+    private final LaundryMessageService laundryMessageService;
+    private final MessageService messageService;
+    private final LaundryBackToMenuCallback laundryBackToMenuCallback;
+    private final LaundryShowMyRecordsCallback laundryShowMyRecordsCallback;
+    private final BookingsNotificationService bookingsNotificationService;
 
     @Autowired
-    private UserService userService;
-
-    @Autowired
-    private LaundryBookingService laundryBookingService;
-
-    @Autowired
-    private HandlersMap commandMap;
-
-    @Autowired
-    private LaundryMessageService laundryMessageService;
-
-    @Autowired
-    private MessageService messageService;
-
-    @Autowired
-    private LaundryBackToMenuCallback laundryBackToMenuCallback;
-
-    @Autowired
-    private LaundryShowMyRecordsCallback laundryShowMyRecordsCallback;
+    public LaundryBookingHandleService(
+            UserService userService,
+            LaundryBookingService laundryBookingService,
+            HandlersMap commandMap,
+            LaundryMessageService laundryMessageService,
+            MessageService messageService,
+            LaundryBackToMenuCallback laundryBackToMenuCallback,
+            LaundryShowMyRecordsCallback laundryShowMyRecordsCallback,
+            BookingsNotificationService bookingsNotificationService
+    ) {
+        this.userService = userService;
+        this.laundryBookingService = laundryBookingService;
+        this.commandMap = commandMap;
+        this.laundryMessageService = laundryMessageService;
+        this.messageService = messageService;
+        this.laundryBackToMenuCallback = laundryBackToMenuCallback;
+        this.laundryShowMyRecordsCallback = laundryShowMyRecordsCallback;
+        this.bookingsNotificationService = bookingsNotificationService;
+    }
 
     public List<Response> execute(User user, ClassifiedUpdate update) {
-
         if (user.getLaundryBookingStatus().equals(REQUIRE_INPUT) &&
                 !update.getCommandName().equals(laundryBackToMenuCallback.getCommandName())) {
             return proceedLaundryBooking(user, update);
         } else if (update.getCommandName().startsWith("callBackShowLndBookingMenu_")) {
-            String bookingId = update.getCommandName().split("_")[1];
-            LaundryBooking booking = laundryBookingService.findById(UUID.fromString(bookingId));
+            var bookingId = update.getCommandName().split("_")[1];
+            var booking = laundryBookingService.findById(UUID.fromString(bookingId));
 
             if (booking != null) {
                 user.setLaundryBookingStatus(REQUIRE_ITEM_ACTION);
@@ -62,8 +73,10 @@ public class LaundryBookingHandleService {
                 return List.of(laundryMessageService.getLaundryBookingDetailsEditedMsg(user, update, booking));
             }
         } else if (update.getCommandName().startsWith("callbackRemoveLndBooking_")) {
-            String bookingId = update.getCommandName().split("_")[1];
-            laundryBookingService.removeById(UUID.fromString(bookingId));
+            var bookingId = UUID.fromString(update.getCommandName().split("_")[1]);
+            var booking = laundryBookingService.findById(bookingId);
+            laundryBookingService.removeById(bookingId);
+            bookingsNotificationService.sendMessage(getRemovedScheduleInfo(booking));
 
             return laundryShowMyRecordsCallback.getAnswer(user, update);
         }
@@ -73,11 +86,11 @@ public class LaundryBookingHandleService {
 
     @SneakyThrows
     private List<Response> proceedLaundryBooking(User user, ClassifiedUpdate update) {
-        String[] inputArr = update.getCommandName().split("\n");
-        List<Schedule> schedules = new ArrayList<>();
+        var inputArr = update.getCommandName().split("\n");
+        var schedules = new ArrayList<Schedule>();
 
-        for (String line : inputArr) {
-            Schedule schedule = getSchedule(line);
+        for (var line : inputArr) {
+            var schedule = getSchedule(line);
             if (schedule == null) {
                 return List.of(messageService.getInvalidDateFormatMsg(user, update));
             }
@@ -85,13 +98,13 @@ public class LaundryBookingHandleService {
         }
 
         @SuppressWarnings("unchecked")
-        List<LaundryBooking> intersections = (List<LaundryBooking>) checkTimeIntersections(laundryBookingService.findAllActive(), schedules);
+        var intersections = (List<LaundryBooking>) checkTimeIntersections(laundryBookingService.findAllActive(), schedules);
         if (!intersections.isEmpty()) {
             return List.of(laundryMessageService.getIntersectedLaundryBookingsEditedMsg(user, update, intersections));
         }
 
-        for (Schedule schedule : schedules) {
-            LaundryBooking booking = new LaundryBooking(
+        for (var schedule : schedules) {
+            var booking = new LaundryBooking(
                     UUID.randomUUID(),
                     schedule.getStartTime(),
                     schedule.getEndTime(),
@@ -105,5 +118,23 @@ public class LaundryBookingHandleService {
         userService.createOrUpdate(user);
 
         return List.of(messageService.getDoneMsg(user, update));
+    }
+
+    private String getRemovedScheduleInfo(LaundryBooking booking) {
+        var sb = new StringBuilder(EMOJI_REMOVE);
+        sb.append(" ")
+                .append(EMOJI_LAUNDRY_BOOKING)
+                .append(getStringUser(booking.getUser()))
+                .append(" удалил(а) стирку:\n")
+                .append(
+                        DateTimeUtils.getHumanScheduleDetailed(
+                                booking.getStartTime(),
+                                booking.getEndTime(),
+                                booking.getDescription()
+                        )
+                )
+                .append("\n");
+
+        return sb.toString();
     }
 }
