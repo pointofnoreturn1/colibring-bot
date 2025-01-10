@@ -11,9 +11,13 @@ public class BookingsNotificationService {
     private final TelegramClient telegramClient;
 
     @Autowired
-    public BookingsNotificationService(TelegramClient telegramClient) {
-        this.chatId = Long.parseLong(System.getenv("BOT_USER_GROUP_ID"));
-        this.topicId = Long.parseLong(System.getenv("BOT_USER_NOTIFICATIONS_TOPIC_ID"));
+    public BookingsNotificationService(
+            @Value("${app.feature.notifications.user.groupId}") long chatId,
+            @Value("${app.feature.notifications.user.notificationsTopicId}") long topicId,
+            TelegramClient telegramClient
+    ) {
+        this.chatId = chatId;
+        this.topicId = topicId;
         this.telegramClient = telegramClient;
     }
 

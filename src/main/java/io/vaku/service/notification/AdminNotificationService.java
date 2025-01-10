@@ -11,9 +11,10 @@ public class AdminNotificationService {
 
     @Autowired
     public AdminNotificationService(
+            @Value("${app.feature.notifications.admin.groupId}") long adminChatId,
             TelegramClient telegramClient
     ) {
-        this.adminChatId = Long.parseLong(System.getenv("BOT_ADMIN_GROUP_ID"));
+        this.adminChatId = adminChatId;
         this.telegramClient = telegramClient;
     }
 

@@ -1,0 +1,25 @@
+spring:
+  datasource:
+    platform: postgres
+    driver-class-name: org.postgresql.Driver
+    url: ${BOT_DATASOURCE_URL}
+    username: ${BOT_DATASOURCE_USERNAME}
+    password: ${BOT_DATASOURCE_PASSWORD}
+bot:
+  name: ${BOT_NAME}
+  token: ${BOT_TOKEN}
+app:
+  feature:
+    register:
+      password: ${BOT_REGISTER_PASSWORD}
+    cookDaysOff: WED, SUN
+    notifications:
+      user:
+        groupId: ${BOT_USER_GROUP_ID}
+        notificationsTopicId: ${BOT_USER_NOTIFICATIONS_TOPIC_ID}
+        residentsTopicId: ${BOT_USER_RESIDENTS_TOPIC_ID}
+        staffTopicId: ${BOT_USER_STAFF_TOPIC_ID}
+      admin:
+        groupId: ${BOT_ADMIN_GROUP_ID}
+  connection:
+    timeout: ${BOT_CONNECTION_TIMEOUT}

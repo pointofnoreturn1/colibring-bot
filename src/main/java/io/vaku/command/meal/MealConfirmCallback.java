@@ -18,7 +18,6 @@ import io.vaku.service.notification.AdminNotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.yaml.snakeyaml.util.ArrayUtils;
 
 import java.time.*;
 import java.time.temporal.ChronoUnit;
@@ -48,7 +47,8 @@ public class MealConfirmCallback implements Command {
             MealSignUpMessageService mealSignUpMessageService,
             MealService mealService,
             UserMealService userMealService,
-            AdminNotificationService adminNotificationService
+            AdminNotificationService adminNotificationService,
+            @Value("${app.feature.cookDaysOff}") String[] cookDaysOff
     ) {
         this.userService = userService;
         this.mealSignUpService = mealSignUpService;
@@ -57,7 +57,7 @@ public class MealConfirmCallback implements Command {
         this.mealService = mealService;
         this.userMealService = userMealService;
         this.adminNotificationService = adminNotificationService;
-        this.cookDaysOff = new String[]{ "WED", "SUN" };
+        this.cookDaysOff = cookDaysOff;
     }
 
     @Override
