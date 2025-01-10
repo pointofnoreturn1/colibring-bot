@@ -9,7 +9,6 @@ import org.springframework.web.client.RestTemplate;
 
 @SpringBootApplication
 @EnableScheduling
-@PropertySource("classpath:application.yml")
 public class App {
 
     public static void main(String[] args) {

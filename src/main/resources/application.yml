@@ -23,3 +23,5 @@ app:
         group-id: ${BOT_ADMIN_GROUP_ID}
   connection:
     timeout: ${BOT_CONNECTION_TIMEOUT}
+server:
+  port: ${PORT:5000}
