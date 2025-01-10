@@ -31,14 +31,13 @@ public class RegistrationService {
 
     @Autowired
     public RegistrationService(
-            @Value("${app.feature.register.password}") String password,
             UserService userService,
             RegistrationMenuService registrationMenuService,
             MessageService messageService,
             ResidentRegistrationService residentRegistrationService,
             StaffRegistrationService staffRegistrationService
     ) {
-        this.password = password;
+        this.password = System.getenv("BOT_REGISTER_PASSWORD");
         this.userService = userService;
         this.registrationMenuService = registrationMenuService;
         this.messageService = messageService;

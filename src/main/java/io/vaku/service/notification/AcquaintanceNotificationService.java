@@ -12,15 +12,10 @@ public class AcquaintanceNotificationService {
     private final TelegramClient telegramClient;
 
     @Autowired
-    public AcquaintanceNotificationService(
-            @Value("${app.feature.notifications.user.group-id}") long chatId,
-            @Value("${app.feature.notifications.user.residents-topic-id}") long residentsThreadId,
-            @Value("${app.feature.notifications.user.staff-topic-id}") long staffThreadId,
-            TelegramClient telegramClient
-    ) {
-        this.chatId = chatId;
-        this.residentsThreadId = residentsThreadId;
-        this.staffThreadId = staffThreadId;
+    public AcquaintanceNotificationService(TelegramClient telegramClient) {
+        this.chatId = Long.parseLong(System.getenv("BOT_USER_GROUP_ID"));
+        this.residentsThreadId = Long.parseLong(System.getenv("BOT_USER_RESIDENTS_TOPIC_ID"));
+        this.staffThreadId = Long.parseLong(System.getenv("BOT_USER_STAFF_TOPIC_ID"));
         this.telegramClient = telegramClient;
     }
 
