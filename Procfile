@@ -1,1 +1,1 @@
-worker: java $JAVA_OPTS -jar target/colibring-bot-1.0-SNAPSHOT-jar-with-dependencies.jar
+worker: java $JAVA_OPTS -jar target/colibring-bot-1.0-SNAPSHOT.war
