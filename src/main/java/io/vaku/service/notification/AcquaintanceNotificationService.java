@@ -13,9 +13,9 @@ public class AcquaintanceNotificationService {
 
     @Autowired
     public AcquaintanceNotificationService(
-            @Value("${app.feature.notifications.user.group-id}") long chatId,
-            @Value("${app.feature.notifications.user.residents-topic-id}") long residentsThreadId,
-            @Value("${app.feature.notifications.user.staff-topic-id}") long staffThreadId,
+            @Value("${app.feature.notifications.user.groupId}") long chatId,
+            @Value("${app.feature.notifications.user.residentsTopicId}") long residentsThreadId,
+            @Value("${app.feature.notifications.user.staffTopicId}") long staffThreadId,
             TelegramClient telegramClient
     ) {
         this.chatId = chatId;

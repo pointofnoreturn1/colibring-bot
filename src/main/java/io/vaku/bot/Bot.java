@@ -28,16 +28,16 @@ public class Bot extends TelegramLongPollingBot {
 
     private final UserService userService;
 
-    private final String botName;
+    @Value("${bot.name}")
+    private String botName;
 
-    private final int timeout;
+    @Value("${app.connection.timeout}")
+    private int timeout;
 
-    public Bot(UpdateHandlerService updateHandlerService, UserService userService) {
-        super(System.getenv("BOT_TOKEN"));
+    public Bot(@Value("${bot.token}") String botToken, UpdateHandlerService updateHandlerService, UserService userService) {
+        super(botToken);
         this.updateHandlerService = updateHandlerService;
         this.userService = userService;
-        this.botName = System.getenv("BOT_NAME");
-        this.timeout = Integer.parseInt(System.getenv("BOT_CONNECTION_TIMEOUT"));
     }
 
     @PostConstruct
