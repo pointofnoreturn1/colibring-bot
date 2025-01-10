@@ -12,14 +12,14 @@ app:
   feature:
     register:
       password: ${BOT_REGISTER_PASSWORD}
-    cookDaysOff: WED, SUN
+    cook-days-off: WED, SUN
     notifications:
       user:
-        groupId: ${BOT_USER_GROUP_ID}
-        notificationsTopicId: ${BOT_USER_NOTIFICATIONS_TOPIC_ID}
-        residentsTopicId: ${BOT_USER_RESIDENTS_TOPIC_ID}
-        staffTopicId: ${BOT_USER_STAFF_TOPIC_ID}
+        group-id: ${BOT_USER_GROUP_ID}
+        notifications-topic-id: ${BOT_USER_NOTIFICATIONS_TOPIC_ID}
+        residents-topic-id: ${BOT_USER_RESIDENTS_TOPIC_ID}
+        staff-topic-id: ${BOT_USER_STAFF_TOPIC_ID}
       admin:
-        groupId: ${BOT_ADMIN_GROUP_ID}
+        group-id: ${BOT_ADMIN_GROUP_ID}
   connection:
     timeout: ${BOT_CONNECTION_TIMEOUT}

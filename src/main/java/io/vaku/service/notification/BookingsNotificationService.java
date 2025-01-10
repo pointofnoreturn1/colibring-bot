@@ -12,8 +12,8 @@ public class BookingsNotificationService {
 
     @Autowired
     public BookingsNotificationService(
-            @Value("${app.feature.notifications.user.groupId}") long chatId,
-            @Value("${app.feature.notifications.user.notificationsTopicId}") long topicId,
+            @Value("${app.feature.notifications.user.group-id}") long chatId,
+            @Value("${app.feature.notifications.user.notifications-topic-id}") long topicId,
             TelegramClient telegramClient
     ) {
         this.chatId = chatId;

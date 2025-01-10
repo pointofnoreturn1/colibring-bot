@@ -48,7 +48,7 @@ public class MealConfirmCallback implements Command {
             MealService mealService,
             UserMealService userMealService,
             AdminNotificationService adminNotificationService,
-            @Value("${app.feature.cookDaysOff}") String[] cookDaysOff
+            @Value("${app.feature.cook-days-off}") String[] cookDaysOff
     ) {
         this.userService = userService;
         this.mealSignUpService = mealSignUpService;
