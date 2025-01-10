@@ -145,7 +145,7 @@ public class MealConfirmCallback implements Command {
 
         var dayMeals = new LinkedHashMap<CustomDayOfWeek, List<Meal>>();
         for (var meal : meals) {
-            dayMeals.computeIfAbsent(meal.getDayOfWeek(), _ -> new ArrayList<>());
+            dayMeals.computeIfAbsent(meal.getDayOfWeek(), it -> new ArrayList<>());
             dayMeals.get(meal.getDayOfWeek()).add(meal);
         }
 

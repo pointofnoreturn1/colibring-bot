@@ -102,7 +102,7 @@ public class MessageService {
         var bookingsByDay = new LinkedHashMap<LocalDate, TreeSet<Booking>>();
         for (var booking : sortedByDate) {
             var localDate = LocalDate.ofInstant(booking.getStartTime().toInstant(), ZoneId.systemDefault());
-            bookingsByDay.computeIfAbsent(localDate, _ -> new TreeSet<>(Comparator.comparing(Booking::getStartTime)));
+            bookingsByDay.computeIfAbsent(localDate, it -> new TreeSet<>(Comparator.comparing(Booking::getStartTime)));
             bookingsByDay.get(localDate).add(booking);
         }
 
