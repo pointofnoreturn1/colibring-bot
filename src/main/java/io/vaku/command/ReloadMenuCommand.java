@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static io.vaku.util.StringConstants.TEXT_RELOAD_MENU;
@@ -35,10 +36,11 @@ public class ReloadMenuCommand implements Command {
     }
 
     private Response getReloadedMenu(User user, ClassifiedUpdate update) {
+        LocalDateTime lcd = LocalDateTime.now();
         SendMessage msg = SendMessage
                 .builder()
                 .chatId(update.getChatId())
-                .text("Меню бота успешно обновлено")
+                .text("Меню бота успешно обновлено" + " " + lcd)
                 .replyMarkup(registrationMenuService.getUserMenu(user))
                 .build();
 
