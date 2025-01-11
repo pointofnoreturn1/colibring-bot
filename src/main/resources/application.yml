@@ -5,3 +5,5 @@ spring:
     url: ${BOT_DATASOURCE_URL}
     username: ${BOT_DATASOURCE_USERNAME}
     password: ${BOT_DATASOURCE_PASSWORD}
+  flyway:
+    locations: classpath:target/dependency/db/migration
