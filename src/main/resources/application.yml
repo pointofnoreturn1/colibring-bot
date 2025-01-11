@@ -7,6 +7,6 @@ spring:
     password: ${BOT_DATASOURCE_PASSWORD}
   flyway:
     enabled: true
-    locations: classpath:db/migration
+    locations: filesystem:src/main/resources/db/migration
     baseline-on-migrate: true
     baseline-version: 0
