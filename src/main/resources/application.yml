@@ -7,4 +7,4 @@ spring:
     password: ${BOT_DATASOURCE_PASSWORD}
   flyway:
     enabled: true
-    locations: filesystem:db/migration/
+    locations: filesystem:./db/migration
