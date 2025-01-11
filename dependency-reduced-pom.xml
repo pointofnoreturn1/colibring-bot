@@ -105,6 +105,7 @@
   </dependencies>
   <properties>
     <maven.compiler.target>21</maven.compiler.target>
+    <flyway.version>11.1.1</flyway.version>
     <maven.compiler.source>21</maven.compiler.source>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <spring.version>3.3.2</spring.version>
