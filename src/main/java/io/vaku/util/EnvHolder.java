@@ -14,7 +14,7 @@ public final class EnvHolder {
     private final String botName;
     private final String botToken;
     private final String botRegisterPassword;
-    private final String[] cookDaysOff;
+    private final String[] botCookDaysOff;
     private final Long botUserGroupId;
     private final Long botUserNotificationsTopicId;
     private final Long botUserResidentsTopicId;
@@ -30,7 +30,7 @@ public final class EnvHolder {
         this.botName = env.getProperty("BOT_NAME", String.class);
         this.botToken = env.getProperty("BOT_TOKEN", String.class);
         this.botRegisterPassword = env.getProperty("BOT_REGISTER_PASSWORD", String.class);
-        this.cookDaysOff = env.getProperty("COOK_DAYS_OFF", String[].class);
+        this.botCookDaysOff = env.getProperty("BOT_COOK_DAYS_OFF", String[].class);
         this.botUserGroupId = env.getProperty("BOT_USER_GROUP_ID", Long.class);
         this.botUserNotificationsTopicId = env.getProperty("BOT_USER_NOTIFICATIONS_TOPIC_ID", Long.class);
         this.botUserResidentsTopicId = env.getProperty("BOT_USER_RESIDENTS_TOPIC_ID", Long.class);

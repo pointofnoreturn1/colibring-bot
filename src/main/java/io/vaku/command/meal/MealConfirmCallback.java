@@ -15,8 +15,8 @@ import io.vaku.service.domain.meal.MealService;
 import io.vaku.service.domain.meal.MealSignUpMessageService;
 import io.vaku.service.domain.meal.MealSignUpService;
 import io.vaku.service.notification.AdminNotificationService;
+import io.vaku.util.EnvHolder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.time.*;
@@ -48,7 +48,7 @@ public class MealConfirmCallback implements Command {
             MealService mealService,
             UserMealService userMealService,
             AdminNotificationService adminNotificationService,
-            @Value("${app.feature.cook-days-off}") String[] cookDaysOff
+            EnvHolder envHolder
     ) {
         this.userService = userService;
         this.mealSignUpService = mealSignUpService;
@@ -57,7 +57,7 @@ public class MealConfirmCallback implements Command {
         this.mealService = mealService;
         this.userMealService = userMealService;
         this.adminNotificationService = adminNotificationService;
-        this.cookDaysOff = cookDaysOff;
+        this.cookDaysOff = envHolder.getBotCookDaysOff();
     }
 
     @Override
