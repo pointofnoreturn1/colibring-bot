@@ -5,6 +5,9 @@ spring:
     url: ${BOT_DATASOURCE_URL}
     username: ${BOT_DATASOURCE_USERNAME}
     password: ${BOT_DATASOURCE_PASSWORD}
+flyway:
+  baseline-on-migrate: true
+  baseline-version: 0
 #bot:
 #  name: ${BOT_NAME}
 #  token: ${BOT_TOKEN}
