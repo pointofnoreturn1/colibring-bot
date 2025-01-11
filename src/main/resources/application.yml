@@ -5,8 +5,8 @@ spring:
     url: ${BOT_DATASOURCE_URL}
     username: ${BOT_DATASOURCE_USERNAME}
     password: ${BOT_DATASOURCE_PASSWORD}
-  flyway:
-    enabled: true
-    locations: filesystem:src/main/resources/db/migration
-    baseline-on-migrate: true
-    baseline-version: 0
+#  flyway:
+#    enabled: true
+#    locations: filesystem:src/main/resources/db/migration
+#    baseline-on-migrate: true
+#    baseline-version: 0
