@@ -20,8 +20,8 @@ public class TelegramClient {
     private final RestTemplate restTemplate;
 
     @Autowired
-    public TelegramClient(@Value("${bot.token}") String botToken, RestTemplate restTemplate) {
-        this.botToken = botToken;
+    public TelegramClient(RestTemplate restTemplate) {
+        this.botToken = System.getenv("BOT_TOKEN");
         this.restTemplate = restTemplate;
     }
 

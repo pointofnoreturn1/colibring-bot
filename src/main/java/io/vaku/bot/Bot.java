@@ -5,10 +5,11 @@ import io.vaku.model.Response;
 import io.vaku.model.domain.User;
 import io.vaku.service.UpdateHandlerService;
 import io.vaku.service.domain.UserService;
+import io.vaku.util.EnvHolder;
 import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
@@ -25,19 +26,17 @@ public class Bot extends TelegramLongPollingBot {
     private static final Logger log = LoggerFactory.getLogger(Bot.class);
 
     private final UpdateHandlerService updateHandlerService;
-
     private final UserService userService;
+    private final String botName;
+    private final int timeout;
 
-    @Value("${bot.name}")
-    private String botName;
-
-    @Value("${app.connection.timeout}")
-    private int timeout;
-
-    public Bot(@Value("${bot.token}") String botToken, UpdateHandlerService updateHandlerService, UserService userService) {
-        super(botToken);
+    @Autowired
+    public Bot(UpdateHandlerService updateHandlerService, UserService userService, EnvHolder envHolder) {
+        super(System.getenv("BOT_TOKEN"));
         this.updateHandlerService = updateHandlerService;
         this.userService = userService;
+        this.botName = envHolder.getBotName();
+        this.timeout = envHolder.getBotConnectionTimeout();
     }
 
     @PostConstruct

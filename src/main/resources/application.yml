@@ -5,21 +5,3 @@ spring:
     url: ${BOT_DATASOURCE_URL}
     username: ${BOT_DATASOURCE_USERNAME}
     password: ${BOT_DATASOURCE_PASSWORD}
-bot:
-  name: ${BOT_NAME}
-  token: ${BOT_TOKEN}
-app:
-  feature:
-    register:
-      password: ${BOT_REGISTER_PASSWORD}
-    cook-days-off: WED, SUN
-    notifications:
-      user:
-        group-id: ${BOT_USER_GROUP_ID}
-        notifications-topic-id: ${BOT_USER_NOTIFICATIONS_TOPIC_ID}
-        residents-topic-id: ${BOT_USER_RESIDENTS_TOPIC_ID}
-        staff-topic-id: ${BOT_USER_STAFF_TOPIC_ID}
-      admin:
-        group-id: ${BOT_ADMIN_GROUP_ID}
-  connection:
-    timeout: ${BOT_CONNECTION_TIMEOUT}

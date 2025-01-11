@@ -66,7 +66,7 @@ public class MealShowMyRecordsCallback implements Command {
 
         for (Meal meal : userMeals) {
             var mealDay = meal.getDayOfWeek();
-            dayMeals.computeIfAbsent(mealDay, _ -> new ArrayList<>());
+            dayMeals.computeIfAbsent(mealDay, it -> new ArrayList<>());
             dayMeals.get(mealDay).add(meal);
         }
 

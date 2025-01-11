@@ -1,7 +1,7 @@
 package io.vaku.service.notification;
 
+import io.vaku.util.EnvHolder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -12,15 +12,10 @@ public class AcquaintanceNotificationService {
     private final TelegramClient telegramClient;
 
     @Autowired
-    public AcquaintanceNotificationService(
-            @Value("${app.feature.notifications.user.group-id}") long chatId,
-            @Value("${app.feature.notifications.user.residents-topic-id}") long residentsThreadId,
-            @Value("${app.feature.notifications.user.staff-topic-id}") long staffThreadId,
-            TelegramClient telegramClient
-    ) {
-        this.chatId = chatId;
-        this.residentsThreadId = residentsThreadId;
-        this.staffThreadId = staffThreadId;
+    public AcquaintanceNotificationService(TelegramClient telegramClient, EnvHolder envHolder) {
+        this.chatId = envHolder.getBotUserGroupId();
+        this.residentsThreadId = envHolder.getBotUserResidentsTopicId();
+        this.staffThreadId = envHolder.getBotUserStaffTopicId();
         this.telegramClient = telegramClient;
     }
 
