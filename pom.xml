@@ -123,7 +123,9 @@
                 <groupId>org.flywaydb</groupId>
                 <artifactId>flyway-maven-plugin</artifactId>
                 <configuration>
-                    <url>${env.DATABASE_URL}</url>
+                    <url>${env.BOT_DATASOURCE_URL}</url>
+                    <user>${env.BOT_DATASOURCE_USERNAME}</user>
+                    <password>${env.BOT_DATASOURCE_PASSWORD}</password>
                 </configuration>
             </plugin>
         </plugins>
