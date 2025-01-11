@@ -7,3 +7,6 @@ spring:
     password: ${BOT_DATASOURCE_PASSWORD}
   flyway:
     locations: classpath:target/dependency/db/migration
+logging:
+  level:
+    ROOT: DEBUG
