@@ -23,7 +23,7 @@ import java.util.*;
 import static io.vaku.model.enm.AdminStatus.NO_STATUS;
 import static io.vaku.model.enm.AdminStatus.REQUIRE_NEW_MENU_INPUT;
 import static io.vaku.model.enm.MealType.*;
-import static io.vaku.util.DateTimeUtils.todayOrdinal;
+import static io.vaku.util.DateTimeUtils.*;
 
 @Service
 public class MealAdminHandleService {
@@ -151,23 +151,9 @@ public class MealAdminHandleService {
         return mealService.countByStartDateIsAfter(getPrevMonday()) > 0;
     }
 
-    private Date getNextMonday() {
-        LocalDate nextMonday = LocalDate.now().with(TemporalAdjusters.next(DayOfWeek.MONDAY));
-
-        return Date.from(nextMonday.atStartOfDay(ZoneId.systemDefault()).toInstant());
-    }
-
     private Date getPrevMonday() {
         LocalDate prevMonday = LocalDate.now().with(TemporalAdjusters.previous(DayOfWeek.MONDAY));
 
         return Date.from(prevMonday.atStartOfDay(ZoneId.systemDefault()).toInstant());
-    }
-
-    private Date getNextSunday(Date monday) {
-        LocalDate nextSunday = LocalDate
-                .ofInstant(monday.toInstant(), ZoneId.systemDefault())
-                .with(TemporalAdjusters.next(DayOfWeek.SUNDAY));
-
-        return Date.from(nextSunday.atStartOfDay(ZoneId.systemDefault()).toInstant());
     }
 }

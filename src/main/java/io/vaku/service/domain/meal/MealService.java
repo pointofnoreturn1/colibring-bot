@@ -10,8 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
-import static io.vaku.util.DateTimeUtils.getCurrentMonday;
-import static io.vaku.util.DateTimeUtils.getCurrentSunday;
+import static io.vaku.util.DateTimeUtils.*;
 
 @Service
 @Transactional(readOnly = true)
@@ -44,10 +43,25 @@ public class MealService {
         repository.deleteAll();
     }
 
-    public Map<CustomDayOfWeek, List<Meal>> getDayMeals() {
+    public Map<CustomDayOfWeek, List<Meal>> getCurrentWeekDayMeals() {
         Map<CustomDayOfWeek, List<Meal>> dayMeals = new LinkedHashMap<>();
 
         for (Meal meal : findAllSortedBetween(getCurrentMonday(), getCurrentSunday())) {
+            if (!dayMeals.containsKey(meal.getDayOfWeek())) {
+                dayMeals.put(meal.getDayOfWeek(), new ArrayList<>());
+            }
+
+            dayMeals.get(meal.getDayOfWeek()).add(meal);
+        }
+
+        return dayMeals;
+    }
+
+    public Map<CustomDayOfWeek, List<Meal>> getNextWeekDayMeals() {
+        Map<CustomDayOfWeek, List<Meal>> dayMeals = new LinkedHashMap<>();
+
+        var nextMonday = getNextMonday();
+        for (Meal meal : findAllSortedBetween(nextMonday, getNextSunday(nextMonday))) {
             if (!dayMeals.containsKey(meal.getDayOfWeek())) {
                 dayMeals.put(meal.getDayOfWeek(), new ArrayList<>());
             }
