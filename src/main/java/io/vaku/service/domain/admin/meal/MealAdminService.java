@@ -3,6 +3,7 @@ package io.vaku.service.domain.admin.meal;
 import io.vaku.model.domain.Meal;
 import io.vaku.model.domain.User;
 import io.vaku.model.domain.UserMeal;
+import io.vaku.model.enm.CustomDayOfWeek;
 import io.vaku.service.domain.meal.MealService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.*;
 
+import static io.vaku.util.DateTimeUtils.*;
 import static io.vaku.util.StringUtils.getStringUser;
 import static io.vaku.util.StringConstants.EMOJI_IS_VEGAN;
 import static io.vaku.util.StringConstants.TEXT_NO_MEAL_SCHEDULE;
@@ -25,9 +27,15 @@ public class MealAdminService {
     }
 
     public String getWhoEatsWeek() {
-        var stringDayMeals = new ArrayList<String>();
+        Map<CustomDayOfWeek, List<Meal>> weekDayMeals;
+        if (newMenuExists()) {
+            weekDayMeals = mealService.getNextWeekDayMeals();
+        } else {
+            weekDayMeals = mealService.getCurrentWeekDayMeals();
+        }
 
-        for (var entry : mealService.getCurrentWeekDayMeals().entrySet()) {
+        var stringDayMeals = new ArrayList<String>();
+        for (var entry : weekDayMeals.entrySet()) {
             var sb = new StringBuilder();
             sb.append(entry.getKey().getName().toUpperCase());
             for (var meal : entry.getValue()) {
@@ -121,5 +129,9 @@ public class MealAdminService {
         }
 
         return sb.toString();
+    }
+
+    private boolean newMenuExists() {
+        return mealService.countByStartDateIsAfter(getNextMonday()) > 0;
     }
 }

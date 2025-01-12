@@ -15,8 +15,7 @@ import java.util.HashSet;
 import java.util.List;
 
 import static io.vaku.model.enm.BookingStatus.REQUIRE_INPUT;
-import static io.vaku.util.DateTimeUtils.getCurrentMonday;
-import static io.vaku.util.DateTimeUtils.getCurrentSunday;
+import static io.vaku.util.DateTimeUtils.*;
 
 @Service
 public class MealSignUpHandleService {
@@ -58,7 +57,15 @@ public class MealSignUpHandleService {
 
     private List<Response> proceedOneMealSignUp(User user, ClassifiedUpdate update) {
         String[] arr = update.getCommandName().split("_")[1].split(":");
-        List<Meal> meals = mealService.findAllSortedBetween(getCurrentMonday(), getCurrentSunday());
+
+        List<Meal> meals;
+        if (newMenuExists()) {
+            var nextMonday = getNextMonday();
+            meals = mealService.findAllSortedBetween(nextMonday, getNextSunday(nextMonday));
+        } else {
+            meals = mealService.findAllSortedBetween(getCurrentMonday(), getCurrentSunday());
+        }
+
         Meal meal = meals.stream()
                 .filter(it -> it.getDayOfWeek().equals(CustomDayOfWeek.valueOf(arr[0])))
                 .filter(it -> it.getMealType().equals(MealType.valueOf(arr[1])))
@@ -76,7 +83,15 @@ public class MealSignUpHandleService {
 
     private List<Response> proceedDayMealSignUp(User user, ClassifiedUpdate update) {
         int dayOrdinal = Integer.parseInt(update.getCommandName().split("_")[1]);
-        List<Meal> meals = mealService.findAllSortedBetween(getCurrentMonday(), getCurrentSunday());
+
+        List<Meal> meals;
+        if (newMenuExists()) {
+            var nextMonday = getNextMonday();
+            meals = mealService.findAllSortedBetween(nextMonday, getNextSunday(nextMonday));
+        } else {
+            meals = mealService.findAllSortedBetween(getCurrentMonday(), getCurrentSunday());
+        }
+
         List<Meal> dayMeals = meals.stream()
                 .filter(it -> it.getDayOfWeek().ordinal() == dayOrdinal)
                 .toList();
@@ -95,7 +110,14 @@ public class MealSignUpHandleService {
     }
 
     private List<Response> proceedPickAllMeals(User user, ClassifiedUpdate update) {
-        List<Meal> meals = mealService.findAllSortedBetween(getCurrentMonday(), getCurrentSunday());
+        List<Meal> meals;
+        if (newMenuExists()) {
+            var nextMonday = getNextMonday();
+            meals = mealService.findAllSortedBetween(nextMonday, getNextSunday(nextMonday));
+        } else {
+            meals = mealService.findAllSortedBetween(getCurrentMonday(), getCurrentSunday());
+        }
+
         long chatId = user.getChatId();
 
         if (mealSignUpService.getMealsByChatId(chatId).size() == meals.size()) {
@@ -107,5 +129,9 @@ public class MealSignUpHandleService {
         mealSignUpService.addAllMeals(chatId, meals);
 
         return List.of(mealSignUpMessageService.getMealSignUpEditMarkupMsg(user, update, meals));
+    }
+
+    private boolean newMenuExists() {
+        return mealService.countByStartDateIsAfter(getNextMonday()) > 0;
     }
 }
