@@ -27,7 +27,7 @@ public class MealAdminService {
     public String getWhoEatsWeek() {
         var stringDayMeals = new ArrayList<String>();
 
-        for (var entry : mealService.getDayMeals().entrySet()) {
+        for (var entry : mealService.getCurrentWeekDayMeals().entrySet()) {
             var sb = new StringBuilder();
             sb.append(entry.getKey().getName().toUpperCase());
             for (var meal : entry.getValue()) {
@@ -44,7 +44,7 @@ public class MealAdminService {
     }
 
     public String getWhoEatsToday() {
-        var todayMeals = mealService.getDayMeals()
+        var todayMeals = mealService.getCurrentWeekDayMeals()
                 .entrySet()
                 .stream()
                 .filter(it -> it.getKey().ordinal() == LocalDate.now().getDayOfWeek().ordinal())

@@ -6,6 +6,7 @@ import io.vaku.model.ClassifiedUpdate;
 import io.vaku.model.Response;
 import io.vaku.model.domain.Meal;
 import io.vaku.model.domain.User;
+import io.vaku.model.enm.CustomDayOfWeek;
 import io.vaku.service.domain.meal.MealService;
 import io.vaku.service.domain.meal.MealSignUpMessageService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,12 +19,8 @@ import static io.vaku.util.StringUtils.getStringPrice;
 
 @Component
 public class MealShowActualMenuCallback implements Command {
-
-    @Autowired
-    private MealService mealService;
-
-    @Autowired
-    private MealSignUpMessageService mealSignUpMessageService;
+    private final MealService mealService;
+    private final MealSignUpMessageService mealSignUpMessageService;
 
     @Override
     public Class<?> getHandler() {
@@ -35,16 +32,29 @@ public class MealShowActualMenuCallback implements Command {
         return "callbackMealShowMenu";
     }
 
+    @Autowired
+    public MealShowActualMenuCallback(MealService mealService, MealSignUpMessageService mealSignUpMessageService) {
+        this.mealService = mealService;
+        this.mealSignUpMessageService = mealSignUpMessageService;
+    }
+
     @Override
     public List<Response> getAnswer(User user, ClassifiedUpdate update) {
-        var dayMeals = mealService.getDayMeals();
+        Map<CustomDayOfWeek, List<Meal>> dayMeals;
         var stringDayMeals = new ArrayList<String>();
-        stringDayMeals.add(getHumanDatesPeriod(getCurrentMonday(), getCurrentSunday()));
+        if (newMenuExists()) {
+            dayMeals = mealService.getNextWeekDayMeals();
+            var nextMonday = getNextMonday();
+            stringDayMeals.add(getHumanDatesPeriod(nextMonday, getNextSunday(nextMonday)));
+        } else {
+            dayMeals = mealService.getCurrentWeekDayMeals();
+            stringDayMeals.add(getHumanDatesPeriod(getCurrentMonday(), getCurrentSunday()));
+        }
 
         for (var entry : dayMeals.entrySet()) {
             var sb = new StringBuilder();
             sb.append(entry.getKey().getName());
-            for (Meal meal : entry.getValue()) {
+            for (var meal : entry.getValue()) {
                 sb.append("\n• ").append(meal.getName());
                 int price = meal.getPrice();
                 if (price != 10) {
@@ -54,8 +64,12 @@ public class MealShowActualMenuCallback implements Command {
             stringDayMeals.add(sb.toString());
         }
 
-        String text = String.join("\n\n", stringDayMeals);
+        var text = String.join("\n\n", stringDayMeals);
 
         return List.of(mealSignUpMessageService.getMealScheduleEditedMsg(user, update, text));
+    }
+
+    private boolean newMenuExists() {
+        return mealService.countByStartDateIsAfter(getNextMonday()) > 0;
     }
 }

@@ -193,7 +193,22 @@ public final class DateTimeUtils {
         );
     }
 
-    // TODO: refactor into one method getCurrentMonday(), getCurrentSunday() and this method, consider using LocalDateTime instead of old Date class in the whole project
+    public static Date getNextMonday() {
+        LocalDate nextMonday = LocalDate.now().with(TemporalAdjusters.next(DayOfWeek.MONDAY));
+
+        return Date.from(nextMonday.atStartOfDay(ZoneId.systemDefault()).toInstant());
+    }
+
+    public static Date getNextSunday(Date monday) {
+        LocalDate nextSunday = LocalDate
+                .ofInstant(monday.toInstant(), ZoneId.systemDefault())
+                .with(TemporalAdjusters.next(DayOfWeek.SUNDAY));
+
+        return Date.from(nextSunday.atStartOfDay(ZoneId.systemDefault()).toInstant());
+    }
+
+    // TODO: refactor into one method getCurrentMonday(), getCurrentSunday() and this method,
+    //  consider using LocalDateTime instead of old Date class in the whole project
     public static ZonedDateTime getDay(DayOfWeek day) {
         if (todayOrdinal() == day.ordinal()) {
             return LocalDate.now().atStartOfDay(ZoneId.systemDefault());
