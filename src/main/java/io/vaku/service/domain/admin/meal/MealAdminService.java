@@ -29,7 +29,7 @@ public class MealAdminService {
 
         for (var entry : mealService.getDayMeals().entrySet()) {
             var sb = new StringBuilder();
-            sb.append("*__").append(entry.getKey().getPlainName().toUpperCase()).append("__*");
+            sb.append("*__").append(entry.getKey().getName().toUpperCase()).append("__*");
             for (var meal : entry.getValue()) {
                 sb.append(getStringWeekMeals(meal));
             }
@@ -54,7 +54,7 @@ public class MealAdminService {
         var sb = new StringBuilder();
 
         if (todayMeals != null) {
-            sb.append("*__").append(todayMeals.getKey().getPlainName().toUpperCase()).append("__*");
+            sb.append("*__").append(todayMeals.getKey().getName().toUpperCase()).append("__*");
             todayMeals.getValue().forEach(it -> sb.append(getStringDayMeals(it)));
 
             return sb.toString();
