@@ -5,7 +5,6 @@ import io.vaku.model.Response;
 import io.vaku.model.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.telegram.telegrambots.meta.api.methods.ParseMode;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 
@@ -57,7 +56,6 @@ public class MealAdminMessageService {
         var msg = SendMessage.builder()
                 .chatId(update.getChatId())
                 .text(mealAdminService.getWhoEatsWeek())
-                .parseMode(ParseMode.MARKDOWNV2)
                 .build();
 
         return new Response(msg);
@@ -67,7 +65,6 @@ public class MealAdminMessageService {
         var msg = SendMessage.builder()
                 .chatId(update.getChatId())
                 .text(mealAdminService.getWhoEatsToday())
-                .parseMode(ParseMode.MARKDOWNV2)
                 .build();
 
         return new Response(msg);

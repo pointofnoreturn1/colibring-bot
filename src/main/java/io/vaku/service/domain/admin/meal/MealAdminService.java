@@ -29,7 +29,7 @@ public class MealAdminService {
 
         for (var entry : mealService.getDayMeals().entrySet()) {
             var sb = new StringBuilder();
-            sb.append("*__").append(entry.getKey().getName().toUpperCase()).append("__*");
+            sb.append(entry.getKey().getName().toUpperCase());
             for (var meal : entry.getValue()) {
                 sb.append(getStringWeekMeals(meal));
             }
@@ -54,7 +54,7 @@ public class MealAdminService {
         var sb = new StringBuilder();
 
         if (todayMeals != null) {
-            sb.append("*__").append(todayMeals.getKey().getName().toUpperCase()).append("__*");
+            sb.append(todayMeals.getKey().getName().toUpperCase());
             todayMeals.getValue().forEach(it -> sb.append(getStringDayMeals(it)));
 
             return sb.toString();
@@ -74,7 +74,7 @@ public class MealAdminService {
                 .toList();
 
         if (!users.isEmpty()) {
-            sb.append(" \\[").append(users.size()).append("\\] ");
+            sb.append(" [").append(users.size()).append("] ");
             for (var user : users) {
                 sb.append("\n   ");
                 if (user.isVegan()) {
@@ -103,13 +103,13 @@ public class MealAdminService {
             int vegMealsCount = (int) users.stream().filter(User::isVegan).count();
             int nonVegMealsCount = (int) users.stream().filter(not(User::isVegan)).count();
 
-            sb.append(" \\(Всего: ")
+            sb.append(" (Всего: ")
                     .append(users.size())
                     .append(", вег: ")
                     .append(vegMealsCount)
                     .append(", не вег: ")
                     .append(nonVegMealsCount)
-                    .append("\\)");
+                    .append(")");
 
             for (var user : users) {
                 sb.append("\n   ");
