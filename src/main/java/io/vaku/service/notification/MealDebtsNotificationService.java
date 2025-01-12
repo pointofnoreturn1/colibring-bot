@@ -32,7 +32,7 @@ public class MealDebtsNotificationService {
     @Scheduled(fixedRate = 3_600_000) // 1 hour
     public void checkMealDebts() {
         var now = LocalDateTime.now();
-        if (now.getDayOfWeek().ordinal() != 6 || now.getHour() < 13) {
+        if (now.getDayOfWeek().ordinal() != 6 || now.getHour() != 13) {
             return;
         }
 
