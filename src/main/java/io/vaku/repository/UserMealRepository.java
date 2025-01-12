@@ -19,4 +19,12 @@ public interface UserMealRepository extends CrudRepository<UserMeal, UUID> {
             nativeQuery = true
     )
     List<UserMeal> findAllBetween(@Param("from") Date from, @Param("to") Date to);
+
+    @Query(
+            value = "SELECT COUNT(*) " +
+                    "FROM user_meal " +
+                    "WHERE user_id = :userId AND start_date >= :from AND end_date <= :to",
+            nativeQuery = true
+    )
+    int countBetweenById(@Param("userId") long userId, @Param("from") Date from, @Param("to") Date to);
 }

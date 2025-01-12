@@ -18,8 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static io.vaku.util.DateTimeUtils.getCurrentMonday;
-import static io.vaku.util.DateTimeUtils.getCurrentSunday;
+import static io.vaku.util.DateTimeUtils.*;
 
 @Service
 @Transactional(readOnly = true)
@@ -76,5 +75,10 @@ public class UserMealService {
         } else {
             log.info("No meal debts were saved because it's not Sunday");
         }
+    }
+
+    public boolean nextWeekMealSignUpExists(long userId) {
+        var nextMonday = getNextMonday();
+        return repository.countBetweenById(userId, nextMonday, getNextSunday(nextMonday)) > 0;
     }
 }

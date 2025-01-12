@@ -8,7 +8,7 @@ import io.vaku.model.domain.Meal;
 import io.vaku.model.domain.User;
 import io.vaku.model.domain.UserMeal;
 import io.vaku.model.enm.CustomDayOfWeek;
-import io.vaku.service.domain.meal.MealService;
+import io.vaku.service.domain.UserMealService;
 import io.vaku.service.domain.meal.MealSignUpMessageService;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -25,15 +25,19 @@ import static io.vaku.util.StringUtils.getStringPrice;
 
 @Component
 public class MealShowMyRecordsCallback implements Command {
-
     @PersistenceContext
     private EntityManager entityManager;
+    private final MealSignUpMessageService mealSignUpMessageService;
+    private final UserMealService userMealService;
 
     @Autowired
-    private MealService mealService;
-
-    @Autowired
-    private MealSignUpMessageService mealSignUpMessageService;
+    public MealShowMyRecordsCallback(
+            MealSignUpMessageService mealSignUpMessageService,
+            UserMealService userMealService
+    ) {
+        this.mealSignUpMessageService = mealSignUpMessageService;
+        this.userMealService = userMealService;
+    }
 
     @Override
     public Class<?> getHandler() {
@@ -48,11 +52,12 @@ public class MealShowMyRecordsCallback implements Command {
     @Override
     @Transactional(readOnly = true)
     public List<Response> getAnswer(User user, ClassifiedUpdate update) {
-        entityManager
-                .unwrap(Session.class)
-                .enableFilter("userMealsFilter")
-                .setParameter("from", getCurrentMonday())
-                .setParameter("to", getCurrentSunday());
+        if (userMealService.nextWeekMealSignUpExists(user.getId())) {
+            var nextMonday = getNextMonday();
+            enableUserMealsFilter(nextMonday, getNextSunday(nextMonday));
+        } else {
+            enableUserMealsFilter(getCurrentMonday(), getCurrentSunday());
+        }
 
         var dayMeals = new LinkedHashMap<CustomDayOfWeek, List<Meal>>();
         var comparator = Comparator.comparing(Meal::getDayOfWeek).thenComparing(Meal::getMealType);
@@ -115,5 +120,13 @@ public class MealShowMyRecordsCallback implements Command {
         }
 
         return sb.toString();
+    }
+
+    private void enableUserMealsFilter(Date from, Date to) {
+        entityManager
+                .unwrap(Session.class)
+                .enableFilter("userMealsFilter")
+                .setParameter("from", from)
+                .setParameter("to", to);
     }
 }
