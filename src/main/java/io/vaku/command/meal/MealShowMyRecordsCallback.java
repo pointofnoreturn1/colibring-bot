@@ -52,7 +52,9 @@ public class MealShowMyRecordsCallback implements Command {
     @Override
     @Transactional(readOnly = true)
     public List<Response> getAnswer(User user, ClassifiedUpdate update) {
-        if (userMealService.nextWeekMealSignUpExists(user.getId())) {
+        var nextWeekSignUpExists = userMealService.nextWeekMealSignUpExists(user.getId());
+
+        if (nextWeekSignUpExists) {
             var nextMonday = getNextMonday();
             enableUserMealsFilter(nextMonday, getNextSunday(nextMonday));
         } else {
@@ -79,7 +81,13 @@ public class MealShowMyRecordsCallback implements Command {
             return List.of(mealSignUpMessageService.getMealScheduleEditedMsg(user, update, EMOJI_MEAL_SIGN_UP + TEXT_NO_MEAL_SIGN_UP));
         }
 
-        var text = getResponseText(dayMeals, getCurrentMonday(), getCurrentSunday());
+        String text;
+        if (nextWeekSignUpExists) {
+            var nextMonday = getNextMonday();
+            text = getResponseText(dayMeals, nextMonday, getNextSunday(nextMonday));
+        } else {
+            text = getResponseText(dayMeals, getCurrentMonday(), getCurrentSunday());
+        }
 
         return List.of(mealSignUpMessageService.getMealScheduleEditedMsg(user, update, text));
     }
