@@ -150,7 +150,7 @@ public class MealConfirmCallback implements Command {
         }
 
         for (var entry : dayMeals.entrySet()) {
-            sb.append("\n\n").append(entry.getKey().getPlainName().toUpperCase());
+            sb.append("\n\n").append(entry.getKey().getName().toUpperCase());
             for (var meal : entry.getValue()) {
                 sb.append("\n• ").append(meal.getName());
             }
