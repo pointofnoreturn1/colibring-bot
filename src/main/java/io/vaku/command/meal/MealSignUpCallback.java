@@ -13,10 +13,10 @@ import io.vaku.service.domain.meal.MealSignUpMessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import static io.vaku.util.DateTimeUtils.getCurrentMonday;
-import static io.vaku.util.DateTimeUtils.getCurrentSunday;
+import static io.vaku.util.DateTimeUtils.*;
 
 @Component
 public class MealSignUpCallback implements Command {
@@ -42,7 +42,14 @@ public class MealSignUpCallback implements Command {
 
     @Override
     public List<Response> getAnswer(User user, ClassifiedUpdate update) {
-        List<Meal> meals = mealService.findAllSortedBetween(getCurrentMonday(), getCurrentSunday());
+        List<Meal> meals;
+        if (newMenuExists()) {
+            var nextMonday = getNextMonday();
+            meals = mealService.findAllSortedBetween(nextMonday, getNextSunday(nextMonday));
+        } else {
+            meals = mealService.findAllSortedBetween(getCurrentMonday(), getCurrentSunday());
+        }
+
         if (meals.size() != 21) {
             return List.of(mealSignUpMessageService.getMealScheduleEditedMsg(user, update, ""));
         }
@@ -51,5 +58,9 @@ public class MealSignUpCallback implements Command {
         userService.createOrUpdate(user);
 
        return List.of(mealSignUpMessageService.getMealSignUpEditedMsg(user, update, meals));
+    }
+
+    private boolean newMenuExists() {
+        return mealService.countByStartDateIsAfter(getNextMonday()) > 0;
     }
 }
