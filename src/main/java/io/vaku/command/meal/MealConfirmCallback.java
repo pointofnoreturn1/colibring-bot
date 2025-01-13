@@ -20,8 +20,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.time.*;
-import java.time.temporal.ChronoUnit;
-import java.time.temporal.Temporal;
 import java.util.*;
 
 import static io.vaku.model.enm.BookingStatus.NO_STATUS;
@@ -101,18 +99,20 @@ public class MealConfirmCallback implements Command {
     }
 
     private boolean isSignUpAllowed(List<Meal> meals, List<CustomDayOfWeek> daysOff) {
-        LocalDateTime threshold = LocalDate.now().atTime(8, 0);
-        LocalDateTime dateTimeNow = LocalDateTime.now();
-        DayOfWeek dayNow = dateTimeNow.getDayOfWeek();
+        var threshold = ZonedDateTime.now().withHour(8).withMinute(0).withSecond(0).withNano(0);
+        var dateTimeNow = ZonedDateTime.now();
+        var dayNow = dateTimeNow.getDayOfWeek();
 
-        boolean isMenuUpdated = LocalDate.ofInstant(meals.getFirst().getCreatedAt().toInstant(), ZoneId.systemDefault()).getDayOfMonth()
-                == LocalDate.now().getDayOfMonth();
+        boolean isMenuUpdated = LocalDate.ofInstant(
+                meals.getFirst().getCreatedAt().toInstant(),
+                ZoneId.systemDefault()
+        ).getDayOfMonth() == LocalDate.now().getDayOfMonth();
 
         if (dayNow.ordinal() == 6 && isMenuUpdated) {
             return true;
         }
 
-        for (Meal meal : meals) {
+        for (var meal : meals) {
             int mealDay = meal.getDayOfWeek().ordinal();
             int today = dayNow.ordinal();
 
@@ -124,9 +124,11 @@ public class MealConfirmCallback implements Command {
                 return false;
             }
 
-            for (CustomDayOfWeek dayOff : daysOff) {
-                ZonedDateTime dayOffThreshold = getDay(DayOfWeek.of(dayOff.ordinal())).withHour(8).withMinute(0);
-                if (mealDay == dayOff.ordinal() && violatesDayOffThreshold(dateTimeNow, dayOffThreshold)) {
+            for (var dayOff : daysOff) {
+                var dayOffThreshold = getDay(
+                        DayOfWeek.of(dayOff.ordinal())
+                ).withHour(8).withMinute(0).withSecond(0).withNano(0);
+                if (mealDay == dayOff.ordinal() && dateTimeNow.isAfter(dayOffThreshold)) {
                     return false;
                 }
             }
@@ -135,18 +137,18 @@ public class MealConfirmCallback implements Command {
         return true;
     }
 
-    private boolean violatesDayOffThreshold(Temporal t1, Temporal t2) {
-        return ChronoUnit.MINUTES.between(t1, t2) < (24 * 60); // 24 hours restriction before cook's days off
-    }
-
     private String getSignUpInfo(User user, List<Meal> meals) {
         var sb = new StringBuilder("User signed up for meals\n");
         sb.append(getStringUserForAdmin(user));
 
-        var dayMeals = new LinkedHashMap<CustomDayOfWeek, List<Meal>>();
+        var dayMeals = new TreeMap<CustomDayOfWeek, List<Meal>>(Comparator.naturalOrder());
         for (var meal : meals) {
             dayMeals.computeIfAbsent(meal.getDayOfWeek(), it -> new ArrayList<>());
             dayMeals.get(meal.getDayOfWeek()).add(meal);
+        }
+
+        for (var mealList : dayMeals.values()) {
+            mealList.sort(Comparator.comparing(Meal::getMealType));
         }
 
         for (var entry : dayMeals.entrySet()) {
