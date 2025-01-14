@@ -142,7 +142,8 @@ public final class DateTimeUtils {
         sb.append(":");
         sb.append(endTimeMinutes.length() == 1 ? "0" + endTimeMinutes : endTimeMinutes);
 
-        if (startDateTime.getDayOfMonth() < endDateTime.getDayOfMonth()) {
+        if (startDateTime.getDayOfMonth() < endDateTime.getDayOfMonth() &&
+                endDateTime.isAfter(endDateTime.withHour(0).withMinute(0).withSecond(0).withNano(0))) {
             sb.append(" (след. день)");
         }
 
@@ -213,7 +214,7 @@ public final class DateTimeUtils {
         if (todayOrdinal() == day.ordinal()) {
             return LocalDate.now().atStartOfDay(ZoneId.systemDefault());
         }
-        
+
         return LocalDate.now().with(TemporalAdjusters.next(day)).atStartOfDay(ZoneId.systemDefault());
     }
 
@@ -247,7 +248,7 @@ public final class DateTimeUtils {
 //
 //        return sb.toString();
 //    }
-    
+
     private static Date getTodayDate() {
         return Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant());
     }
