@@ -8,6 +8,9 @@ import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static io.vaku.util.StringConstants.*;
 
 @Service
@@ -52,13 +55,14 @@ public class MealAdminMessageService {
         return new Response(msg);
     }
 
-    public Response getMealAdminWhoEatsWeekMsg(ClassifiedUpdate update) {
-        var msg = SendMessage.builder()
-                .chatId(update.getChatId())
-                .text(mealAdminService.getWhoEatsWeek())
-                .build();
+    public List<Response> getMealAdminWhoEatsWeekMsg(ClassifiedUpdate update) {
+        var responses = new ArrayList<Response>();
 
-        return new Response(msg);
+        for (var text : mealAdminService.getWhoEatsWeek()) {
+            responses.add(new Response(SendMessage.builder().chatId(update.getChatId()).text(text).build()));
+        }
+
+        return responses;
     }
 
     public Response getMealAdminWhoEatsTodayMsg(ClassifiedUpdate update) {

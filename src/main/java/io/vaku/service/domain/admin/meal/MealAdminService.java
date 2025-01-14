@@ -26,7 +26,7 @@ public class MealAdminService {
         this.mealService = mealService;
     }
 
-    public String getWhoEatsWeek() {
+    public List<String> getWhoEatsWeek() {
         Map<CustomDayOfWeek, List<Meal>> weekDayMeals;
         if (newMenuExists()) {
             weekDayMeals = mealService.getNextWeekDayMeals();
@@ -45,10 +45,10 @@ public class MealAdminService {
         }
 
         if (stringDayMeals.isEmpty()) {
-            return TEXT_NO_MEAL_SCHEDULE;
+            return List.of(TEXT_NO_MEAL_SCHEDULE);
         }
 
-        return String.join("\n\n", stringDayMeals);
+        return stringDayMeals;
     }
 
     public String getWhoEatsToday() {
