@@ -16,7 +16,7 @@ public interface TvBookingRepository extends CrudRepository<TvBooking, UUID> {
     @Query(
             value = "SELECT * " +
                     "FROM tv_booking " +
-                    "WHERE user_id = :userId AND is_active = TRUE AND end_time >= CURRENT_DATE " +
+                    "WHERE user_id = :userId AND is_active = TRUE AND end_time >= (CURRENT_DATE + '00:01:00'::time) " +
                     "ORDER BY start_time",
             nativeQuery = true
     )
@@ -25,7 +25,7 @@ public interface TvBookingRepository extends CrudRepository<TvBooking, UUID> {
     @Query(
             value = "SELECT * " +
                     "FROM tv_booking " +
-                    "WHERE is_active = TRUE AND end_time >= CURRENT_DATE " +
+                    "WHERE is_active = TRUE AND end_time >= (CURRENT_DATE + '00:01:00'::time) " +
                     "ORDER BY start_time",
             nativeQuery = true
     )

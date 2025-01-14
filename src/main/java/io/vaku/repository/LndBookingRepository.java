@@ -1,7 +1,6 @@
 package io.vaku.repository;
 
 import io.vaku.model.domain.LaundryBooking;
-import io.vaku.model.domain.TvBooking;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -17,7 +16,7 @@ public interface LndBookingRepository extends CrudRepository<LaundryBooking, UUI
     @Query(
             value = "SELECT * " +
                     "FROM laundry_booking " +
-                    "WHERE user_id = :userId AND is_active = TRUE AND end_time >= CURRENT_DATE " +
+                    "WHERE user_id = :userId AND is_active = TRUE AND end_time >= (CURRENT_DATE + '00:01:00'::time) " +
                     "ORDER BY start_time",
             nativeQuery = true
     )
@@ -26,7 +25,7 @@ public interface LndBookingRepository extends CrudRepository<LaundryBooking, UUI
     @Query(
             value = "SELECT * " +
                     "FROM laundry_booking " +
-                    "WHERE is_active = TRUE AND end_time >= CURRENT_DATE " +
+                    "WHERE is_active = TRUE AND end_time >= (CURRENT_DATE + '00:01:00'::time) " +
                     "ORDER BY start_time",
             nativeQuery = true
     )
