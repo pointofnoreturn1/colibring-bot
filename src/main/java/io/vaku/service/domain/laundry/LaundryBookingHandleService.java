@@ -15,6 +15,7 @@ import io.vaku.util.DateTimeUtils;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -103,6 +104,7 @@ public class LaundryBookingHandleService {
             return List.of(laundryMessageService.getIntersectedLaundryBookingsEditedMsg(user, update, intersections));
         }
 
+        var savedBookings = new ArrayList<LaundryBooking>();
         for (var schedule : schedules) {
             var booking = new LaundryBooking(
                     UUID.randomUUID(),
@@ -111,13 +113,12 @@ public class LaundryBookingHandleService {
                     null, // for laundry description is always empty
                     user
             );
-            laundryBookingService.createOrUpdate(booking);
+            savedBookings.add(laundryBookingService.createOrUpdate(booking));
         }
-
         user.setLaundryBookingStatus(NO_STATUS);
         userService.createOrUpdate(user);
 
-        return List.of(messageService.getDoneMsg(user, update));
+        return List.of(messageService.getDoneMsg(user, update), getConfirmationMsg(savedBookings, update.getChatId()));
     }
 
     private String getRemovedScheduleInfo(LaundryBooking booking) {
@@ -136,5 +137,26 @@ public class LaundryBookingHandleService {
                 .append("\n");
 
         return sb.toString();
+    }
+
+    private Response getConfirmationMsg(List<LaundryBooking> bookings, long chatId) {
+        var stringBookings = new StringBuilder(EMOJI_LAUNDRY_BOOKING + "Я записал тебя на стирку:");
+        for (var booking : bookings) {
+            stringBookings
+                    .append("\n")
+                    .append(
+                            DateTimeUtils.getHumanScheduleDetailed(
+                                    booking.getStartTime(),
+                                    booking.getEndTime(),
+                                    booking.getDescription()
+                            )
+                    );
+        }
+        var msg = SendMessage.builder()
+                .chatId(chatId)
+                .text(stringBookings.toString())
+                .build();
+
+        return new Response(msg);
     }
 }

@@ -15,6 +15,7 @@ import io.vaku.util.DateTimeUtils;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,8 +24,7 @@ import java.util.UUID;
 import static io.vaku.model.enm.BookingStatus.*;
 import static io.vaku.util.DateTimeUtils.checkTimeIntersections;
 import static io.vaku.util.DateTimeUtils.getSchedule;
-import static io.vaku.util.StringConstants.EMOJI_MT_ROOM_BOOKING;
-import static io.vaku.util.StringConstants.EMOJI_REMOVE;
+import static io.vaku.util.StringConstants.*;
 import static io.vaku.util.StringUtils.getStringUser;
 
 @Service
@@ -105,24 +105,22 @@ public class MtRoomBookingHandleService {
             return List.of(mtRoomMessageService.getIntersectedMtRoomBookingsEditedMsg(user, update, intersections));
         }
 
-        var bookings = new ArrayList<MeetingRoomBooking>();
+        var savedBookings = new ArrayList<MeetingRoomBooking>();
         for (var schedule : schedules) {
-            bookings.add(
-                    new MeetingRoomBooking(
-                            UUID.randomUUID(),
-                            schedule.getStartTime(),
-                            schedule.getEndTime(),
-                            schedule.getDescription(),
-                            user
-                    )
+            var booking = new MeetingRoomBooking(
+                    UUID.randomUUID(),
+                    schedule.getStartTime(),
+                    schedule.getEndTime(),
+                    schedule.getDescription(),
+                    user
             );
+            savedBookings.add(mtRoomBookingService.createOrUpdate(booking));
         }
-        bookings.forEach(mtRoomBookingService::createOrUpdate);
-        bookingsNotificationService.sendMessage(getCreatedScheduleInfo(bookings));
+        bookingsNotificationService.sendMessage(getCreatedScheduleInfo(savedBookings));
         user.setMtRoomBookingStatus(NO_STATUS);
         userService.createOrUpdate(user);
 
-        return List.of(messageService.getDoneMsg(user, update));
+        return List.of(messageService.getDoneMsg(user, update), getConfirmationMsg(savedBookings, update.getChatId()));
     }
 
     private String getCreatedScheduleInfo(List<MeetingRoomBooking> bookings) {
@@ -158,5 +156,26 @@ public class MtRoomBookingHandleService {
                 .append("\n");
 
         return sb.toString();
+    }
+
+    private Response getConfirmationMsg(List<MeetingRoomBooking> bookings, long chatId) {
+        var stringBookings = new StringBuilder(EMOJI_MT_ROOM_BOOKING + "Я забронировал для тебя лекционную:");
+        for (var booking : bookings) {
+            stringBookings
+                    .append("\n")
+                    .append(
+                            DateTimeUtils.getHumanScheduleDetailed(
+                                    booking.getStartTime(),
+                                    booking.getEndTime(),
+                                    booking.getDescription()
+                            )
+                    );
+        }
+        var msg = SendMessage.builder()
+                .chatId(chatId)
+                .text(stringBookings.toString())
+                .build();
+
+        return new Response(msg);
     }
 }

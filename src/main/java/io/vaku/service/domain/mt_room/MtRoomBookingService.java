@@ -17,8 +17,8 @@ public class MtRoomBookingService {
     private MtRoomBookingRepository repository;
 
     @Transactional
-    public void createOrUpdate(MeetingRoomBooking booking) {
-        repository.save(booking);
+    public MeetingRoomBooking createOrUpdate(MeetingRoomBooking booking) {
+        return repository.save(booking);
     }
 
     public MeetingRoomBooking findById(UUID id) {
