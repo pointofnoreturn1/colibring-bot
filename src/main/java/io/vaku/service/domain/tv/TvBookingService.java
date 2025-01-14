@@ -17,8 +17,8 @@ public class TvBookingService {
     private TvBookingRepository repository;
 
     @Transactional
-    public void createOrUpdate(TvBooking booking) {
-        repository.save(booking);
+    public TvBooking createOrUpdate(TvBooking booking) {
+        return repository.save(booking);
     }
 
     public TvBooking findById(UUID id) {

@@ -17,8 +17,8 @@ public class LaundryBookingService {
     private LndBookingRepository repository;
 
     @Transactional
-    public void createOrUpdate(LaundryBooking booking) {
-        repository.save(booking);
+    public LaundryBooking createOrUpdate(LaundryBooking booking) {
+        return repository.save(booking);
     }
 
     public LaundryBooking findById(UUID id) {
