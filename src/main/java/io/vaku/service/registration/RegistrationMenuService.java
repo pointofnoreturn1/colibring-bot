@@ -40,17 +40,16 @@ public class RegistrationMenuService {
     }
 
     public ReplyKeyboardMarkup getUserMenu(User user) {
-        List<KeyboardRow> keyboard = new ArrayList<>() {{
-            add(new KeyboardRow(List.of(new KeyboardButton(TEXT_MT_ROOM_BOOKING))));
-            add(new KeyboardRow(List.of(new KeyboardButton(TEXT_TV_BOOKING))));
-            add(new KeyboardRow(List.of(new KeyboardButton(TEXT_LAUNDRY_BOOKING))));
-            add(new KeyboardRow(List.of(new KeyboardButton(TEXT_MEAL_SIGN_UP))));
-        }};
+        var keyboard = new ArrayList<KeyboardRow>();
 
         if (user.getRole().equals(ADMIN) || user.getRole().equals(COOK)) {
             keyboard.add(new KeyboardRow(List.of(new KeyboardButton(TEXT_ADMIN))));
         }
 
+        keyboard.add(new KeyboardRow(List.of(new KeyboardButton(TEXT_MT_ROOM_BOOKING))));
+        keyboard.add(new KeyboardRow(List.of(new KeyboardButton(TEXT_TV_BOOKING))));
+        keyboard.add(new KeyboardRow(List.of(new KeyboardButton(TEXT_LAUNDRY_BOOKING))));
+        keyboard.add(new KeyboardRow(List.of(new KeyboardButton(TEXT_MEAL_SIGN_UP))));
         keyboard.add(new KeyboardRow(List.of(new KeyboardButton(TEXT_RELOAD_MENU))));
 
         return ReplyKeyboardMarkup.builder().keyboard(keyboard).resizeKeyboard(true).build();
