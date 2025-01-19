@@ -42,6 +42,9 @@ public class UserMealService {
     @Transactional
     @Scheduled(fixedRate = 3_600_000 * 12) // 12 hours
     public void saveMealDebts() {
+        log.info("Date: {}", LocalDate.now(ZoneId.systemDefault()));
+        log.info("Day ordinal: {}", LocalDate.now(ZoneId.systemDefault()).getDayOfWeek().ordinal());
+
         if (LocalDate.now(ZoneId.systemDefault()).getDayOfWeek().ordinal() != 6) {
             log.info("No meal debts were saved because it's not Sunday");
             return;
@@ -60,17 +63,17 @@ public class UserMealService {
             userDebtsMap.put(userId, userDebtsMap.get(userId) + userMeal.getMeal().getPrice());
         }
 
-        var usersWithDebts = userMeals.stream()
+        var usersWithNewDebts = userMeals.stream()
                 .map(UserMeal::getUser)
                 .distinct()
                 .filter(Predicate.not(it -> debtAlreadySaved(it.getId())))
                 .collect(Collectors.toMap(User::getId, it -> it));
 
         var userMealDebts = userDebtsMap.entrySet().stream()
-                .filter(it -> usersWithDebts.containsKey(it.getKey()))
+                .filter(it -> usersWithNewDebts.containsKey(it.getKey()))
                 .map(
                         it -> new UserMealDebt(
-                                usersWithDebts.get(it.getKey()),
+                                usersWithNewDebts.get(it.getKey()),
                                 it.getValue(),
                                 false,
                                 userMeals.getFirst().getStartDate(),
