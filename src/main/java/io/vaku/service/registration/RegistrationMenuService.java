@@ -14,6 +14,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.Keyboard
 import java.util.ArrayList;
 import java.util.List;
 
+import static io.vaku.handler.TopLevelMenuItem.*;
 import static io.vaku.model.enm.Role.ADMIN;
 import static io.vaku.model.enm.Role.COOK;
 import static io.vaku.util.StringConstants.*;
@@ -43,14 +44,14 @@ public class RegistrationMenuService {
         var keyboard = new ArrayList<KeyboardRow>();
 
         if (user.getRole().equals(ADMIN) || user.getRole().equals(COOK)) {
-            keyboard.add(new KeyboardRow(List.of(new KeyboardButton(TEXT_ADMIN))));
+            keyboard.add(new KeyboardRow(List.of(new KeyboardButton(ADMINISTRATION.getCmd()))));
         }
 
-        keyboard.add(new KeyboardRow(List.of(new KeyboardButton(TEXT_MT_ROOM_BOOKING))));
-        keyboard.add(new KeyboardRow(List.of(new KeyboardButton(TEXT_TV_BOOKING))));
-        keyboard.add(new KeyboardRow(List.of(new KeyboardButton(TEXT_LAUNDRY_BOOKING))));
-        keyboard.add(new KeyboardRow(List.of(new KeyboardButton(TEXT_MEAL_SIGN_UP))));
-        keyboard.add(new KeyboardRow(List.of(new KeyboardButton(TEXT_RELOAD_MENU))));
+        keyboard.add(new KeyboardRow(List.of(new KeyboardButton(LECTURE_ROOM_BOOKING.getCmd()))));
+        keyboard.add(new KeyboardRow(List.of(new KeyboardButton(TV_BOOKING.getCmd()))));
+        keyboard.add(new KeyboardRow(List.of(new KeyboardButton(LAUNDRY_BOOKING.getCmd()))));
+        keyboard.add(new KeyboardRow(List.of(new KeyboardButton(MEAL_SIGN_UP.getCmd()))));
+        keyboard.add(new KeyboardRow(List.of(new KeyboardButton(RELOAD_MENU.getCmd()))));
 
         return ReplyKeyboardMarkup.builder().keyboard(keyboard).resizeKeyboard(true).build();
     }

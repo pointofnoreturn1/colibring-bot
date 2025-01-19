@@ -42,9 +42,6 @@ public class UserMealService {
     @Transactional
     @Scheduled(fixedRate = 3_600_000 * 12) // 12 hours
     public void saveMealDebts() {
-        log.info("Date: {}", LocalDate.now(ZoneId.systemDefault()));
-        log.info("Day ordinal: {}", LocalDate.now(ZoneId.systemDefault()).getDayOfWeek().ordinal());
-
         if (LocalDate.now(ZoneId.systemDefault()).getDayOfWeek().ordinal() != 6) {
             log.info("No meal debts were saved because it's not Sunday");
             return;

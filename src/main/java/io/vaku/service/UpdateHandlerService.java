@@ -1,10 +1,13 @@
 package io.vaku.service;
 
 import io.vaku.handler.HandlersMap;
+import io.vaku.handler.TopLevelMenuItem;
 import io.vaku.model.Response;
 import io.vaku.model.ClassifiedUpdate;
 import io.vaku.model.domain.User;
+import io.vaku.model.enm.AdminStatus;
 import io.vaku.model.enm.UserStatus;
+import io.vaku.service.domain.UserService;
 import io.vaku.service.domain.admin.meal.MealAdminHandleService;
 import io.vaku.service.domain.laundry.LaundryBookingHandleService;
 import io.vaku.service.domain.meal.MealSignUpHandleService;
@@ -29,6 +32,7 @@ public class UpdateHandlerService {
     private final MealSignUpHandleService mealSignUpHandleService;
     private final MealAdminHandleService mealAdminHandleService;
     private final MessageService messageService;
+    private final UserService userService;
 
     @Autowired
     public UpdateHandlerService(
@@ -38,7 +42,8 @@ public class UpdateHandlerService {
             TvBookingHandleService tvBookingHandleService,
             LaundryBookingHandleService laundryBookingHandleService,
             MealSignUpHandleService mealSignUpHandleService,
-            MealAdminHandleService mealAdminHandleService, MessageService messageService
+            MealAdminHandleService mealAdminHandleService, MessageService messageService,
+            UserService userService
     ) {
         this.commandMap = commandMap;
         this.registrationService = registrationService;
@@ -48,18 +53,23 @@ public class UpdateHandlerService {
         this.mealSignUpHandleService = mealSignUpHandleService;
         this.mealAdminHandleService = mealAdminHandleService;
         this.messageService = messageService;
+        this.userService = userService;
     }
 
     //TODO: review and refactor this logic
     public List<Response> handleUpdate(ClassifiedUpdate update, User user) {
+        var cmd = update.getCommandName();
         if (user == null) {
-            if (update.getCommandName().equals("/start") || update.getCommandName().startsWith("callbackSetLanguage")) {
+            if (cmd.equals("/start") || cmd.startsWith("callbackSetLanguage")) {
                 return commandMap.execute(null, update);
             } else {
                 return messageService.getEmptyResponse();
             }
         } else if (!user.getStatus().equals(UserStatus.REQUIRE_REGISTRATION) && !user.getStatus().equals(UserStatus.REGISTERED)) {
             return registrationService.execute(user, update);
+        } else if (isTopLevelCommand(cmd)) {
+            resetStatuses(user);
+            return commandMap.execute(user, update);
         } else if (!user.getMtRoomBookingStatus().equals(NO_STATUS)) {
             return mtRoomBookingHandleService.execute(user, update);
         } else if (!user.getTvBookingStatus().equals(NO_STATUS)) {
@@ -75,5 +85,25 @@ public class UpdateHandlerService {
         }
 
         return commandMap.execute(user, update);
+    }
+
+    private boolean isTopLevelCommand(String command) {
+        for (var menuItem : TopLevelMenuItem.values()) {
+            if (menuItem.getCmd().equals(command)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private void resetStatuses(User user) {
+        user.setMtRoomBookingStatus(NO_STATUS);
+        user.setTvBookingStatus(NO_STATUS);
+        user.setLaundryBookingStatus(NO_STATUS);
+        user.setMealSignUpStatus(NO_STATUS);
+        user.setAdminStatus(AdminStatus.NO_STATUS);
+
+        userService.createOrUpdate(user);
     }
 }
