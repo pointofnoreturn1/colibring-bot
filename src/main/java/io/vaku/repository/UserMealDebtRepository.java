@@ -20,4 +20,12 @@ public interface UserMealDebtRepository extends CrudRepository<UserMealDebt, UUI
             nativeQuery = true
     )
     List<UserMealDebt> findAllNotNotifiedBetween(@Param("from") Date from, @Param("to") Date to);
+
+    @Query(
+            value = "SELECT COUNT (*) " +
+                    "FROM user_meal_debt " +
+                    "WHERE start_date >= :from AND end_date <= :to AND user_id = :userId",
+            nativeQuery = true
+    )
+    int countBetweenByUserId(@Param("from") Date from, @Param("to") Date to, @Param("userId") long userId);
 }
