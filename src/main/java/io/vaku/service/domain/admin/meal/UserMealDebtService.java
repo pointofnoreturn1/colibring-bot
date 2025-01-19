@@ -12,9 +12,12 @@ import java.util.List;
 @Service
 @Transactional(readOnly = true)
 public class UserMealDebtService {
+    private final UserMealDebtRepository repository;
 
     @Autowired
-    private UserMealDebtRepository repository;
+    public UserMealDebtService(UserMealDebtRepository repository) {
+        this.repository = repository;
+    }
 
     public void saveAll(Iterable<UserMealDebt> userMealDebts) {
         repository.saveAll(userMealDebts);
@@ -27,5 +30,9 @@ public class UserMealDebtService {
 
     public List<UserMealDebt> findAllNotNotifiedBetween(Date from, Date to) {
         return repository.findAllNotNotifiedBetween(from, to);
+    }
+
+    public int countBetweenByUserId(Date from, Date to, long userId) {
+        return repository.countBetweenByUserId(from, to, userId);
     }
 }
