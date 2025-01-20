@@ -55,7 +55,7 @@ public class MealShowActualMenuCallback implements Command {
             var sb = new StringBuilder();
             sb.append(entry.getKey().getName());
             for (var meal : entry.getValue()) {
-                sb.append("\n• ").append(meal.getName());
+                sb.append("\n    • ").append(meal.getName());
                 int price = meal.getPrice();
                 if (price != 10) {
                     sb.append(" ").append(getStringPrice(price));
