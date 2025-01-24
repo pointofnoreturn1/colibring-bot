@@ -125,7 +125,7 @@ public class MtRoomBookingHandleService {
 
     private String getCreatedScheduleInfo(List<MeetingRoomBooking> bookings) {
         var sb = new StringBuilder(EMOJI_MT_ROOM_BOOKING);
-        sb.append(getStringUser(bookings.getFirst().getUser())).append(" забронировал(а) лекционную:\n");
+        sb.append("\n");
         for (var booking : bookings) {
             sb.append(
                     DateTimeUtils.getHumanScheduleDetailed(
@@ -136,6 +136,7 @@ public class MtRoomBookingHandleService {
             );
             sb.append("\n");
         }
+        sb.append("\n").append(getStringUser(bookings.getFirst().getUser())).append(" забронировал(а) лекционную");
 
         return sb.toString();
     }
@@ -144,8 +145,7 @@ public class MtRoomBookingHandleService {
         var sb = new StringBuilder(EMOJI_REMOVE);
         sb.append(" ")
                 .append(EMOJI_MT_ROOM_BOOKING)
-                .append(getStringUser(booking.getUser()))
-                .append(" удалил(а) бронь лекционной:\n")
+                .append("\n")
                 .append(
                         DateTimeUtils.getHumanScheduleDetailed(
                                 booking.getStartTime(),
@@ -153,7 +153,9 @@ public class MtRoomBookingHandleService {
                                 booking.getDescription()
                         )
                 )
-                .append("\n");
+                .append("\n\n")
+                .append(getStringUser(booking.getUser()))
+                .append(" удалил(а) бронь лекционной");
 
         return sb.toString();
     }
