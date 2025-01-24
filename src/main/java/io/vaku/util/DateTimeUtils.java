@@ -104,22 +104,37 @@ public final class DateTimeUtils {
     }
 
     public static String getHumanScheduleDetailed(Date startTime, Date endTime, String description) {
+        return getHumanScheduleDetailed(startTime, endTime, description, false);
+    }
+
+    public static String getHumanScheduleDetailed(Date startTime, Date endTime, String description, boolean reversed) {
         var startDateTime = LocalDateTime.ofInstant(startTime.toInstant(), ZoneId.systemDefault());
         var day = String.valueOf(startDateTime.getDayOfMonth());
         var month = String.valueOf(startDateTime.getMonthValue());
         var year = String.valueOf(startDateTime.getYear());
 
         var sb = new StringBuilder();
-        sb
-                .append(day.length() == 1 ? "0" + day : day)
-                .append(".")
-                .append(month.length() == 1 ? "0" + month : month)
-                .append(".")
-                .append(year.substring(2))
-                .append(" ")
-                .append(startDateTime.format(DateTimeFormatter.ofPattern("EE", Locale.of("ru"))))
-                .append(" ")
-                .append(getHumanSchedule(startTime, endTime));
+        if (reversed) {
+            sb.append(getHumanSchedule(startTime, endTime));
+            sb.append(" ");
+            sb.append(startDateTime.format(DateTimeFormatter.ofPattern("EE", Locale.of("ru"))));
+            sb.append(" ");
+            sb.append(day.length() == 1 ? "0" + day : day);
+            sb.append(".");
+            sb.append(month.length() == 1 ? "0" + month : month);
+            sb.append(".");
+            sb.append(year.substring(2));
+        } else {
+            sb.append(day.length() == 1 ? "0" + day : day);
+            sb.append(".");
+            sb.append(month.length() == 1 ? "0" + month : month);
+            sb.append(".");
+            sb.append(year.substring(2));
+            sb.append(" ");
+            sb.append(startDateTime.format(DateTimeFormatter.ofPattern("EE", Locale.of("ru"))));
+            sb.append(" ");
+            sb.append(getHumanSchedule(startTime, endTime));
+        }
 
         return sb.append(description == null ? "" : " / " + description).toString();
     }
