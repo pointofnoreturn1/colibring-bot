@@ -125,7 +125,7 @@ public class TvBookingHandleService {
 
     private String getCreatedScheduleInfo(List<TvBooking> bookings) {
         var sb = new StringBuilder(EMOJI_TV_BOOKING);
-        sb.append(getStringUser(bookings.getFirst().getUser())).append(" забронировал(а) телевизор:\n");
+        sb.append("\n");
         for (var booking : bookings) {
             sb.append(
                     DateTimeUtils.getHumanScheduleDetailed(
@@ -136,6 +136,7 @@ public class TvBookingHandleService {
             );
             sb.append("\n");
         }
+        sb.append("\n").append(getStringUser(bookings.getFirst().getUser())).append(" забронировал(а) телевизор");
 
         return sb.toString();
     }
@@ -144,8 +145,7 @@ public class TvBookingHandleService {
         var sb = new StringBuilder(EMOJI_REMOVE);
         sb.append(" ")
                 .append(EMOJI_TV_BOOKING)
-                .append(getStringUser(booking.getUser()))
-                .append(" удалил(а) бронь телевизора:\n")
+                .append("\n")
                 .append(
                         DateTimeUtils.getHumanScheduleDetailed(
                                 booking.getStartTime(),
@@ -153,7 +153,9 @@ public class TvBookingHandleService {
                                 booking.getDescription()
                         )
                 )
-                .append("\n");
+                .append("\n\n")
+                .append(getStringUser(booking.getUser()))
+                .append(" удалил(а) бронь телевизора");
 
         return sb.toString();
     }

@@ -125,8 +125,7 @@ public class LaundryBookingHandleService {
         var sb = new StringBuilder(EMOJI_REMOVE);
         sb.append(" ")
                 .append(EMOJI_LAUNDRY_BOOKING)
-                .append(getStringUser(booking.getUser()))
-                .append(" удалил(а) стирку:\n")
+                .append("\n")
                 .append(
                         DateTimeUtils.getHumanScheduleDetailed(
                                 booking.getStartTime(),
@@ -134,7 +133,9 @@ public class LaundryBookingHandleService {
                                 booking.getDescription()
                         )
                 )
-                .append("\n");
+                .append("\n\n")
+                .append(getStringUser(booking.getUser()))
+                .append(" удалил(а) стирку");
 
         return sb.toString();
     }
