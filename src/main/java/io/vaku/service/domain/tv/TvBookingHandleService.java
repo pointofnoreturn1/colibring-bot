@@ -131,7 +131,8 @@ public class TvBookingHandleService {
                     DateTimeUtils.getHumanScheduleDetailed(
                             booking.getStartTime(),
                             booking.getEndTime(),
-                            booking.getDescription()
+                            booking.getDescription(),
+                            true
                     )
             );
             sb.append("\n");
@@ -150,7 +151,8 @@ public class TvBookingHandleService {
                         DateTimeUtils.getHumanScheduleDetailed(
                                 booking.getStartTime(),
                                 booking.getEndTime(),
-                                booking.getDescription()
+                                booking.getDescription(),
+                                true
                         )
                 )
                 .append("\n\n")
@@ -169,7 +171,8 @@ public class TvBookingHandleService {
                             DateTimeUtils.getHumanScheduleDetailed(
                                     booking.getStartTime(),
                                     booking.getEndTime(),
-                                    booking.getDescription()
+                                    booking.getDescription(),
+                                    true
                             )
                     );
         }

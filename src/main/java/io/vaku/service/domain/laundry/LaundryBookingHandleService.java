@@ -130,7 +130,8 @@ public class LaundryBookingHandleService {
                         DateTimeUtils.getHumanScheduleDetailed(
                                 booking.getStartTime(),
                                 booking.getEndTime(),
-                                booking.getDescription()
+                                booking.getDescription(),
+                                true
                         )
                 )
                 .append("\n\n")
@@ -149,7 +150,8 @@ public class LaundryBookingHandleService {
                             DateTimeUtils.getHumanScheduleDetailed(
                                     booking.getStartTime(),
                                     booking.getEndTime(),
-                                    booking.getDescription()
+                                    booking.getDescription(),
+                                    true
                             )
                     );
         }
