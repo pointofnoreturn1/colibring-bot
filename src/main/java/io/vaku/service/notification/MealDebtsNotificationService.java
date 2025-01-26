@@ -41,9 +41,9 @@ public class MealDebtsNotificationService {
         if (isNotSunday(now)) {
             return;
         }
-//        if (isNotNoon(now)) {
-//            return;
-//        }
+        if (isNotNoon(now)) {
+            return;
+        }
 
         var sb = new StringBuilder();
         for (var debt : userMealDebtService.findAllNotNotifiedBetween(getCurrentMonday(), getCurrentSunday())) {
