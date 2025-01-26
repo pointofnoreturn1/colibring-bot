@@ -6,6 +6,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 import static io.vaku.util.DateTimeUtils.getCurrentMonday;
 import static io.vaku.util.DateTimeUtils.getCurrentSunday;
@@ -31,10 +32,13 @@ public class MealDebtsNotificationService {
 
     @Scheduled(fixedRate = 3_600_000) // 1 hour
     public void checkMealDebts() {
-        var now = LocalDateTime.now();
-        if (now.getDayOfWeek().ordinal() != 6 || now.getHour() != 13) {
+        var now = LocalDateTime.now(ZoneId.systemDefault());
+        if (isNotSunday(now)) {
             return;
         }
+//        if (isNotNoon(now)) {
+//            return;
+//        }
 
         var sb = new StringBuilder();
         for (var debt : userMealDebtService.findAllNotNotifiedBetween(getCurrentMonday(), getCurrentSunday())) {
@@ -53,5 +57,13 @@ public class MealDebtsNotificationService {
             sb.insert(0, "Список должников за питание:");
             adminNotificationService.sendMessage(sb.toString());
         }
+    }
+
+    private boolean isNotSunday(LocalDateTime ldt) {
+        return ldt.getDayOfWeek().ordinal() != 6;
+    }
+
+    private boolean isNotNoon(LocalDateTime ldt) {
+        return ldt.getHour() != 12;
     }
 }
