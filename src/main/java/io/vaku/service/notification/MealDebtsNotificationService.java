@@ -1,9 +1,12 @@
 package io.vaku.service.notification;
 
 import io.vaku.service.domain.admin.meal.UserMealDebtService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -15,6 +18,8 @@ import static io.vaku.util.StringConstants.*;
 
 @Service
 public class MealDebtsNotificationService {
+    private static final Logger log = LoggerFactory.getLogger(MealDebtsNotificationService.class);
+
     private final UserMealDebtService userMealDebtService;
     private final TelegramClient telegramClient;
     private final AdminNotificationService adminNotificationService;
@@ -44,9 +49,21 @@ public class MealDebtsNotificationService {
         for (var debt : userMealDebtService.findAllNotNotifiedBetween(getCurrentMonday(), getCurrentSunday())) {
             // TODO: check if record exists and not notified
             var user = debt.getUser();
+            long chatId = user.getChatId();
             int amount = debt.getAmount();
             sb.append("\n").append(getStringUser(user, true)).append(" ").append(amount).append(LARI);
-            telegramClient.sendMessage(user.getChatId(), TEXT_YOU_HAVE_DEBTS + amount + LARI + TEXT_BANK_DETAILS, true);
+            try {
+                telegramClient.sendMessage(chatId, TEXT_YOU_HAVE_DEBTS + amount + LARI + TEXT_BANK_DETAILS, true);
+            } catch (HttpClientErrorException e) {
+                log.error(
+                        "Error while sending message to user {}: {}; {}; {}; {}",
+                        chatId,
+                        e.getMessage(),
+                        e.getStatusCode(),
+                        e.getStatusText(),
+                        e.getResponseBodyAsString()
+                );
+            }
             debt.setNotified(true);
             userMealDebtService.createOrUpdate(debt);
         }
